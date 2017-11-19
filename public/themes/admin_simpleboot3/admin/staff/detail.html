@@ -1,0 +1,51 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('staff/intention')}">申请列表</a></li>
+        <li class="active"><a href="{:url('staff/detail')}">详细信息</a></li>
+    </ul>
+    <form class="form-horizontal js-ajax-form margin-top-20">
+        <div class="form-group">
+            <label for="input-users_username" class="col-sm-2 control-label"><span class="form-required">*</span>姓名</label>
+            <div class="col-md-6 col-sm-10">
+                {$staff.username}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-users_mobile" class="col-sm-2 control-label"><span class="form-required">*</span>手机号</label>
+            <div class="col-md-6 col-sm-10">
+                {$staff.mobile}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-users_thumb" class="col-sm-2 control-label"><span class="form-required">*</span>身份证照片</label>
+            <div class="col-md-6 col-sm-10">
+                <foreach name="staff.thumbnail" item="v">
+                    <empty name="v">
+                        无
+                        <else/>
+                        <img src="{:cmf_get_image_preview_url($v)}"/>
+                    </empty>
+                </foreach>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input-users_time" class="col-sm-2 control-label"><span class="form-required">*</span>申请时间</label>
+            <div class="col-md-6 col-sm-10">
+                {$staff.create_time|date="Y-m-d H:i:s",###}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <a href="{:url('Staff/status')}?ids={$staff.id}&yes=1" style="font-size: 25px;">通过</a> |
+                <a href="{:url('Staff/status')}?ids={$staff.id}&no=1" style="font-size: 25px;">拒绝</a>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<include file="public@header" />
+<style>
+    #article_content img {
+        height: auto !important;
+        max-width: 100%;
+    }
+
+    #article_content {
+        word-wrap: break-word;
+    }
+
+    .content{
+    	padding-top: 7px;
+    }
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('news/index')}">新闻</a></li>
+			<li class="active"><a href="">新闻详情</a></li>
+		</ul>
+		<form class="form-horizontal js-ajax-form margin-top-20">
+
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 新闻标题</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.main_title}</div>
+			</div>
+
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"> 新闻类型</label>
+				<div class=" col-md-6 col-sm-10 content">
+					<if condition="$data.type eq 0"> 理财类</if>
+                	<if condition="$data.type eq 1"> 投资类</if>
+                	<if condition="$data.type eq 2"> 专访类</if>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"> 新闻创建时间</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.create_time|date="Y:m-d H:i:s",###}</div>
+			</div>
+			<if condition="$data.modify_time neq null"
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"> 新闻修改时间</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.modify_time|date="Y:m-d H:i:s",###}</div>
+			</div>
+			</if>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 新闻图片</label>
+				<div class="col-md-6 col-sm-10 content">
+				<foreach name="image" item="vo"> 
+					<img src="{:cmf_get_image_preview_url($vo)}" id="js-thumbnail-input-preview" width="135" style="cursor: pointer"/>
+				</foreach>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 新闻内容</label>
+				<div class="col-md-6 col-sm-10 content">{$data.content|htmlspecialchars_decode}</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="hidden" name="id" value="{$data.id}"/>
+					<a class="btn btn-primary" href="{:url('news/edit',array('id'=>$data['id']))}">修改</a> 
+					<a class="btn btn-default" href="{:url('hxnews/news/index')}">{:lang('BACK')}</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

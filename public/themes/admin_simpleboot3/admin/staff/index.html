@@ -1,0 +1,70 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="{:url('staff/index')}">用户列表</a></li>
+        <li><a href="{:url('staff/intention')}">申请列表</a></li>
+        <li><a href="{:url('staff/add')}">新增用户</a></li>
+
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('staff/index')}">
+        关键字:
+        <input type="text" class="form-control" name="keyword" style="width: 200px;"
+               value="{$keyword|default=''}">
+        工作片区:
+        <input type="text" class="form-control" name="address" style="width: 200px;"
+               value="{$address|default=''}">
+        状态:
+        <select class="form-control" name="status" style="width: 140px;">
+            <option value=''>全部</option>
+            <option value='0'<if condition="isset($status) && $status eq 1">selected</if>>禁用</option>
+            <option value='1'<if condition="isset($status) && $status eq 1">selected</if>>启用</option>
+        </select> &nbsp;&nbsp;
+
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('staff/index')}">清空</a>
+    </form>
+    <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+            <th width="50">ID</th>
+            <th>手机号</th>
+            <th>工作片区</th>
+            <th>本月巡检次数</th>
+            <th>本月故障维修次数</th>
+            <th>管辖咖啡机数量</th>
+            <th>最后巡检时间</th>
+            <th>状态</th>
+            <th width="180">{:lang('ACTIONS')}</th>
+        </tr>
+        </thead>
+        <tbody>
+            <foreach name="list" item="vo">
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td>{$vo.mobile}</td>
+                    <td>{$vo.address}</td>
+                    <td>{$vo.address}</td>
+                    <td>{$vo.address}</td>
+                    <td>{$vo.machine_count}</td>
+                    <td>{$vo.address}</td>
+                    <td>
+                        <if condition="$vo['status'] eq 1"><span style="color:#0D0;">启用</span>
+                        <elseif condition="$vo['status'] eq 2" /><span style="color: #f00;">禁用</span>
+                        </if>
+                    </td>
+                    <td>
+                        <a href="{:url('Staff/edit')}?id={$vo.id}">编辑</a> |
+                        <a href="{:url('Staff/del')}?ids={$vo.id}">删除</a> |
+                        <a href="{:url('Staff/pass_detail')}?id={$vo.id}">查看详情</a>
+                    </td>
+                </tr>
+            </foreach>
+        </tbody>
+    </table>
+    <div class="pagination">{$page}</div>
+</div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

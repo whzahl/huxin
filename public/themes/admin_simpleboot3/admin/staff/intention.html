@@ -1,0 +1,167 @@
+<include file="public@header" />
+</head>
+<body>
+<div class="wrap js-check-wrap">
+    <ul class="nav nav-tabs">
+        <li><a href="{:url('staff/index')}">工作人员列表</a></li>
+        <li class="active"><a href="{:url('staff/intention')}">申请列表</a></li>
+        <li><a href="{:url('staff/add')}">新增工作人员</a></li>
+    </ul>
+    <form class="well form-inline margin-top-20" method="post" action="{:url('staff/intention')}">
+        认证状态:
+        <select class="form-control" name="certification_status" style="width: 140px;">
+            <option value=''>全部</option>
+            <option value='3'<if condition="isset($certification_status) && $certification_status eq 3">selected</if>>未认证</option>
+            <option value='1'<if condition="isset($certification_status) && $certification_status eq 1">selected</if>>已认证</option>
+            <option value='2'<if condition="isset($certification_status) && $certification_status eq 2">selected</if>>已拒绝</option>
+        </select> &nbsp;&nbsp;
+        <input type="submit" class="btn btn-primary" value="搜索"/>
+        <a class="btn btn-danger" href="{:url('staff/intention')}">清空</a>
+    </form>
+    <form class="js-ajax-form" action="" method="post">
+        <div class="table-actions">
+            <button class="btn btn-primary btn-sm js-ajax-submit" type="submit"
+                    data-action="{:url('machine/status',array('yes'=>1))}" data-subcheck="true">通过
+            </button>
+            <button class="btn btn-primary btn-sm js-ajax-submit" type="submit"
+                    data-action="{:url('machine/status',array('no'=>1))}" data-subcheck="true">拒绝
+            </button>
+        </div>
+    <table class="table table-hover table-bordered">
+        <thead>
+        <tr>
+            <th width="15">
+                <label>
+                    <input type="checkbox" class="js-check-all" data-direction="x" data-checklist="js-check-x">
+                </label>
+            </th>
+            <th width="50">ID</th>
+            <th>手机号</th>
+            <th>姓名</th>
+            <th>身份证照片</th>
+            <th>申请时间</th>
+            <th width="180">{:lang('ACTIONS')}</th>
+        </tr>
+        </thead>
+        <tbody>
+          <foreach name="list" item="vo">
+              <tr>
+                  <td>
+                      <input type="checkbox" class="js-check" data-yid="js-check-y" data-xid="js-check-x" name="ids[]"
+                             value="{$vo.id}" title="ID:{$vo.id}">
+                  </td>
+                  <td>{$vo.id}</td>
+                  <td>{$vo.mobile}</td>
+                  <td>{$vo.username}</td>
+                  <td>
+                          <foreach name="vo.thumbnail" item="v">
+                              <empty name="v">
+                                  无
+                                  <else/>
+                              <img src="{:cmf_get_image_preview_url($v)}"
+                                   width="100" height="100" style="cursor: pointer"/>
+                              </empty>
+                          </foreach>
+                  </td>
+                  <td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+                  <td>
+                      <if condition="$vo['certification_status'] eq 3">
+                          <a href="{:url('Staff/status')}?ids={$vo.id}&yes=1">通过</a> |
+                          <a href="{:url('Staff/status')}?ids={$vo.id}&no=1">拒绝</a> |
+                          <a href="{:url('Staff/detail')}?id={$vo.id}">查看详情</a>
+                       <elseif condition="$vo['certification_status'] eq 1"/><span style="color: #0D0;">已认证</span>
+                       <elseif condition="$vo['certification_status'] eq 2"/><span style="color: #F00;">已拒绝</span>
+                      </if>
+
+                  </td>
+              </tr>
+          </foreach>
+        </tbody>
+    </table>
+    <div class="pagination">{$page}</div>
+    </form>
+</div>
+<div id="Limg" style="text-align: center;display: none;"><img src="" alt=""></div>
+<script src="__STATIC__/js/admin.js"></script>
+</body>
+<script type="text/javascript">
+    $(function(){
+        $(".table img").on('click',function(){
+            $("#Limg > img").attr("src",$(this).attr("src"));
+            layui.use('layer', function () {
+                layer.open({
+                    type: 1,
+                    title: false,
+                    closeBtn: 0,
+                    area: '1000px',
+                    skin: 'layui-layer-nobg', //没有背景色
+                    shadeClose: true,
+                    content: $('#Limg')
+                });
+            })
+        })
+    })
+
+    function reloadPage(win) {
+        win.location.reload();
+    }
+
+    $(function () {
+        setCookie("refersh_time", 0);
+        Wind.use('ajaxForm', 'artDialog', 'iframeTools', function () {
+            //批量复制
+            $('.js-articles-copy').click(function (e) {
+                var ids = [];
+                $("input[name='ids[]']").each(function () {
+                    if ($(this).is(':checked')) {
+                        ids.push($(this).val());
+                    }
+                });
+
+                if (ids.length == 0) {
+                    art.dialog.through({
+                        id: 'error',
+                        icon: 'error',
+                        content: '您没有勾选信息，无法进行操作！',
+                        cancelVal: '关闭',
+                        cancel: true
+                    });
+                    return false;
+                }
+
+                ids = ids.join(',');
+                art.dialog.open("__ROOT__/index.php?g=portal&m=AdminArticle&a=copy&ids=" + ids, {
+                    title: "批量复制",
+                    width: "300px"
+                });
+            });
+            //批量移动
+            $('.js-articles-move').click(function (e) {
+                var ids = [];
+                $("input[name='ids[]']").each(function () {
+                    if ($(this).is(':checked')) {
+                        ids.push($(this).val());
+                    }
+                });
+
+                if (ids.length == 0) {
+                    art.dialog.through({
+                        id: 'error',
+                        icon: 'error',
+                        content: '您没有勾选信息，无法进行操作！',
+                        cancelVal: '关闭',
+                        cancel: true
+                    });
+                    return false;
+                }
+
+                ids = ids.join(',');
+                art.dialog.open("__ROOT__/index.php?g=portal&m=AdminArticle&a=move&old_term_id={$term.term_id|default=0}&ids=" + ids, {
+                    title: "批量移动",
+                    width: "300px"
+                });
+            });
+        });
+    });
+</script>
+</html>
