@@ -37,7 +37,7 @@ class LoginController extends HomeBaseController
     	$id=$res['id'];
     	session('userid', $id);
     	$se=session('userid');
-    	dump($se);die;
+    	
     	//dump($se);die;
     	//dump(Session::set('id',$id));die;
     //$se=	session('user','$id');

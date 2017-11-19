@@ -51,11 +51,14 @@ class FriendsController extends HomeBaseController
     }
     public  function addfriends(){
     	//Session::get('id');
+    	$se=session('userid');
+    	dump($se);die;
     	$phone=input('get.phone');
     	//dump($phone);die;
-    	$se=session('userid');
+    	//$se=session('userid');
+    	
     	$mid=Db::name('hx_friends')->where(array('uid'=>$se))->select();
-    	dump($se);die;
+    	
     	foreach ($mid as $value){
     		$fid=$value['fid'];
     		$user=Db::name('hx_user')->where('phone',$phone)->find();
