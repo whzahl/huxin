@@ -18,37 +18,29 @@ class LoginController extends HomeBaseController
 
     public function login()
     {
-         
+
         return $this->fetch();
     }
+
+
     /**
      *  登录表单的提交
      */
-    public function index(){
-    	
+    public function index(){   	
     	header("Content-Type: text/html; charset=utf-8");
-    	
+
     	$phone=input('post.phone');
     	$pwd=input('post.password');
-    //	$data['phone']=$phone;
-    //	$data['pwd']=$pwd;
     	$res=Db::name('hx_user')->where(array('phone'=>$phone,'password'=>$pwd))->find();
-    	
     	$id=$res['id'];
     	session('userid', $id);
-    	$se=session('userid');
-    	
-    	//dump($se);die;
-    	//dump(Session::set('id',$id));die;
-    //$se=	session('user','$id');
-    
-    	
-   
-    	 
-    	if($res){
-    		$this->success('登录成功',url('/huxin/friends/hy2'));
-    	}
+    	// $se=session('userid');
+        if($res){
+            $this->success('登录成功',url('/huxin/user/grzx'));
+        }
+    	 	
     }
+    
 
 	/**
 	  *  用户注册
