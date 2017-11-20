@@ -61,32 +61,24 @@
 		</div>
 	</div>
     <div class="list-container">
-    	<div class="tjhy"><span class="icon icon-tjhy"></span>添加好友</div>
+    	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
+    	<foreach name="list" item="vo" key="k">
+    
 		<ul class="list">
-			<li class="item item-header">A</li>
+		
+			<li class="item item-header">{$k}</li>
+			 <foreach name="vo" item="l"> 	
 			<li class="item item-linked"><a href="#">
-			<h3 class="item-title">奥若设计</h3></a>
+				
+			<h3 class="item-title">{$l}</h3></a>
 			</li>
-			<li class="item item-linked"><a href="#">
-			<h3 class="item-title">安以轩</h3></a>
-			</li>
-            <li class="item item-linked"><a href="#">
-			<h3 class="item-title">安志杰</h3></a>
-			</li>
+		
             
-            <li class="item item-header">B</li>
-			<li class="item item-linked"><a href="prolist.htm">
-			<h3 class="item-title">保安哥</h3></a>
-			</li>
-			<li class="item item-linked"><a href="prolist.htm">
-			<h3 class="item-title">保时捷</h3></a>
-			</li>
-            <li class="item item-linked"><a href="prolist.htm">
-			<h3 class="item-title">宝宝</h3></a>
-			</li>
-            
+           </foreach> 
+           
 		</ul>
-	</div>
+	
+		 </foreach>
 </div> 
 <include file="huxin@footer"/>
 </body>
