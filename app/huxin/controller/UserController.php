@@ -12,17 +12,22 @@ namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
 use think\Db;
+use think\File;
 
-use cmf\lib\Storage;
-use think\Validate;
-use think\Image;
-use cmf\controller\UserBaseController;
-use app\user\model\UserModel;
+// use cmf\lib\Storage;
+// use think\Validate;
+// use think\Image;
+// use cmf\controller\UserBaseController;
+// use app\user\model\UserModel;
 
 
 class UserController extends HomeBaseController
 {
 
+    function __construct() {
+       parent::__construct();
+       // print "In SubClass constructor\n";
+   }
 
     public function changphone()
     {
@@ -39,96 +44,165 @@ class UserController extends HomeBaseController
     public function grzx()
     {
         $id = session('userid');
-      
         $data = Db::name('hx_user')->where(array('id' => $id))->find();
-
+        $photo = $data['photo'];
         $name = $data['name'];
-
+        $this->assign('photo',$photo);
         $this->assign('name',$name);
         return $this->fetch();
     }
 
 
-    public function set()
-    {
+    //修改登录密码
+    public function editPw(){
+        $id = session('userid');
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            $arr = Db::name('hx_user')->where(array('id' => $id))->field('password')->find();
+            if($data['passwordOld'] == $arr['password']){
+                $pw1 = $data['passwordNew1'];
+                $pw2 = $data['passwordNew2'];
+                if($pw1 == $pw2){
+                    $res = array(
+                        'password'  => $pw2,
+                    );
+                    if (Db::name('hx_user')->where(['id' => $id])->update($res) !== false) {
+                        $this->success("修改成功！", url('user/grzx'));
+                    } else {
+                        $this->error("修改失败！");
+                    }
+                }else{
+                    $this->error("两次密码输入不一致！");
+                }                
+            }else{
+               $this->error("旧密码输入错误！");
+            }
+        }
         return $this->fetch();
     }
 
 
+     //修改交易密码
+    public function editDpw(){
+        $id = session('userid');
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            $arr = Db::name('hx_user')->where(array('id' => $id))->field('deal_password')->find();
+            if($data['passwordOld'] == $arr['deal_password']){
+                $pw1 = $data['passwordNew1'];
+                $pw2 = $data['passwordNew2'];
+                if($pw1 == $pw2){
+                    $res = array(
+                        'deal_password'  => $pw2,
+                    );
+                    if (Db::name('hx_user')->where(['id' => $id])->update($res) !== false) {
+                        $this->success("修改成功！", url('user/grzx'));
+                    } else {
+                        $this->error("修改失败！");
+                    }
+                }else{
+                    $this->error("两次密码输入不一致，请重新输入！");
+                }                
+            }else{
+               $this->error("旧密码输入错误！");
+            }
+        }
+        return $this->fetch();
+    }
+
+    //修改手机号码
+    public function editPhone(){
+        $id = session('userid');
+        if($this->request->isPost()){
+            $data = $this->request->param();
+
+            $phone = Db::name('hx_user')->field('phone')->select()->toArray();
+            foreach ($phone as $key => $value) {
+                // dump($value['phone']);
+            }
+
+            if($data['phone'] == $value['phone']){
+                $this->error("手机号已被注册,请重新输入！");
+            }else{
+
+                if(!isset($cmsCode)){
+                    $cmsCode = '';
+                }
+                $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->find();
+
+                if($data['cmsCode'] == $cmsCode['cmsCode']){
+                    $res = array(
+                        'phone'  => $data['phone'],
+                    );
+                    if (Db::name('hx_user')->where(['id' => $id])->update($res) !== false) {
+                        $this->success("修改成功！", url('user/grzx'));
+                    } else {
+                        $this->error("修改失败！");
+                    }
+                }else{
+                    $this->error("验证码错误！");
+                }
+            }
+        }
+        return $this->fetch();
+    }
+
+
+    public function editPhoto(){
+        $id = session('userid');
+        // 获取表单上传文件 
+        $file = request()->file('image');
+
+        // 移动到框架应用根目录/public/uploads/ 目录下
+        if($file){
+            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif'])->move(CMF_ROOT . 'public' . DS . 'uploads')->getInfo();
+            if($info){
+            dump($file);
+            dump($info);die;
+
+                $arr['photo'] = $info['name'];
+                $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
+
+                if(!isset($photo)){
+                    $arrData = Db::name('hx_user')->insert($arr);
+                    $this->success("新增成功！", url('user/grzx'));
+                }else{
+                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($arr);
+                    $this->success("修改成功！", url('user/grzx'));
+                }
+            }else{
+                // 上传失败获取错误信息
+                echo $file->getError();
+            }
+        }
+
+        return $this->fetch();
+        
+    }
+  
+
+
+    //常见问题
+    public function question(){
+
+        return $this->fetch();
+    }
+
+    public function set()
+    {
+        return $this->fetch();
+    }
+ 
     public function setjypw()
     {
         return $this->fetch();
     }
 
-
-
-    // 用户头像编辑
-    public function avatar()
+    public function changephone()
     {
-        $user = cmf_get_current_user();
-        $this->assign($user);
         return $this->fetch();
     }
 
-    // 用户头像上传
-    public function userUpload()
-    {
-        $file   = $this->request->file('file');
-        $result = $file->validate([
-            'ext'  => 'jpg,jpeg,png',
-            'size' => 1024 * 1024
-        ])->move('.' . DS . 'upload' . DS . 'avatar' . DS);
-
-        if ($result) {
-            $avatarSaveName = str_replace('//', '/', str_replace('\\', '/', $result->getSaveName()));
-            $avatar         = 'avatar/' . $avatarSaveName;
-            session('avatar', $avatar);
-
-            return json_encode([
-                'code' => 1,
-                "msg"  => "上传成功",
-                "data" => ['file' => $avatar],
-                "url"  => ''
-            ]);
-        } else {
-            return json_encode([
-                'code' => 0,
-                "msg"  => $file->getError(),
-                "data" => "",
-                "url"  => ''
-            ]);
-        }
-    }
-
-    // 用户头像裁剪
-    public function userUpdate()
-    {
-        $avatar = session('avatar');
-        if (!empty($avatar)) {
-            $w = $this->request->param('w', 0, 'intval');
-            $h = $this->request->param('h', 0, 'intval');
-            $x = $this->request->param('x', 0, 'intval');
-            $y = $this->request->param('y', 0, 'intval');
-
-            $avatarPath = "./upload/" . $avatar;
-
-            $avatarImg = Image::open($avatarPath);
-            $avatarImg->crop($w, $h, $x, $y)->save($avatarPath);
-
-            $result = true;
-            if ($result === true) {
-                $storage = new Storage();
-                $result  = $storage->upload($avatar, $avatarPath, 'image');
-
-                $userId = cmf_get_current_user_id();
-                Db::name("hx_user")->where(["id" => $userId])->update(["avatar" => $avatar]);
-                session('user.avatar', $avatar);
-                $this->success("头像更新成功！");
-            } else {
-                $this->error("头像保存失败！");
-            }
-
-        }
-    }
+    
 
 }
