@@ -112,6 +112,7 @@ class FriendsController extends HomeBaseController
 
     public function hy2()
     {   
+
         return $this->fetch();
     }
    
@@ -128,7 +129,7 @@ class FriendsController extends HomeBaseController
     	if($friends){
     		
     		$this->assign('data',$friends);
-    		//$this->success('查询成功',url('/huxin/friends/tjhy'));
+    		
     	}
     	else{
     		$this->success('添加失败，请重新添加',url('/huxin/friends/hy2'));
@@ -138,46 +139,50 @@ class FriendsController extends HomeBaseController
         return $this->fetch();
     }
     public  function addfriends(){
-    	//Session::get('id');
+    	
     	$se=session('userid');
     	
     	$phone=input('get.phone');
     	//dump($phone);die;
     	//$se=session('userid');
-    	
+    	$myfriend=array();
     	$mid=Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
+    	
     	$count=count($mid);
-    	//dump($mid);die;
-    	$id=Db::name('hx_user')->where('phone',$phone)->column('id');
-    	//dump($id);
+    	
+    	$id=Db::name('hx_user')->where('phone',$phone)->find();
+    	$friendname=$id['name'];
+    	$friendid=$id['id'];
+    	
+    	$t=time();
+        $now=date("Y-m-d",$t);
+
+    	
     	for($x=0;$x<$count;$x++){
-    		if($id!=$mid[$x]){
-    			echo "对方已经是您的好友！";
+    		$myfriend[]=$mid[$x];
+
     			
     			
     		}
-    	
+    		//print_r($myfriend);die;
+    	 if(in_array($friendid,$myfriend)){
+    	 	echo "你们已经是好友";
+
+    	 }
+    	 else {
+    	 	$data = ['status' => '2', 'uid' => '4','fid'=>$friendid,'uname'=>'wangerma22111','fname'=>$friendname,'create_time'=>$now];
+         Db::name('hx_friends')->insert($data);
+
+    	 }
     	}
     	
     
     	
     		
-    	}
+    
     		
     
-    	/*foreach ($mid as $value){
-    		$fid=$value['fid'];
-    		
-    	}*/
-    		/*$user=Db::name('hx_user')->where('phone',$phone)->find();
-    		$id=$user['id'];
-    		if(in_array($id,$fid)){
-    			echo "ds";
-    		}
-    		else{
-    			echo "cs";
-    		}
-*/
+    	
     	
  
     	

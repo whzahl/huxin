@@ -26,6 +26,7 @@
 </div>
 </header>
 
+<<<<<<< HEAD
     <div class="wrap-page">
         <div class="" style="width: 33%; height: 50px; float: left; background-color: blue;">
             <a href="{:url('news/newslist',array('type'=> 0))}">理财类</a>
@@ -37,6 +38,32 @@
             <a href="{:url('news/newslist',array('type'=> 2))}">专访类</a>
         </div>
     </div>
+=======
+<div class="wrap-page">
+    <div class="" style="width: 33%; height: 50px; float: left; background-color: blue;">
+        <a href="{:url('huxin/news/newslist',array('type'=> 0))}">理财类</a>
+    </div>
+    <div class="" style="width: 34%; height: 50px; float: left; background-color: red;">
+        <a href="{:url('news/newslist',array('type'=> 1))}">投资类</a>
+    </div>
+    <div class="" style="width: 33%; height: 50px; float: left; background-color: green;">
+        <a href="{:url('news/newslist',array('type'=> 2))}">专访类</a>
+    </div>
+</div>
+
+
+<div style="padding-top: 100px;">
+    <foreach name="data" item="vo">
+    <ul>
+        
+            
+        <li><a href="{:url('huxin/news/newsshow',array('type'=>{$vo.type}))}?id={$vo.id}"> {$vo.id}、{$vo.main_title}</li></a>
+
+        
+        </ul>
+    </foreach>
+</div>
+>>>>>>> 80ff833a56fff82fb71c1c1bc9fcc3b0e71244c9
 
     <div class="wrap-page" style="padding-top: 50px;">
         <foreach name="data" item="vo">
