@@ -15,7 +15,25 @@ use think\Db;
 
 class FriendsController extends HomeBaseController
 {
-	public function getFirstChar($s){     
+    /**
+     * 二维数组根据字段进行排序
+     * @params array $array 需要排序的数组
+     * @params string $field 排序的字段
+     * @params string $sort 排序顺序标志 SORT_DESC 降序；SORT_ASC 升序
+     */
+    function arraySequence($array, $field, $sort = 'SORT_DESC')
+    {
+        $arrSort = array();
+        foreach ($array as $uniqid => $row) {
+            foreach ($row as $key => $value) {
+                $arrSort[$key][$uniqid] = $value;
+            }
+        }
+        array_multisort($arrSort[$field], constant($sort), $array);
+        return $array;
+    }
+
+	public function getFirstChar($s){
 		$s0 = mb_substr($s,0,3); //获取名字的姓
 		$s = iconv('UTF-8','GB2312', $s0); //将UTF-8转换成GB2312编码
 	//   dump($s0);
@@ -69,39 +87,33 @@ class FriendsController extends HomeBaseController
 			//中英混合的词语，不适合上面的各种情况，因此直接提取首个字符即可
 		}
 	}
+
 	public function hy()
-	{header("Content-Type: text/html; charset=utf-8");
-	
-		$userName = Db::name('hx_friends')->where(array('uid'=>4))->column('fname');
-	
-	//	$userName = array('张三','马大帅','李四','王五','小二','猫蛋','狗蛋','王花','三毛','小明','李刚','张飞');
-		sort($userName);
+	{
+	    header("Content-Type: text/html; charset=utf-8");
+//		$userName = Db::name('hx_friends')->where(array('uid'=>4))->column('fname');
+//	    $friendId = Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
+        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
+        $friends = array();
+        foreach ($arrData as $key=>$value){
+            $fname = Db::name('hx_user')->field('name')->where(array('id'=>$value['fid']))->find();
+            $value['fname'] = $fname['name'];
+            $friends[] = $value;
+        }
+
+//        dump($friends);die();
 		$nameArray = array();
 		$charArray  = array();
-		foreach($userName as $k=>$name){
-			$char = $this->getFirstChar($name);
-			
-			//$count=count($charArray);
-			
-			/*if(count($charArray)!=0){
-				$nameArray = $charArray[$char];
-			}*/
-			
-		array_push($nameArray,$name);
-		
-			
-		//	array_values($nameArray);
-			$charArray[$char] = $nameArray;
-			
-			
-		//	dump($nameArray);die;
-			
-			
-			//$this->assign('vo',$charArray);
+		foreach($friends as $key=>$value){
+            $char = $this->getFirstChar($value['fname']);
+            $nameArray = array($value);
+            array_push($nameArray,"abc");
+//            $charArray[$char] = $nameArray;
 		}
 		
 		//dump($nameArray);die;
 		ksort($charArray);
+        dump($charArray);die();
 		$this->assign('list',$charArray);
 		return $this->fetch();
 	}
