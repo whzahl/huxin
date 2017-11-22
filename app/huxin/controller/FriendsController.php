@@ -80,23 +80,13 @@ class FriendsController extends HomeBaseController
 		$nameArray = array();
 		$charArray  = array();
 
-		  foreach($userName as $k=>$name){
+		foreach($userName as $k=>$name){
 			$char = $this->getFirstChar($name);
-			
-			
-		         array_push($nameArray,$userName);
-		
-			
-		
+		    array_push($nameArray,$userName);
 			$charArray[$char] = $nameArray;
-			
-			
-		
 		}
-		
 		//dump($nameArray);die;
 		ksort($charArray);
-
 		$this->assign('list',$charArray);
 		return $this->fetch();
 	}
@@ -111,27 +101,27 @@ class FriendsController extends HomeBaseController
     }
    
 
+
     public function tjhy()
     {   header("Content-Type: text/html; charset=utf-8");
      
-    //	$phone=$_POST['phone'];
         $phone= input('post.phone');
     	
     	$friends=Db::name('hx_user')->where('phone',$phone)->find();
     	//dump($friends);die;
     	
     	if($friends){
-    		
-    		$this->assign('data',$friends);
-    		
+    		$this->assign('data',$friends);	
     	}
     	else{
     		$this->success('添加失败，请重新添加',url('/huxin/friends/hy2'));
     	}
-    	
-    	
+
         return $this->fetch();
     }
+
+
+
     public  function addfriends(){
     	
     	$se=session('userid');
@@ -151,12 +141,8 @@ class FriendsController extends HomeBaseController
     	$t=time();
         $now=date("Y-m-d",$t);
 
-    	
     	for($x=0;$x<$count;$x++){
-    		$myfriend[]=$mid[$x];
-
-    			
-    			
+    		$myfriend[]=$mid[$x];	
     		}
     		//print_r($myfriend);die;
     	 if(in_array($friendid,$myfriend)){
@@ -171,15 +157,7 @@ class FriendsController extends HomeBaseController
     	}
     	
     
-    	
-    		
-    
-    		
-    
-    	
-    	
- 
-    	
+	
   
     public function agreefriend(){
     
@@ -192,8 +170,16 @@ class FriendsController extends HomeBaseController
     public function request(){
     	return $this->fetch();
     }
-    public function xy()
-    {
+
+
+    public function xy(){
+    	$id = session('userid');
+    	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
+    	// $data['name'] = Db::name('hx_user')->where(['id'=>$id])->find();
+    	
+
+    	$this->assign('data',$data);
+
         return $this->fetch();
     }
 
