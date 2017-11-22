@@ -63,22 +63,17 @@
     <div class="list-container">
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
     	<foreach name="list" item="vo" key="k">
-    
-		<ul class="list">
-		
-			<li class="item item-header">{$k}</li>
-			 <foreach name="vo" item="l"> 	
-			<li class="item item-linked"><a href="#">
-				
-			<h3 class="item-title">{$l}</h3></a>
-			</li>
-		
-            
-           </foreach> 
-           
-		</ul>
-	
-		 </foreach>
+		    <ul class="list">
+			    <li class="item item-header">{$k}</li>
+                <foreach name="vo" item="l">
+			        <li class="item item-linked">
+                        <a href="#">
+                            <h3 class="item-title">{$l}</h3>
+                        </a>
+			        </li>
+                </foreach>
+		    </ul>
+        </foreach>
 </div> 
 <include file="huxin@footer"/>
 </body>
