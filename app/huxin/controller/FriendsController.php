@@ -70,34 +70,28 @@ class FriendsController extends HomeBaseController
 		}
 	}
 	public function hy()
-	{header("Content-Type: text/html; charset=utf-8");
+	{
+		header("Content-Type: text/html; charset=utf-8");
 	
 		$userName = Db::name('hx_friends')->where(array('uid'=>4))->column('fname');
-	
+	    $count=count($userName);
 	//	$userName = array('张三','马大帅','李四','王五','小二','猫蛋','狗蛋','王花','三毛','小明','李刚','张飞');
 		sort($userName);
 		$nameArray = array();
 		$charArray  = array();
-		foreach($userName as $k=>$name){
+
+		  foreach($userName as $k=>$name){
 			$char = $this->getFirstChar($name);
 			
-			//$count=count($charArray);
 			
-			/*if(count($charArray)!=0){
-				$nameArray = $charArray[$char];
-			}*/
-			
-		array_push($nameArray,$name);
+		         array_push($nameArray,$userName);
 		
 			
-		//	array_values($nameArray);
+		
 			$charArray[$char] = $nameArray;
 			
 			
-		//	dump($nameArray);die;
-			
-			
-			//$this->assign('vo',$charArray);
+		
 		}
 		
 		//dump($nameArray);die;
