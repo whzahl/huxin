@@ -20,20 +20,15 @@
 </head>
 
 <body>
-<foreach name="data" item="vo">
-<div class="wrap-page wrap-page-noheaderfooter">
-<div class="wrap-page-flex">
-<div class="wrap-page-single">
+    <div class="wrap-page wrap-page-noheaderfooter">
+        <div class="wrap-page-flex">
+            <div class="wrap-page-single">
+                <h2 style="font-weight:bold; font-size:16px;">{$data.main_title}</h2>
+                <p style="color:#999;">{$data.create_time|date = ("Y-m-d H:i:s"),###} <a href="index.html">互信网</a></p>
+                <p>{$data.content|htmlspecialchars_decode}</p>
+            </div>
+        </div>
+    </div>
 
-<h2 style="font-weight:bold; font-size:16px;">{$vo.main_title}</h2>
-<p style="color:#999;">2017-11-10 <a href="index.html">互信网</a></p>
-<p>
-{$vo.content}
-</p>
-
-</div>
-</div>
-</div>
-</foreach>
 </body>
 </html>

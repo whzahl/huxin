@@ -25,7 +25,9 @@ class NewsController extends HomeBaseController
     {   header("Content-Type: text/html; charset=utf-8");
 
         $id = $this->request->param("id", 0, 'intval');
+
     	$data = Db::name('hx_news')->where(["id" => $id])->find();
+
     	$this->assign('data',$data);
         return $this->fetch();
     }
@@ -33,9 +35,7 @@ class NewsController extends HomeBaseController
     {   
     	header("Content-Type: text/html; charset=utf-8");
     	$data = Db::name('hx_news')->select();
-    	//duma($list['title']);die;
-    	//$data=['title'=>$list['title'],'content'=>$list['content']];
-        // dump($data);
+
     	$this->assign('data',$data);
     	return $this->fetch();
     }
