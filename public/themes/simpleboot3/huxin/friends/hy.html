@@ -62,17 +62,28 @@
 	</div>
     <div class="list-container">
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
-    	<foreach name="list" item="vo" key="k">
-		    <ul class="list">
-			    <li class="item item-header">{$k}</li>
-                <foreach name="vo" item="l">
-			        <li class="item item-linked">
-                        <a href="#">
-                            <h3 class="item-title">{$l.fname}</h3>
-                        </a>
-			        </li>
-                </foreach>
-		    </ul>
+        <foreach name="list" item="vo" key="k">
+            <ul class="list">
+                <switch name="vo.char" >
+                    <case value="L" break="0或1">
+                        <li class="item item-header">L</li>
+                        <li class="item item-linked">
+                            <a href="#">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </case>
+                    <case value="Z" break="0或1">
+                        <li class="item item-header">z</li>
+                        <li class="item item-linked">
+                            <a href="#">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </case>
+                    <default />
+                </switch>
+            </ul>
         </foreach>
 </div> 
 <include file="huxin@footer"/>

@@ -97,24 +97,29 @@ class FriendsController extends HomeBaseController
         $friends = array();
         foreach ($arrData as $key=>$value){
             $fname = Db::name('hx_user')->field('name')->where(array('id'=>$value['fid']))->find();
+
             $value['fname'] = $fname['name'];
+            $value['char'] = $this->getFirstChar($value['fname']);
             $friends[] = $value;
+
         }
 
 //        dump($friends);die();
-		$nameArray = array();
-		$charArray  = array();
-		foreach($friends as $key=>$value){
-            $char = $this->getFirstChar($value['fname']);
-            $nameArray = array($value);
-            array_push($nameArray,"abc");
+//		$nameArray = array();
+//		$charArray  = array();
+//		foreach($friends as $key=>$value){
+//            $char = $this->getFirstChar($value['fname']);
+//            $nameArray = array($value);
+////            array_push($nameArray,"abc");
 //            $charArray[$char] = $nameArray;
-		}
+//		}
 		
 		//dump($nameArray);die;
-		ksort($charArray);
-        dump($charArray);die();
-		$this->assign('list',$charArray);
+//		ksort($charArray);
+//        dump($charArray);die();
+        $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
+//        dump($friends);die();
+		$this->assign('list',$friends);
 		return $this->fetch();
 	}
 	
@@ -187,17 +192,8 @@ class FriendsController extends HomeBaseController
     	 }
     	}
     	
-    
-    	
-    		
-    
-    		
-    
-    	
-    	
- 
-    	
-  
+
+
     public function agreefriend(){
     
     }

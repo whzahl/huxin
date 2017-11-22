@@ -155,19 +155,22 @@ class UserController extends HomeBaseController
 
         // 移动到框架应用根目录/public/uploads/ 目录下
         if($file){
-            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif'])->move(CMF_ROOT . 'public' . DS . 'uploads')->getInfo();
+            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
             if($info){
-            dump($file);
-            dump($info);die;
 
-                $arr['photo'] = $info['name'];
+                
+                $arr['photo'] = '/uploads/' . $info->getSaveName();
+                
                 $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
+                $res = array(
+                        'photo'  => $arr['photo'],
+                    );
 
                 if(!isset($photo)){
-                    $arrData = Db::name('hx_user')->insert($arr);
+                    $arrData = Db::name('hx_user')->insert($res);
                     $this->success("新增成功！", url('user/grzx'));
                 }else{
-                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($arr);
+                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($res);
                     $this->success("修改成功！", url('user/grzx'));
                 }
             }else{
