@@ -102,7 +102,6 @@ class FriendsController extends HomeBaseController
 		
 		//dump($nameArray);die;
 		ksort($charArray);
-	//dump($charArray);die;
 		$this->assign('list',$charArray);
 		return $this->fetch();
 	}
