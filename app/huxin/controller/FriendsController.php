@@ -91,8 +91,6 @@ class FriendsController extends HomeBaseController
 	public function hy()
 	{
 	    header("Content-Type: text/html; charset=utf-8");
-//		$userName = Db::name('hx_friends')->where(array('uid'=>4))->column('fname');
-//	    $friendId = Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
         $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
         $friends = array();
         foreach ($arrData as $key=>$value){
@@ -103,22 +101,7 @@ class FriendsController extends HomeBaseController
             $friends[] = $value;
 
         }
-
-//        dump($friends);die();
-//		$nameArray = array();
-//		$charArray  = array();
-//		foreach($friends as $key=>$value){
-//            $char = $this->getFirstChar($value['fname']);
-//            $nameArray = array($value);
-////            array_push($nameArray,"abc");
-//            $charArray[$char] = $nameArray;
-//		}
-		
-		//dump($nameArray);die;
-//		ksort($charArray);
-//        dump($charArray);die();
         $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
-//        dump($friends);die();
 		$this->assign('list',$friends);
 		return $this->fetch();
 	}
@@ -133,27 +116,27 @@ class FriendsController extends HomeBaseController
     }
    
 
+
     public function tjhy()
     {   header("Content-Type: text/html; charset=utf-8");
      
-    //	$phone=$_POST['phone'];
         $phone= input('post.phone');
     	
     	$friends=Db::name('hx_user')->where('phone',$phone)->find();
     	//dump($friends);die;
     	
     	if($friends){
-    		
-    		$this->assign('data',$friends);
-    		
+    		$this->assign('data',$friends);	
     	}
     	else{
     		$this->success('添加失败，请重新添加',url('/huxin/friends/hy2'));
     	}
-    	
-    	
+
         return $this->fetch();
     }
+
+
+
     public  function addfriends(){
     	
     	$se=session('userid');
@@ -173,12 +156,8 @@ class FriendsController extends HomeBaseController
     	$t=time();
         $now=date("Y-m-d",$t);
 
-    	
     	for($x=0;$x<$count;$x++){
-    		$myfriend[]=$mid[$x];
-
-    			
-    			
+    		$myfriend[]=$mid[$x];	
     		}
     		//print_r($myfriend);die;
     	 if(in_array($friendid,$myfriend)){
@@ -192,8 +171,14 @@ class FriendsController extends HomeBaseController
     	 }
     	}
     	
-
-
+//<<<<<<< HEAD
+//
+//
+//=======
+//
+//
+//
+//>>>>>>> 347d33c1b0623d65f3b3bb9a33e50f5dca81d98c
     public function agreefriend(){
     
     }
@@ -205,8 +190,16 @@ class FriendsController extends HomeBaseController
     public function request(){
     	return $this->fetch();
     }
-    public function xy()
-    {
+
+
+    public function xy(){
+    	$id = session('userid');
+    	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
+    	// $data['name'] = Db::name('hx_user')->where(['id'=>$id])->find();
+    	
+
+    	$this->assign('data',$data);
+
         return $this->fetch();
     }
 

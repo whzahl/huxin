@@ -14,13 +14,6 @@ use cmf\controller\HomeBaseController;
 use think\Db;
 use think\File;
 
-// use cmf\lib\Storage;
-// use think\Validate;
-// use think\Image;
-// use cmf\controller\UserBaseController;
-// use app\user\model\UserModel;
-
-
 class UserController extends HomeBaseController
 {
 
@@ -44,11 +37,23 @@ class UserController extends HomeBaseController
     public function grzx()
     {
         $id = session('userid');
+
         $data = Db::name('hx_user')->where(array('id' => $id))->find();
-        $photo = $data['photo'];
-        $name = $data['name'];
-        $this->assign('photo',$photo);
-        $this->assign('name',$name);
+        // $photo = $data['photo'];
+        // $name = $data['name'];
+        // $this->assign('photo',$photo);
+        $data['id'] = $id;
+        $this->assign('data',$data);
+
+        //借出金额
+        $lend_price = Db::name('hx_order')->where(array('fid' => $id))->find();
+        $lend = $lend_price['price'];
+        $this->assign('lend',$lend);
+        //借入金额
+        $borrow_price = Db::name('hx_order')->where(array('uid' => $id))->find();
+        $borrow = $borrow_price['price'];
+        $this->assign('borrow',$borrow);
+
         return $this->fetch();
     }
 
@@ -117,6 +122,7 @@ class UserController extends HomeBaseController
             $data = $this->request->param();
 
             $phone = Db::name('hx_user')->field('phone')->select()->toArray();
+
             foreach ($phone as $key => $value) {
                 // dump($value['phone']);
             }
@@ -157,8 +163,7 @@ class UserController extends HomeBaseController
         if($file){
             $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
             if($info){
-
-                
+  
                 $arr['photo'] = '/uploads/' . $info->getSaveName();
                 
                 $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
@@ -192,16 +197,6 @@ class UserController extends HomeBaseController
     }
 
     public function set()
-    {
-        return $this->fetch();
-    }
- 
-    public function setjypw()
-    {
-        return $this->fetch();
-    }
-
-    public function changephone()
     {
         return $this->fetch();
     }
