@@ -23,13 +23,19 @@
 <div class="wrap-page wrap-page-noheader wrap-page-nofooter bg-white">
 <div class="login-tx">
     <a href="/huxin/user/set">
-        <img src="__ROOT__/.{$photo}" class="tx"><p>{$name}</p>
+        <img src="__ROOT__/.{$data.photo}" class="tx"><p>{$data.name}</p>
     </a>
 </div>
 <div class="login-dlzc">
 	<ul>
-    	<li>99.00<br>借出（元）</li>
-        <li>99.00<br>借入（元）</li>
+    	<a href="{:url('friends/xy',array('id'=>$data['id']))}"><li>
+            <if condition="$lend eq 0">0<br>借出（元）</if>
+            <if condition="$lend neq 0">{$lend}<br>借出（元）</if>
+        </li></a>
+        <a href="{:url('friends/xy',array('id'=>$data['id']))}"><li>
+            <if condition="$borrow eq 0">0<br>借入（元）</if>
+            <if condition="$borrow neq 0">{$borrow}<br>借入（元）</if>
+        </li></a>
     </ul>
 </div>
 <!-- <div class="list-container">

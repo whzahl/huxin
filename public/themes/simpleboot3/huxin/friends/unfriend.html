@@ -11,7 +11,8 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-	<title>修改手机号_互信网</title>
+	<title>添加好友_互信网</title>
+    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
@@ -20,20 +21,18 @@
 </head>
 
 <body>
-<div class="wrap-page wrap-page-noheaderfooter">
-<div class="list-container">
-	<ul class="list">
-	<li class="item">修改手机号码</li>
-	<li class="item item-input">
-	<div class="item-main">
-	<label class="field-container"><span class="field-label">新手机号码</span>
-	<input type="text" label="username" icon="person" placeholder="新手机号码" class="field">
-	</label>
-	</div>
-	</li>
-    <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
-</ul>
-</div>
-</div>
+  <div>
+    <div class="left">
+      <foreach name="data" item="vo">
+        <ul>
+          <li>{$vo.uname}</li>
+          <li>请求加你为好友</li>
+          <li class="item item-noline"> <a href="{:url('friends/agreefriend')}?id={$vo.uid}" class="btn btn-block btn-green">同意</a></li>
+        </ul>
+      </foreach>
+    </div>
+  
+  </div>
+<include file="huxin@footer"/>
 </body>
 </html>

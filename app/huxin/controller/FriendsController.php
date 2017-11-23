@@ -12,10 +12,28 @@ namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
 use think\Db;
-
+use think\Request;
 class FriendsController extends HomeBaseController
 {
-	public function getFirstChar($s){     
+    /**
+     * 二维数组根据字段进行排序
+     * @params array $array 需要排序的数组
+     * @params string $field 排序的字段
+     * @params string $sort 排序顺序标志 SORT_DESC 降序；SORT_ASC 升序
+     */
+    function arraySequence($array, $field, $sort = 'SORT_DESC')
+    {
+        $arrSort = array();
+        foreach ($array as $uniqid => $row) {
+            foreach ($row as $key => $value) {
+                $arrSort[$key][$uniqid] = $value;
+            }
+        }
+        array_multisort($arrSort[$field], constant($sort), $array);
+        return $array;
+    }
+
+	public function getFirstChar($s){
 		$s0 = mb_substr($s,0,3); //获取名字的姓
 		$s = iconv('UTF-8','GB2312', $s0); //将UTF-8转换成GB2312编码
 	//   dump($s0);
@@ -66,16 +84,17 @@ class FriendsController extends HomeBaseController
 		else
 		{
 			return iconv_substr($s0,0,1,'utf-8');
-			//中英混合的词语，不适合上面的各种情况，因此直接提取首个字符即可
+			/
 		}
 	}
+
 	public function hy()
 	{
-		header("Content-Type: text/html; charset=utf-8");
+       header("Content-Type: text/html; charset=utf-8");
 	
 		$userName = Db::name('hx_friends')->where(array('uid'=>4))->column('fname');
 	    $count=count($userName);
-	//	$userName = array('张三','马大帅','李四','王五','小二','猫蛋','狗蛋','王花','三毛','小明','李刚','张飞');
+	
 		sort($userName);
 	
 		$charArray  = array();
@@ -83,26 +102,41 @@ class FriendsController extends HomeBaseController
 
 		  foreach($userName as $k=>$name){
 			$char = $this->getFirstChar($name);
-			dump($char);die;
+			//dump($char);die;
 			
 		         array_push($nameArray,$char);
 		
 		    $charArray[$char] = $nameArray;
-		         
-			
-			
-		
+		  
 		}
 		
-		//dump($nameArray);die;
 		ksort($charArray);
 
 		$this->assign('list',$charArray);
+
+	    header("Content-Type: text/html; charset=utf-8");
+        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
+        $friends = array();
+        foreach ($arrData as $key=>$value){
+            $fname = Db::name('hx_user')->field('name')->where(array('id'=>$value['fid']))->find();
+
+            $value['fname'] = $fname['name'];
+            $value['char'] = $this->getFirstChar($value['fname']);
+            $friends[] = $value;
+
+        }
+        $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
+		$this->assign('list',$friends);
+
 		return $this->fetch();
 	}
 	
- 
-
+    public function get_ajax_friend(){
+    	$name=input('post.keywords');
+    	$map = array('like','%'.$name.'%');
+    	$f_name = Db::name('hx_friends')->where('fname','like',$map)->order('id desc')->field('fname')->select();
+    	
+    }
 
     public function hy2()
     {   
@@ -110,94 +144,99 @@ class FriendsController extends HomeBaseController
         return $this->fetch();
     }
    
-
     public function tjhy()
     {   header("Content-Type: text/html; charset=utf-8");
      
-    //	$phone=$_POST['phone'];
         $phone= input('post.phone');
-    	
-    	$friends=Db::name('hx_user')->where('phone',$phone)->find();
-    	//dump($friends);die;
-    	
-    	if($friends){
-    		
-    		$this->assign('data',$friends);
-    		
-    	}
-    	else{
-    		$this->success('添加失败，请重新添加',url('/huxin/friends/hy2'));
-    	}
-    	
-    	
-        return $this->fetch();
-    }
-    public  function addfriends(){
-    	
-    	$se=session('userid');
-    	
-    	$phone=input('get.phone');
-    	
+        session('phone',$phone);
     	$myfriend=array();
+
+    	$friends=Db::name('hx_user')->where('phone',$phone)->find();
+    	$friendname=$friends['name'];
+    	$friendid=$friends['id'];
+
     	$mid=Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
-    	
-    	$count=count($mid);
-    	
-    	$id=Db::name('hx_user')->where('phone',$phone)->find();
-    	$friendname=$id['name'];
-    	$friendid=$id['id'];
-    	
-    	$t=time();
-        $now=date("Y-m-d",$t);
-
-    	
-    	for($x=0;$x<$count;$x++){
-    		$myfriend[]=$mid[$x];
-
-    			
-    			
+    		$count=count($mid);
+    		for($x=0;$x<$count;$x++){
+    		$myfriend[]=$mid[$x];	
     		}
     		//print_r($myfriend);die;
     	 if(in_array($friendid,$myfriend)){
-    	 	echo "你们已经是好友";
-
-    	 }
-    	 else {
-    	 	$data = ['status' => '2', 'uid' => '4','fid'=>$friendid,'uname'=>'wangerma22111','fname'=>$friendname,'create_time'=>$now];
-    	 $this->assign('vo',$data);
-          $newfriend= Db::name('hx_friends')->insert($data);
-          
-
+    	 	$this->assign('data',$friends);	
+    	 
     	 }
     	
-    	  return $this->fetch();
+    	else{
+
+    		$this->success('sa',url("huxin/friends/mynewfriend",array('phone'=>$phone)) );
     	}
-    	
-    
-  
-    public function agreefriend(){
 
-    
-    }
-     
-    public function deletfriend(){
-    
-    }
-     
-    public function request(){
-    	return $this->fetch();
-    }
-    public function xy()
-    {
         return $this->fetch();
     }
 
+     public  function mynewfriend(){
+       $phone=Request::instance()->param('phone');
+       
+        $friends=Db::name('hx_user')->where('phone', $phone)->find();
+        $this->assign('data',$friends);	
+
+     	return $this->fetch();
+     }
+
+    public  function addfriends(){
+    	header("Content-Type: text/html; charset=utf-8");
+    	$phone=input('get.phone');
+    	//dump($phone);die;
+    	$name=Db::name('hx_user')->where(array('id'=>4))->find();
+    	$me=$name['name'];
+    	$newfriend=Db::name('hx_user')->where('phone',$phone)->find();
+    	$newfriendname=$newfriend['name'];
+    	$newfriendid=$newfriend['id'];
+    	$now=date("Y-m-d");
+    	$user = ['uid'=>4,'fid'=>$newfriendid,'fname'=>$newfriendname,'uname'=>$me,'status'=>2,
+    	          'create_time'=>$now];
+   
+    	$res=Db::name('hx_friends')->where(array('uid'=>4))->insert($user);
+     
+    	}
+    	
+    public function unfriend(){
+    	$unread=Db::name('hx_friends')->where(array('fid'=>5,'status'=>2))->select();
+    	$this->assign('data',$unread);
+
+    	return $this->fetch();
+    }
+  
+    public function agreefriend(){
+       $id=input('get.id');
+       $name=Db::name('hx_user')->where(array('id'=>$id))->find();
+       $fname=$name['name'];
+      $me= Db::name('hx_user')->where(array('id'=>5))->find();
+      $uname=$me['name'];
+       $t=date("Y-m-d");
+       Db::name('hx_friends')->where(array('fid'=>5,'uid'=>$id))->update(['status' => 1,'create_time'=>$t]);
+       $user=['uid'=>5,'uname'=>$uname,'fid'=>$id,'fname'=>$fname,'status'=>1,'create_time'=>$t];
+       Db::name('hx_friends')->where(array('uid'=>5))->insert($user);
+    
+    }
+    
+    public function request(){
+    	return $this->fetch();
+    }
+
+    public function xy(){
+    	$id = session('userid');
+    	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
+    	
+    	$this->assign('data',$data);
+
+        return $this->fetch();
+    }
 
     public function xy2()
     {
         return $this->fetch();
     }
-
 
     public function xycx()
     {

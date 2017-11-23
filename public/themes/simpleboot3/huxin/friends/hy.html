@@ -54,25 +54,70 @@
 </div>
     <div class="recoverself">
    <div class="search_box">
+      <form action="/huxin/friends/get_ajax_friend" method="post">
         	<span class="search_input">
-			<input class="hilight1" id="" name="keywords" value="" placeholder="搜索联系人" type="text">
+			<input class="hilight1" id="search_input" name="keywords" value="" placeholder="搜索联系人" type="text">
 			</span>
 			<input value="" class="icon_search" type="submit">
+            </form>
 		</div>
+        <div id="searchFrame" display: none"></div>  
 	</div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script>
+     $(document).ready(function() {
+        var xhr = null;
+       $(#search_input).bind('keyup',function(){
+         var inputText = $(#search_input).val();
+          if (inputText != "") { 
+             xhr = $.ajax({
+                  type: 'GET',
+                    url: '{:url('huxin/Frineds/get_ajax_friend')}',
+                    cache: false,
+                    //不从浏览器缓存中加载请求信息  
+                    data: "keyword=" + inputText,
+                    //向服务器端发送的数据  
+                    dataType: 'json',
+                     success: function(json) {
+                        if (json.length != 0) { 
+                            var lists = "<ul>";
+                            $.each(json,
+                            function() {
+                                lists += "<li>" + this.fname + "</li>"; //遍历出每一条返回的数据  
+                            });
+                            lists += "</ul>";
+                            $("#searchFrame").html(lists).show();
+
+                        }//}
+                 })   
+             })
+     
+              
+    </script>
     <div class="list-container">
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
-    	<foreach name="list" item="vo" key="k">
-		    <ul class="list">
-			    <li class="item item-header">{$k}</li>
-                <foreach name="vo" item="l">
-			        <li class="item item-linked">
-                        <a href="#">
-                            <h3 class="item-title">{$l}</h3>
-                        </a>
-			        </li>
-                </foreach>
-		    </ul>
+        <foreach name="list" item="vo" key="k">
+            <ul class="list">
+                <switch name="vo.char" >
+                    <case value="L" break="0或1">
+                        <li class="item item-header">L</li>
+                        <li class="item item-linked">
+                            <a href="#">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </case>
+                    <case value="Z" break="0或1">
+                        <li class="item item-header">z</li>
+                        <li class="item item-linked">
+                            <a href="#">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </case>
+                    <default />
+                </switch>
+            </ul>
         </foreach>
 </div> 
 <include file="huxin@footer"/>
