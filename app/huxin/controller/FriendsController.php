@@ -77,18 +77,18 @@ class FriendsController extends HomeBaseController
 	    $count=count($userName);
 	//	$userName = array('张三','马大帅','李四','王五','小二','猫蛋','狗蛋','王花','三毛','小明','李刚','张飞');
 		sort($userName);
-		$nameArray = array();
+	
 		$charArray  = array();
+        $nameArray = array();
 
 		  foreach($userName as $k=>$name){
 			$char = $this->getFirstChar($name);
+			dump($char);die;
 			
-			
-		         array_push($nameArray,$userName);
+		         array_push($nameArray,$char);
 		
-			
-		
-			$charArray[$char] = $nameArray;
+		    $charArray[$char] = $nameArray;
+		         
 			
 			
 		
@@ -137,8 +137,7 @@ class FriendsController extends HomeBaseController
     	$se=session('userid');
     	
     	$phone=input('get.phone');
-    	//dump($phone);die;
-    	//$se=session('userid');
+    	
     	$myfriend=array();
     	$mid=Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
     	
@@ -165,23 +164,19 @@ class FriendsController extends HomeBaseController
     	 }
     	 else {
     	 	$data = ['status' => '2', 'uid' => '4','fid'=>$friendid,'uname'=>'wangerma22111','fname'=>$friendname,'create_time'=>$now];
-         Db::name('hx_friends')->insert($data);
+    	 $this->assign('vo',$data);
+          $newfriend= Db::name('hx_friends')->insert($data);
+          
 
     	 }
+    	
+    	  return $this->fetch();
     	}
     	
     
-    	
-    		
-    
-    		
-    
-    	
-    	
- 
-    	
   
     public function agreefriend(){
+
     
     }
      
