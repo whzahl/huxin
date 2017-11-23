@@ -38,6 +38,10 @@ class UserController extends HomeBaseController
     {
         $id = session('userid');
 
+        if(!isset($id)){
+            $this->error('账号未登录，请登录！', url('login/login'));
+        }
+
         $data = Db::name('hx_user')->where(array('id' => $id))->find();
         // $photo = $data['photo'];
         // $name = $data['name'];
@@ -46,12 +50,10 @@ class UserController extends HomeBaseController
         $this->assign('data',$data);
 
         //借出金额
-        $lend_price = Db::name('hx_order')->where(array('fid' => $id))->find();
-        $lend = $lend_price['price'];
+        $lend = Db::name('hx_order')->where(array('fid' => $id))->sum('price');
         $this->assign('lend',$lend);
         //借入金额
-        $borrow_price = Db::name('hx_order')->where(array('uid' => $id))->find();
-        $borrow = $borrow_price['price'];
+        $borrow = Db::name('hx_order')->where(array('uid' => $id))->sum('price');
         $this->assign('borrow',$borrow);
 
         return $this->fetch();
@@ -156,6 +158,9 @@ class UserController extends HomeBaseController
 
     public function editPhoto(){
         $id = session('userid');
+        $photo = Db::name('hx_user')->where(array('id'=>$id))->field('photo')->find();
+        $this->assign('photo',$photo);
+
         // 获取表单上传文件 
         $file = request()->file('image');
 
@@ -201,6 +206,11 @@ class UserController extends HomeBaseController
         return $this->fetch();
     }
 
+
+    public function loginout(){
+        session('userid',null);
+        $this->success('退出成功！',url('login/login'));
+    }
     
 
 }

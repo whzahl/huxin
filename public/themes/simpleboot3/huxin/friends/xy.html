@@ -40,9 +40,16 @@
   <foreach name="data" item="vo">
     <tr>
       <td>{$vo.id}</th>
+      <td>{$vo.price}</th>
       <td>{$vo.start_time}</th>
       <td>{$vo.end_time}</th>
-      <td>{$vo.status}</th>
+      <td>
+        <if condition="$vo.status eq 0">未同意</if>
+        <if condition="$vo.status eq 1">已同意</if>
+        <if condition="$vo.status eq 2">还款中</if>
+        <if condition="$vo.status eq 3">已还款</if>
+        <if condition="$vo.status eq 4">已逾期</if>
+      </th>
     </tr>
   </foreach>
   

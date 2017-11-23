@@ -20,29 +20,38 @@
 </head>
 
 <body>
-<header class="header">
+<!-- <header class="header">
 	<div class="top-container"><span class="left"></span>信用查询<span class="right"><a href="#">&nbsp;</a></span></div>
+</div>
+</header> -->
+<header class="header">
+<div>
+  <div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>信用查询<span class="right"></span>
+    </div>
 </div>
 </header>
 <div class="wrap-page wrap-page-nofooter">
 <div class="list-container">
-<ul class="list">
-	<li class="item item-input">
-	<div class="item-main">
-	<label class="field-container"><span class="field-label">姓名</span>
-	<input type="password" label="username" icon="person" placeholder="姓名" class="field">
-	</label>
-	</div>
-	</li>
-    <li class="item item-input">
-	<div class="item-main">
-	<label class="field-container"><span class="field-label">身份证号码</span>
-	<input type="password" label="username" icon="person" placeholder="身份证号码" class="field">
-	</label>
-	</div>
-	</li>
-    
-</ul>
+<form method="post" action="{:url('friends/xycx')}">
+	<ul class="list">
+		<li class="item item-input">
+		<div class="item-main">
+		<label class="field-container"><span class="field-label">姓名</span>
+		<input type="text" name="name" label="username" icon="person" placeholder="姓名" class="field">
+		</label>
+		</div>
+		</li>
+	    <li class="item item-input">
+		<div class="item-main">
+		<label class="field-container"><span class="field-label">身份证号码</span>
+		<input type="password" name="idcard" label="username" icon="person" placeholder="身份证号码" class="field">
+		</label>
+		</div>
+		</li>
+		<li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
+	</ul>
+</form>
 </div>
 </div>
 </body>

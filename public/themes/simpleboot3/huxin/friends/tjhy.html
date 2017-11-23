@@ -30,7 +30,13 @@
 	<ul class="grlist">
              <li>
              <a href="#">
-                <div class="pic_box"><img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"></div>
+                <div class="pic_box">
+                    <if condition="$data.photo eq 0">
+                        <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx">
+                    <else />
+                        <img src="__ROOT__/.{$data.photo}" class="tx">
+                    </if>
+                </div>
                 <div class="pd_info">
                    <div class="pd_title">{$data.name}</div>
                    <div class="pd_t">{$data.phone}</div>

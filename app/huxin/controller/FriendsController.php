@@ -123,11 +123,14 @@ class FriendsController extends HomeBaseController
             $value['fname'] = $fname['name'];
             $value['char'] = $this->getFirstChar($value['fname']);
             $friends[] = $value;
-
         }
         $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
 		$this->assign('list',$friends);
 
+
+
+		$this->assign('letter',range('A','Z'));
+ 
 		return $this->fetch();
 	}
 	
@@ -152,6 +155,7 @@ class FriendsController extends HomeBaseController
     	$myfriend=array();
 
     	$friends=Db::name('hx_user')->where('phone',$phone)->find();
+
     	$friendname=$friends['name'];
     	$friendid=$friends['id'];
 
@@ -165,6 +169,9 @@ class FriendsController extends HomeBaseController
     	 	$this->assign('data',$friends);	
     	 
     	 }
+
+    	// dump($friends);die;
+
     	
     	else{
 
@@ -199,6 +206,7 @@ class FriendsController extends HomeBaseController
     	$res=Db::name('hx_friends')->where(array('uid'=>4))->insert($user);
      
     	}
+
     	
     public function unfriend(){
     	$unread=Db::name('hx_friends')->where(array('fid'=>5,'status'=>2))->select();
@@ -227,6 +235,14 @@ class FriendsController extends HomeBaseController
     public function xy(){
     	$id = session('userid');
     	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
+
+ 
+        foreach ($data as $key => $value) {
+            // dump ($value);
+            $name = Db::name('hx_user')->where(['id'=>$value['uid']])->find();
+            
+        }
+
     	
     	$this->assign('data',$data);
 
@@ -238,8 +254,20 @@ class FriendsController extends HomeBaseController
         return $this->fetch();
     }
 
-    public function xycx()
-    {
+    public function xycx(){
+
+        if($this->request->isPost()){
+            $data = $this->request->param();
+
+            $arr = Db::name('hx_user')->where(array('name'=>$data['name'],'idcard'=>$data['idcard']))->find();
+            if($arr){
+                $this->success("查询成功~", url('friends/xy'));
+            }else{
+                $this->error("查无此人，请注意输入姓名与身份证号码是否匹配！");
+            }
+
+        }
+
         return $this->fetch();
     }
 }
