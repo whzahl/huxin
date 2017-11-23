@@ -13,7 +13,7 @@ namespace app\huxin\controller;
 use cmf\controller\HomeBaseController;
 use think\Db;
 
-class OrderController extends HomeBaseController
+class OrderController extends CheckController
 {
 
 
@@ -171,6 +171,12 @@ class OrderController extends HomeBaseController
 
 
     public function xz()
+    {
+        return $this->fetch();
+    }
+
+
+    public function shk()
     {
         return $this->fetch();
     }

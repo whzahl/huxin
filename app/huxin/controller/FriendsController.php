@@ -11,9 +11,10 @@
 namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
+
 use think\Db;
 
-class FriendsController extends HomeBaseController
+class FriendsController extends CheckController
 {
     /**
      * 二维数组根据字段进行排序
@@ -187,15 +188,17 @@ class FriendsController extends HomeBaseController
     public function xy(){
     	$id = session('userid');
     	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
- 
+        
+        $arrName = array();
         foreach ($data as $key => $value) {
-            // dump ($value);
+            
             $name = Db::name('hx_user')->where(['id'=>$value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
             
         }
-    	
-    	$this->assign('data',$data);
 
+    	$this->assign('arrName',$arrName);
         return $this->fetch();
     }
 

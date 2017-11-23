@@ -14,7 +14,7 @@ use cmf\controller\HomeBaseController;
 use think\Db;
 use think\File;
 
-class UserController extends HomeBaseController
+class UserController extends CheckController
 {
 
     function __construct() {
@@ -37,10 +37,6 @@ class UserController extends HomeBaseController
     public function grzx()
     {
         $id = session('userid');
-
-        if(!isset($id)){
-            $this->error('账号未登录，请登录！', url('login/login'));
-        }
 
         $data = Db::name('hx_user')->where(array('id' => $id))->find();
         // $photo = $data['photo'];

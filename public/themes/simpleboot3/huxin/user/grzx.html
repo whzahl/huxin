@@ -23,9 +23,10 @@
 <div class="wrap-page wrap-page-noheader wrap-page-nofooter bg-white">
 <div class="login-tx">
     <a href="/huxin/user/set">
-        <if condition="$data.photo neq 0">
+        <if condition="$data.photo eq ''">
             <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"><p>{$data.name}</p>
-        <else />
+        </if>
+        <if condition="$data.photo neq ''">
             <img src="__ROOT__/.{$data.photo}" class="tx"><p>{$data.name}</p>
         </if>
     </a>
@@ -62,7 +63,7 @@
         </li> -->
         <li>
         	<div class="thumbnail">
-            <a href="#"><img src="__TMPL__/huxin/static/images/icon-shk.png"></a>
+            <a href="{:url('order/shk')}"><img src="__TMPL__/huxin/static/images/icon-shk.png"></a>
             <div class="caption">收还款</div>
             </div>
         </li>
@@ -73,7 +74,7 @@
     <ul>
     	<li>
         	<div class="thumbnail">
-            <a href="#"><img src="__TMPL__/huxin/static/images/icon-bjt2.png"></a>
+            <a href="{:url('order/bjt')}"><img src="__TMPL__/huxin/static/images/icon-bjt2.png"></a>
             <div class="caption">补借条</div>
             </div>
         </li>
@@ -87,6 +88,12 @@
         	<div class="thumbnail">
             <a href="#"><img src="__TMPL__/huxin/static/images/icon-jqqd.png"></a>
             <div class="caption">敬请期待</div>
+            </div>
+        </li>
+        <li>
+            <div class="thumbnail">
+            <a href="{:url('news/xxzx')}"><img src="__TMPL__/huxin/static/images/icon-jqqd.png"></a>
+            <div class="caption">消息</div>
             </div>
         </li>
         <li>&nbsp;</li>
