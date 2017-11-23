@@ -32,11 +32,7 @@ class NewsController extends HomeBaseController
        $this->assign('data',$news);
 
 
-        $id = $this->request->param("id", 0, 'intval');
-
-    	$data = Db::name('hx_news')->where(["id" => $id])->find();
-
-    	$this->assign('data',$data);
+       
 
         return $this->fetch();
     }

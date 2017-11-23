@@ -11,10 +11,10 @@
 namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
-
 use think\Db;
 
 class FriendsController extends CheckController
+
 {
     /**
      * 二维数组根据字段进行排序
@@ -85,12 +85,36 @@ class FriendsController extends CheckController
 		else
 		{
 			return iconv_substr($s0,0,1,'utf-8');
-			//中英混合的词语，不适合上面的各种情况，因此直接提取首个字符即可
+			/
 		}
 	}
 
 	public function hy()
 	{
+       header("Content-Type: text/html; charset=utf-8");
+	
+		$userName = Db::name('hx_friends')->where(array('uid'=>4))->column('fname');
+	    $count=count($userName);
+	
+		sort($userName);
+	
+		$charArray  = array();
+        $nameArray = array();
+
+		  foreach($userName as $k=>$name){
+			$char = $this->getFirstChar($name);
+			//dump($char);die;
+			
+		         array_push($nameArray,$char);
+		
+		    $charArray[$char] = $nameArray;
+		  
+		}
+		
+		ksort($charArray);
+
+		$this->assign('list',$charArray);
+
 	    header("Content-Type: text/html; charset=utf-8");
         $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
         $friends = array();
@@ -103,12 +127,20 @@ class FriendsController extends CheckController
         }
         $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
 		$this->assign('list',$friends);
+
+
+
 		$this->assign('letter',range('A','Z'));
+ 
 		return $this->fetch();
 	}
 	
- 
-
+    public function get_ajax_friend(){
+    	$name=input('post.keywords');
+    	$map = array('like','%'.$name.'%');
+    	$f_name = Db::name('hx_friends')->where('fname','like',$map)->order('id desc')->field('fname')->select();
+    	
+    }
 
     public function hy2()
     {   
@@ -116,98 +148,109 @@ class FriendsController extends CheckController
         return $this->fetch();
     }
    
-
-
     public function tjhy()
     {   header("Content-Type: text/html; charset=utf-8");
      
         $phone= input('post.phone');
-    	
+        session('phone',$phone);
+    	$myfriend=array();
+
     	$friends=Db::name('hx_user')->where('phone',$phone)->find();
+
+    	$friendname=$friends['name'];
+    	$friendid=$friends['id'];
+
+    	$mid=Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
+    		$count=count($mid);
+    		for($x=0;$x<$count;$x++){
+    		$myfriend[]=$mid[$x];	
+    		}
+    		//print_r($myfriend);die;
+    	 if(in_array($friendid,$myfriend)){
+    	 	$this->assign('data',$friends);	
+    	 
+    	 }
+
     	// dump($friends);die;
+
     	
-    	if($friends){
-    		$this->assign('data',$friends);	
-    	}
     	else{
-    		$this->success('添加失败，请重新添加',url('/huxin/friends/hy2'));
+
+    		$this->success('sa',url("huxin/friends/mynewfriend",array('phone'=>$phone)) );
     	}
 
         return $this->fetch();
     }
 
+     public  function mynewfriend(){
+       $phone=Request::instance()->param('phone');
+       
+        $friends=Db::name('hx_user')->where('phone', $phone)->find();
+        $this->assign('data',$friends);	
 
+     	return $this->fetch();
+     }
 
     public  function addfriends(){
-    	
-    	$se=session('userid');
-    	
+    	header("Content-Type: text/html; charset=utf-8");
     	$phone=input('get.phone');
     	//dump($phone);die;
-    	//$se=session('userid');
-    	$myfriend=array();
-    	$mid=Db::name('hx_friends')->where(array('uid'=>4))->column('fid');
-    	
-    	$count=count($mid);
-    	
-    	$id=Db::name('hx_user')->where('phone',$phone)->find();
-    	$friendname=$id['name'];
-    	$friendid=$id['id'];
-    	
-    	$t=time();
-        $now=date("Y-m-d",$t);
-
-    	for($x=0;$x<$count;$x++){
-    		$myfriend[]=$mid[$x];	
-    		}
-    		//print_r($myfriend);die;
-    	 if(in_array($friendid,$myfriend)){
-    	 	echo "你们已经是好友";
-
-    	 }
-    	 else {
-    	 	$data = ['status' => '2', 'uid' => '4','fid'=>$friendid,'uname'=>'wangerma22111','fname'=>$friendname,'create_time'=>$now];
-         Db::name('hx_friends')->insert($data);
-
-    	 }
+    	$name=Db::name('hx_user')->where(array('id'=>4))->find();
+    	$me=$name['name'];
+    	$newfriend=Db::name('hx_user')->where('phone',$phone)->find();
+    	$newfriendname=$newfriend['name'];
+    	$newfriendid=$newfriend['id'];
+    	$now=date("Y-m-d");
+    	$user = ['uid'=>4,'fid'=>$newfriendid,'fname'=>$newfriendname,'uname'=>$me,'status'=>2,
+    	          'create_time'=>$now];
+   
+    	$res=Db::name('hx_friends')->where(array('uid'=>4))->insert($user);
+     
     	}
 
+    	
+    public function unfriend(){
+    	$unread=Db::name('hx_friends')->where(array('fid'=>5,'status'=>2))->select();
+    	$this->assign('data',$unread);
+
+    	return $this->fetch();
+    }
+  
     public function agreefriend(){
+       $id=input('get.id');
+       $name=Db::name('hx_user')->where(array('id'=>$id))->find();
+       $fname=$name['name'];
+       $me= Db::name('hx_user')->where(array('id'=>5))->find();
+       $uname=$me['name'];
+       $t=date("Y-m-d");
+       Db::name('hx_friends')->where(array('fid'=>5,'uid'=>$id))->update(['status' => 1,'create_time'=>$t]);
+       $user=['uid'=>5,'uname'=>$uname,'fid'=>$id,'fname'=>$fname,'status'=>1,'create_time'=>$t];
+       Db::name('hx_friends')->where(array('uid'=>5))->insert($user);
     
     }
-     
-    public function deletfriend(){
     
-    }
-     
     public function request(){
     	return $this->fetch();
     }
-
 
     public function xy(){
     	$id = session('userid');
     	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
         
         $arrName = array();
-        foreach ($data as $key => $value) {
-            
+        foreach ($data as $key => $value) {  
             $name = Db::name('hx_user')->where(['id'=>$value['uid']])->find();
             $value['name'] = $name['name'];
-            $arrName[] = $value;
-            
+            $arrName[] = $value;   
         }
-
     	$this->assign('arrName',$arrName);
         return $this->fetch();
     }
-
 
     public function xy2()
     {
         return $this->fetch();
     }
-
 
     public function xycx(){
 
@@ -222,6 +265,7 @@ class FriendsController extends CheckController
             }
 
         }
+
         return $this->fetch();
     }
 }
