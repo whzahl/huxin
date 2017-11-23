@@ -16,8 +16,12 @@ use think\Db;
 class OrderController extends HomeBaseController
 {
 
-    public function bjt()
-    {
+    public function bjt(){
+        $id = $this->request->param("id", 0, 'intval');
+        $data = Db::name('hx_user')->where(['id' => $id])->find();
+        // dump($data);
+        $this->assign('data',$data);
+
         return $this->fetch();
     }
 

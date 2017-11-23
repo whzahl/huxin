@@ -123,7 +123,7 @@ class FriendsController extends HomeBaseController
         $phone= input('post.phone');
     	
     	$friends=Db::name('hx_user')->where('phone',$phone)->find();
-    	//dump($friends);die;
+    	// dump($friends);die;
     	
     	if($friends){
     		$this->assign('data',$friends);	
@@ -195,9 +195,13 @@ class FriendsController extends HomeBaseController
     public function xy(){
     	$id = session('userid');
     	$data = Db::name('hx_order')->where(['uid'=>$id])->select();
-    	// $data['name'] = Db::name('hx_user')->where(['id'=>$id])->find();
+ 
+        foreach ($data as $key => $value) {
+            // dump ($value);
+            $name = Db::name('hx_user')->where(['id'=>$value['uid']])->find();
+            
+        }
     	
-
     	$this->assign('data',$data);
 
         return $this->fetch();
@@ -210,8 +214,19 @@ class FriendsController extends HomeBaseController
     }
 
 
-    public function xycx()
-    {
+    public function xycx(){
+
+        if($this->request->isPost()){
+            $data = $this->request->param();
+
+            $arr = Db::name('hx_user')->where(array('name'=>$data['name'],'idcard'=>$data['idcard']))->find();
+            if($arr){
+                $this->success("查询成功~", url('friends/xy'));
+            }else{
+                $this->error("查无此人，请注意输入姓名与身份证号码是否匹配！");
+            }
+
+        }
         return $this->fetch();
     }
 }

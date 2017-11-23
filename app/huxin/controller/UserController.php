@@ -37,6 +37,9 @@ class UserController extends HomeBaseController
     public function grzx()
     {
         $id = session('userid');
+        if(!isset($id)){
+            $this->error('账号未登录，请登录！', url('login/login'));
+        }
 
         $data = Db::name('hx_user')->where(array('id' => $id))->find();
         // $photo = $data['photo'];
@@ -50,7 +53,7 @@ class UserController extends HomeBaseController
         $lend = $lend_price['price'];
         $this->assign('lend',$lend);
         //借入金额
-        $borrow_price = Db::name('hx_order')->where(array('uid' => $id))->find();
+        $borrow_price = Db::name('hx_order')->where(array('uid' => $id))->field('price')->find();
         $borrow = $borrow_price['price'];
         $this->assign('borrow',$borrow);
 
@@ -201,6 +204,11 @@ class UserController extends HomeBaseController
         return $this->fetch();
     }
 
+
+    public function loginout(){
+        session('userid',null);
+        $this->success('退出成功！',url('login/login'));
+    }
     
 
 }
