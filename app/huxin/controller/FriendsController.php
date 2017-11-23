@@ -101,30 +101,6 @@ class FriendsController extends CheckController
     public function hy()
     {
         header("Content-Type: text/html; charset=utf-8");
-
-        $userName = Db::name('hx_friends')->where(array('uid' => 4))->column('fname');
-        $count = count($userName);
-
-        sort($userName);
-
-        $charArray = array();
-        $nameArray = array();
-
-        foreach ($userName as $k => $name) {
-            $char = $this->getFirstChar($name);
-            //dump($char);die;
-
-            array_push($nameArray, $char);
-
-            $charArray[$char] = $nameArray;
-
-        }
-
-        ksort($charArray);
-
-        $this->assign('list', $charArray);
-
-        header("Content-Type: text/html; charset=utf-8");
         $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => 4))->select();
         $friends = array();
         foreach ($arrData as $key => $value) {
@@ -136,10 +112,7 @@ class FriendsController extends CheckController
         }
         $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
         $this->assign('list', $friends);
-
-
         $this->assign('letter', range('A', 'Z'));
-
         return $this->fetch();
     }
 

@@ -19,7 +19,21 @@
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/showdate.js"></script>
-
+	<script>
+        function getTime2Time()
+        {
+            var endTime = document.getElementById("et").value;
+            var startTime = document.getElementById("st").value;
+            endTime = Date.parse(endTime)/1000;
+            startTime = Date.parse(startTime)/1000;
+            var time_ = endTime - startTime;
+            var result = time_/(3600*24);
+            if (result < 0 || typeof result !== "number"){
+                result = 0;
+			}
+            document.getElementById("days").value = result;
+        }
+	</script>
 </head>
 <body>
 <div class="wrap-page wrap-page-noheader bg-white">
@@ -49,14 +63,14 @@
 				<label class="field-container"><span class="field-label">还款日期</span>
 				</label>
 			    <!-- <h3 class="item-title" style="text-align:right;"></h3> -->
-			   <input type="text" id="et" onclick="return Calendar('et');" value="" name="end_time" class="text" style="width:85px;"/>
+			   <input  type="text" id="et" onclick="return Calendar('et');" value="" name="end_time" class="text" style="width:85px;"/>
 			    <div class="icon icon-right-nav">&nbsp;</div>
 			</div>
 		</li>
 		<li class="item item-input">
 			<div class="item-main">
 				<label class="field-container"><span class="field-label">借款天数</span>
-					<input type="text" name="" value="" label="phone" icon="person" placeholder="6" class="field" style="text-align:right;">天
+					<input onfocus="getTime2Time()" id="days" type="text" name="" value="" label="phone" icon="person" placeholder="0" class="field" style="text-align:right;">天
 				</label>
 			</div>
 		</li>
