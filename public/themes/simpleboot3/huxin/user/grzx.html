@@ -23,7 +23,11 @@
 <div class="wrap-page wrap-page-noheader wrap-page-nofooter bg-white">
 <div class="login-tx">
     <a href="/huxin/user/set">
-        <img src="__ROOT__/.{$data.photo}" class="tx"><p>{$data.name}</p>
+        <if condition="$data.photo neq 0">
+            <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"><p>{$data.name}</p>
+        <else />
+            <img src="__ROOT__/.{$data.photo}" class="tx"><p>{$data.name}</p>
+        </if>
     </a>
 </div>
 <div class="login-dlzc">
