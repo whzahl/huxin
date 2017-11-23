@@ -18,9 +18,21 @@
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+    <script>
+        function onload() {
+            for(var i = 0; i < 26; i++){
+                remove(String.fromCharCode(65 + i));//输出A-Z  26个大写字母
+            }
+        }
+
+        function remove(letter) {
+            $(".item-header:contains(" + letter + ")").hide();
+            $(".item-header:contains(" + letter + ")" + ":eq(0)").show();
+        }
+    </script>
 </head>
 
-<body>
+<body onload="onload()">
 <div class="wrap-page wrap-page-noheader">
 <div class="tjhy-right">
 <ul>
@@ -64,28 +76,20 @@
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
         <foreach name="list" item="vo" key="k">
             <ul class="list">
-                <switch name="vo.char" >
-                    <case value="L" break="0或1">
-                        <li class="item item-header">L</li>
+                <foreach name="letter" item="vo1">
+                    <if condition="$vo.char eq $vo1">
+                        <li class="item item-header">{$vo.char}</li>
                         <li class="item item-linked">
-                            <a href="#">
+                            <a href="{:url('order/bjt',array('id'=> $vo.fid))}">
                                 <h3 class="item-title">{$vo.fname}</h3>
                             </a>
                         </li>
-                    </case>
-                    <case value="Z" break="0或1">
-                        <li class="item item-header">z</li>
-                        <li class="item item-linked">
-                            <a href="#">
-                                <h3 class="item-title">{$vo.fname}</h3>
-                            </a>
-                        </li>
-                    </case>
-                    <default />
-                </switch>
+                    </if>
+                </foreach>
+
             </ul>
         </foreach>
-</div> 
+    </div>
 <include file="huxin@footer"/>
 </body>
 </html>

@@ -99,10 +99,10 @@ class FriendsController extends HomeBaseController
             $value['fname'] = $fname['name'];
             $value['char'] = $this->getFirstChar($value['fname']);
             $friends[] = $value;
-
         }
         $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
 		$this->assign('list',$friends);
+		$this->assign('letter',range('A','Z'));
 		return $this->fetch();
 	}
 	
