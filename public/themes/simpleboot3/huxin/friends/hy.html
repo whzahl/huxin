@@ -77,32 +77,37 @@
 	</div>
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script>
-     $(document).ready(function() {
-        var xhr = null;
-       $(#search_input).bind('keyup',function(){
-         var inputText = $(#search_input).val();
-          if (inputText != "") { 
-             xhr = $.ajax({
-                  type: 'GET',
-                    url: '{:url('huxin/Frineds/get_ajax_friend')}',
-                    cache: false,
-                    //不从浏览器缓存中加载请求信息  
-                    data: "keyword=" + inputText,
-                    //向服务器端发送的数据  
-                    dataType: 'json',
-                     success: function(json) {
-                        if (json.length != 0) { 
-                            var lists = "<ul>";
-                            $.each(json,
-                            function() {
-                                lists += "<li>" + this.fname + "</li>"; //遍历出每一条返回的数据  
-                            });
-                            lists += "</ul>";
-                            $("#searchFrame").html(lists).show();
+    $(document).ready(
+        function() {
+            var xhr = null;
+            $("#search_input").bind('keyup', function () {
+                var inputText = $("#search_input").val();
+                if (inputText !== "") {
+                    xhr = $.ajax({
+                        type: 'GET',
+                        url: "{:url('huxin/Frineds/get_ajax_friend')}",
+                        cache: false,
+                        //不从浏览器缓存中加载请求信息
+                        data: "keyword=" + inputText,
+                        //向服务器端发送的数据
+                        dataType: 'json',
+                        success: function (json) {
+                            if (json.length != 0) {
+                                var lists = "<ul>";
+                                $.each(json,
+                                    function () {
+                                        lists += "<li>" + this.fname + "</li>"; //遍历出每一条返回的数据
+                                    });
+                                lists += "</ul>";
+                                $("#searchFrame").html(lists).show();
 
-                        }//}
-                 })   
-             })     
+                            }
+                        }
+                    })
+                }
+            })
+        })
+
     </script>
     <div class="list-container">
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
