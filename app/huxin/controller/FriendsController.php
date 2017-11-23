@@ -85,7 +85,7 @@ class FriendsController extends CheckController
 		else
 		{
 			return iconv_substr($s0,0,1,'utf-8');
-			/
+
 		}
 	}
 

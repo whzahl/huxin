@@ -170,6 +170,34 @@ class OrderController extends CheckController
     }
 
 
+    public function jtedc(){
+        $id = session('userid');
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            if($data){
+                $res = array(
+                    'uid'       => $id,
+                    'fid'       => $data['fid'],
+                    'price'     => $data['price'],
+                    'start_time'=> $data['start_time'],
+                    'end_time'  => $data['end_time'],
+                    'rate'      => $data['rate'],
+                    'status'    => 0,
+                    'create_time'=> $this->request->time(),
+                );
+                $result = Db::name('hx_order')->insert($res);
+                if(!empty($result)){
+                    $this->success("新增成功！",url('user/grzx'));
+                }else{
+                    $this->error("新增失败！");
+                }
+            }
+            
+        }
+        return $this->fetch();
+    }
+
+
     public function xz()
     {
         return $this->fetch();
