@@ -76,11 +76,27 @@
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
         <foreach name="list" item="vo" key="k">
             <ul class="list">
+<<<<<<< HEAD
                 <foreach name="letter" item="vo1">
                     <if condition="$vo.char eq $vo1">
                         <li class="item item-header">{$vo.char}</li>
                         <li class="item item-linked">
                             <a href="{:url('order/bjt',array('id'=> $vo.fid))}">
+=======
+                <switch name="vo.char" >
+                    <case value="L" break="0或1">
+                        <li class="item item-header">L</li>
+                        <li class="item item-linked">
+                            <a href="{:url('order/bjt',array('id'=> 3))}">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </case>
+                    <case value="Z" break="0或1">
+                        <li class="item item-header">z</li>
+                        <li class="item item-linked">
+                            <a href="{:url('order/bjt',array('id'=> 2))}">
+>>>>>>> f610bd86b959c6baf96c14228725fc6fc9412ee5
                                 <h3 class="item-title">{$vo.fname}</h3>
                             </a>
                         </li>
@@ -90,6 +106,7 @@
             </ul>
         </foreach>
     </div>
+</div>
 <include file="huxin@footer"/>
 </body>
 </html>

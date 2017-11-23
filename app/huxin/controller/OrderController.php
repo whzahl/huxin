@@ -16,6 +16,7 @@ use think\Db;
 class OrderController extends HomeBaseController
 {
 
+
     /**
      * 二维数组根据字段进行排序
      * @params array $array 需要排序的数组
@@ -88,8 +89,13 @@ class OrderController extends HomeBaseController
             //中英混合的词语，不适合上面的各种情况，因此直接提取首个字符即可
         }
     }
-    public function bjt()
-    {
+
+    public function bjt(){
+        $id = $this->request->param("id", 0, 'intval');
+        $data = Db::name('hx_user')->where(['id' => $id])->find();
+        // dump($data);
+        $this->assign('data',$data);
+
         return $this->fetch();
     }
 

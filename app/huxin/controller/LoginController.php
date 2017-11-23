@@ -86,6 +86,13 @@ class LoginController extends HomeBaseController
     }
 
 
+
+    public function editPassword(){
+
+        return $this->fetch();
+    }
+
+
     /**
 	  *  发送验证码
 	  */
