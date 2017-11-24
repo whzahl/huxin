@@ -14,14 +14,7 @@ use cmf\controller\HomeBaseController;
 use think\Db;
 use think\File;
 
-// use cmf\lib\Storage;
-// use think\Validate;
-// use think\Image;
-// use cmf\controller\UserBaseController;
-// use app\user\model\UserModel;
-
-
-class UserController extends HomeBaseController
+class UserController extends CheckController
 {
 
     function __construct() {
@@ -44,11 +37,21 @@ class UserController extends HomeBaseController
     public function grzx()
     {
         $id = session('userid');
+
         $data = Db::name('hx_user')->where(array('id' => $id))->find();
-        $photo = $data['photo'];
-        $name = $data['name'];
-        $this->assign('photo',$photo);
-        $this->assign('name',$name);
+        // $photo = $data['photo'];
+        // $name = $data['name'];
+        // $this->assign('photo',$photo);
+        $data['id'] = $id;
+        $this->assign('data',$data);
+
+        //借出金额
+        $lend = Db::name('hx_order')->where(array('fid' => $id))->sum('price');
+        $this->assign('lend',$lend);
+        //借入金额
+        $borrow = Db::name('hx_order')->where(array('uid' => $id))->sum('price');
+        $this->assign('borrow',$borrow);
+
         return $this->fetch();
     }
 
@@ -117,6 +120,7 @@ class UserController extends HomeBaseController
             $data = $this->request->param();
 
             $phone = Db::name('hx_user')->field('phone')->select()->toArray();
+
             foreach ($phone as $key => $value) {
                 // dump($value['phone']);
             }
@@ -150,24 +154,29 @@ class UserController extends HomeBaseController
 
     public function editPhoto(){
         $id = session('userid');
+        $photo = Db::name('hx_user')->where(array('id'=>$id))->field('photo')->find();
+        $this->assign('photo',$photo);
+
         // 获取表单上传文件 
         $file = request()->file('image');
 
         // 移动到框架应用根目录/public/uploads/ 目录下
         if($file){
-            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif'])->move(CMF_ROOT . 'public' . DS . 'uploads')->getInfo();
+            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
             if($info){
-            dump($file);
-            dump($info);die;
-
-                $arr['photo'] = $info['name'];
+  
+                $arr['photo'] = '/uploads/' . $info->getSaveName();
+                
                 $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
+                $res = array(
+                        'photo'  => $arr['photo'],
+                    );
 
                 if(!isset($photo)){
-                    $arrData = Db::name('hx_user')->insert($arr);
+                    $arrData = Db::name('hx_user')->insert($res);
                     $this->success("新增成功！", url('user/grzx'));
                 }else{
-                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($arr);
+                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($res);
                     $this->success("修改成功！", url('user/grzx'));
                 }
             }else{
@@ -192,17 +201,12 @@ class UserController extends HomeBaseController
     {
         return $this->fetch();
     }
- 
-    public function setjypw()
-    {
-        return $this->fetch();
-    }
 
-    public function changephone()
-    {
-        return $this->fetch();
-    }
 
+    public function loginout(){
+        session('userid',null);
+        $this->success('退出成功！',url('login/login'));
+    }
     
 
 }

@@ -26,34 +26,34 @@ class LoginController extends HomeBaseController
     /**
      *  登录表单的提交
      */
-    public function index(){   	
-    	header("Content-Type: text/html; charset=utf-8");
+    public function index(){    
+        header("Content-Type: text/html; charset=utf-8");
 
-    	$phone=input('post.phone');
-    	$pwd=input('post.password');
-    	$res=Db::name('hx_user')->where(array('phone'=>$phone,'password'=>$pwd))->find();
-    	$id=$res['id'];
-    	session('userid', $id);
-    	// $se=session('userid');
+        $phone=input('post.phone');
+        $pwd=input('post.password');
+        $res=Db::name('hx_user')->where(array('phone'=>$phone,'password'=>$pwd))->find();
+        $id=$res['id'];
+        session('userid', $id);
+        // $se=session('userid');
         if($res){
             $this->success('登录成功',url('/huxin/user/grzx'));
         }else{
-        	$this->error('登录失败！');
+            $this->error('登录失败！');
         }
-    	 	
+            
     }
     
 
-	/**
-	  *  用户注册
-	  */
+    /**
+      *  用户注册
+      */
     public function register()
     {
-    	if($this->request->isPost()){
-    		$data = $this->request->param();
+        if($this->request->isPost()){
+            $data = $this->request->param();
 
-    		$phone = Db::name('hx_user')->field('phone')->select();
-    		foreach ($phone as $key => $value) {
+            $phone = Db::name('hx_user')->field('phone')->select();
+            foreach ($phone as $key => $value) {
                 if($data['phone'] == $value['phone']){
                     $this->error("手机号已被注册,请重新输入！");
                 }else{
@@ -62,11 +62,15 @@ class LoginController extends HomeBaseController
 
                     if($data['cmsCode'] == $cmsCode['code']){
                         $res = array(
-                            'name'    	=> $data['name'],
-                            'idcard'  	=> $data['idcard'],
-                            'phone'   	=> $data['phone'],
+                            'name'      => $data['name'],
+                            'idcard'    => $data['idcard'],
+                            'phone'     => $data['phone'],
                             'password'  => $data['password'],
                             'create_time'   => $this->request->time(),
+                            'sex'       => 2,
+                            'level'     => 1,
+                            'address'   => "beijing",
+
                         );
                         $result = Db::name('hx_user')->insert($res);
                         if(!empty($result)){
@@ -78,9 +82,9 @@ class LoginController extends HomeBaseController
                         $this->error("验证码错误！");
                     }
                 }
-    		}
+            }
 
-    	}
+        }
         return $this->fetch();
     }
 
@@ -93,42 +97,42 @@ class LoginController extends HomeBaseController
 
 
     /**
-	  *  发送验证码
-	  */
+      *  发送验证码
+      */
     public  function sendSMS(){
-	 	$ch = curl_init();
-	 	// 必要参数
-	 	$apikey = "d0a614ab1e413bb0ef972f42d88fe57f"; //修改为您的apikey(https://www.yunpian.com)登录官网后获取
-	 	
-	 	$mobile =  $_GET['mobile']; //请用手机号代替
-	 	$code = $this->createSMSCode();
-	 	$text="【天使家教】您的验证码是".$code."，如非本人操作，请忽略本短信";
-	 	//将验证码存入数据库
-	 	$data['phone'] = $mobile;
-	 	$data['code'] = $code;
-	 	$data['create_time'] = time();
-	 	$arrId = Db::name('hx_code')->where(array('phone'=>$data['phone']))->find();
-	    $id = Db::name('hx_code')->where(array('id'=>$arrId['id']))->update($data);
-	 	// 发送短信
-	 	$data=array('text'=>$text,'apikey'=>$apikey,'mobile'=>$mobile);
-	 	curl_setopt ($ch, CURLOPT_URL, 'https://sms.yunpian.com/v2/sms/single_send.json');
-	 	curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-	 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
-	 	$json_data = curl_exec($ch);
-	 	//解析返回结果（json格式字符串）
-	 	$array = json_decode($json_data,true);
+        $ch = curl_init();
+        // 必要参数
+        $apikey = "d0a614ab1e413bb0ef972f42d88fe57f"; //修改为您的apikey(https://www.yunpian.com)登录官网后获取
+        
+        $mobile =  $_GET['mobile']; //请用手机号代替
+        $code = $this->createSMSCode();
+        $text="【天使家教】您的验证码是".$code."，如非本人操作，请忽略本短信";
+        //将验证码存入数据库
+        $data['phone'] = $mobile;
+        $data['code'] = $code;
+        $data['create_time'] = time();
+        $arrId = Db::name('hx_code')->where(array('phone'=>$data['phone']))->find();
+        $id = Db::name('hx_code')->where(array('id'=>$arrId['id']))->update($data);
+        // 发送短信
+        $data=array('text'=>$text,'apikey'=>$apikey,'mobile'=>$mobile);
+        curl_setopt ($ch, CURLOPT_URL, 'https://sms.yunpian.com/v2/sms/single_send.json');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+        $json_data = curl_exec($ch);
+        //解析返回结果（json格式字符串）
+        $array = json_decode($json_data,true);
         dump($array);
-	 	$array['smsCode'] = $id;
-	 	echo json_encode($array);
-	 	
-	 }
-	 /**
-	  *  随机生成4位验证码
-	  */
-	 public function createSMSCode($length = 4){
-	 	$min = pow(10 , ($length - 1));
-	 	$max = pow(10, $length) - 1;
-	 	return rand($min, $max);
-	}
+        $array['smsCode'] = $id;
+        echo json_encode($array);
+        
+     }
+     /**
+      *  随机生成4位验证码
+      */
+     public function createSMSCode($length = 4){
+        $min = pow(10 , ($length - 1));
+        $max = pow(10, $length) - 1;
+        return rand($min, $max);
+    }
 
 }

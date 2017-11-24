@@ -12,6 +12,7 @@ namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
 use think\Db;
+use think\request;
 
 class FriendsController extends CheckController
 
@@ -101,16 +102,19 @@ class FriendsController extends CheckController
     public function hy()
     {
         header("Content-Type: text/html; charset=utf-8");
-        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => 4))->select();
+
+        $id = session('userid');
+        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id, 'status' => 1))->select();
         $friends = array();
         foreach ($arrData as $key => $value) {
             $fname = Db::name('hx_user')->field('name')->where(array('id' => $value['fid']))->find();
-
             $value['fname'] = $fname['name'];
             $value['char'] = $this->getFirstChar($value['fname']);
             $friends[] = $value;
         }
-        $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
+        if(!empty($friends)){
+            $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
+        }
         $this->assign('list', $friends);
         $this->assign('letter', range('A', 'Z'));
         return $this->fetch();
@@ -133,6 +137,7 @@ class FriendsController extends CheckController
     public function tjhy()
     {
         header("Content-Type: text/html; charset=utf-8");
+        $id = session('userid');
 
         $phone = input('post.phone');
         session('phone', $phone);
@@ -143,7 +148,7 @@ class FriendsController extends CheckController
         $friendname = $friends['name'];
         $friendid = $friends['id'];
 
-        $mid = Db::name('hx_friends')->where(array('uid' => 4))->column('fid');
+        $mid = Db::name('hx_friends')->where(array('uid' => $id))->column('fid');
         $count = count($mid);
         for ($x = 0; $x < $count; $x++) {
             $myfriend[] = $mid[$x];
@@ -151,13 +156,9 @@ class FriendsController extends CheckController
         //print_r($myfriend);die;
         if (in_array($friendid, $myfriend)) {
             $this->assign('data', $friends);
-
-        } // dump($friends);die;
-
-
+        } 
         else {
-
-            $this->success('sa', url("huxin/friends/mynewfriend", array('phone' => $phone)));
+            $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
         }
 
         return $this->fetch();
@@ -175,44 +176,79 @@ class FriendsController extends CheckController
 
     public function addfriends()
     {
+        $id = session('userid');
         header("Content-Type: text/html; charset=utf-8");
         $phone = input('get.phone');
         //dump($phone);die;
-        $name = Db::name('hx_user')->where(array('id' => 4))->find();
+        $name = Db::name('hx_user')->where(array('id' => $id))->find();
         $me = $name['name'];
         $newfriend = Db::name('hx_user')->where('phone', $phone)->find();
         $newfriendname = $newfriend['name'];
         $newfriendid = $newfriend['id'];
         $now = date("Y-m-d");
-        $user = ['uid' => 4, 'fid' => $newfriendid, 'fname' => $newfriendname, 'uname' => $me, 'status' => 2,
-            'create_time' => $now];
-
-        $res = Db::name('hx_friends')->where(array('uid' => 4))->insert($user);
+        $user = array(
+            'uid'       => $id, 
+            'fid'       => $newfriendid, 
+            'fname'     => $newfriendname, 
+            'uname'     => $me, 
+            'status'    => 2,
+            'create_time' => $this->request->time(),
+        );
+        $res = Db::name('hx_friends')->where(array('uid' => $id))->insert($user);
+        if($res){
+            $this->success('好友请求已发送，等待好友审核！',url('friends/hy'));
+        }else{
+            $this->error('添加失败！');
+        }
 
     }
 
 
     public function unfriend()
     {
-        $unread = Db::name('hx_friends')->where(array('fid' => 5, 'status' => 2))->select();
-        $this->assign('data', $unread);
+        $id = session('userid');
+        $unread = Db::name('hx_friends')->where(array('fid' => $id, 'status' => 2))->select();
 
+        $this->assign('data', $unread);
         return $this->fetch();
     }
 
     public function agreefriend()
     {
+        $userid = session('userid');
         $id = input('get.id');
         $name = Db::name('hx_user')->where(array('id' => $id))->find();
         $fname = $name['name'];
-        $me = Db::name('hx_user')->where(array('id' => 5))->find();
+        $me = Db::name('hx_user')->where(array('id' => $userid))->find();
         $uname = $me['name'];
         $t = date("Y-m-d");
-        Db::name('hx_friends')->where(array('fid' => 5, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
-        $user = ['uid' => 5, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
-        Db::name('hx_friends')->where(array('uid' => 5))->insert($user);
+        $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
+        if($agree){
+            $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
+            Db::name('hx_friends')->where(array('uid' =>  $userid))->insert($user);
 
+            $this->success('已同意好友请求！',url('friends/hy'));
+        }
+        
     }
+
+
+    public function deletefriend()
+    {
+        $userid = session('userid');
+        $id = input('get.id');
+        $name = Db::name('hx_user')->where(array('id' => $id))->find();
+        $fname = $name['name'];
+        $me = Db::name('hx_user')->where(array('id' => $userid))->find();
+        $uname = $me['name'];
+        $t = date("Y-m-d");
+        $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 0, 'create_time' => $t]);
+        if($agree){
+            $this->error('已拒绝好友请求！',url('friends/hy'));
+        }
+    }
+
+
 
     public function request()
     {

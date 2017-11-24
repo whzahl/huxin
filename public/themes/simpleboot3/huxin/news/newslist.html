@@ -15,43 +15,41 @@
     <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="__TMPL__/huxin/static/css/style.css">
     <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
 </head>
-
 <body>
 <header class="header">
+  
     <div class="top-container" style="background:#116fec; color:#FFF;"><span class="left"></span>新闻列表<span class="right"><a href="#">&nbsp;</a></span></div>
+    <div class="wrapper">
+    <nav>
+        <ul style="padding-top: 10px;">
+            <li><a href="{:url('news/newslist')}">全部</a></li>
+            <li><a href="{:url('news/type1')}">理财类</a></li>
+            <li><a href="{:url('news/type2')}">投资类</a></li>
+            <li><a href="{:url('news/type3')}">专访类</a></li>
+        </ul>
+        <span id="navActiveBG"></span>
+    </nav>
+    <div class="content">
+        <div id="1stSection" class="section">
+         <foreach name="data" item="vo">
+          <ul>
+            <li><h1><a href="{:url('news/newsshow')}?id={$vo.id}">{$vo.main_title}</a></h1></li>
+          </ul>
+         </foreach>
+        </div>
+    </div>
 </div>
 </header>
+  
 
-<div class="wrap-page">
-    <div class="" style="width: 33%; height: 50px; float: left; background-color: blue;">
-        <a href="{:url('huxin/news/newslist',array('type'=> 0))}">理财类</a>
-    </div>
-    <div class="" style="width: 34%; height: 50px; float: left; background-color: red;">
-        <a href="{:url('news/newslist',array('type'=> 1))}">投资类</a>
-    </div>
-    <div class="" style="width: 33%; height: 50px; float: left; background-color: green;">
-        <a href="{:url('news/newslist',array('type'=> 2))}">专访类</a>
-    </div>
-</div>
-
-
-<div style="padding-top: 100px;">
-    <foreach name="data" item="vo">
-    <ul>
-        
-            
-        <li><a href="{:url('huxin/news/newsshow',array('id'=>{$vo.id}))}"> {$vo.id}、{$vo.main_title}</li></a>
-
-        
-        </ul>
-    </foreach>
-</div>
-
-
+<script type="text/javascript" src='__TMPL__/huxin/static/js/jquery.min.js'></script>
+<script type="text/javascript" src="__TMPL__/huxin/static/js/index.js"></script>
 <include file="huxin@footer"/>
 </body>
 </html>
+<div class="wrap-list" style="padding-top: 100px;">

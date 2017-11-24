@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对ios的safari ios7.0版本以后，safari上已看不到效果-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式-->
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
+    <meta name="format-detection" content="telphone=no, email=no" />
+	<title>借条信息_互信网</title>
+    <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
+	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+</head>
+
+<body>
+<header class="header">
+<div>
+  <div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>借条信息<span class="right"></span>
+    </div>
+</div>
+</header>
+<div class="wrap-page wrap-page-noheader">
+<div class="xy-container" style="padding-top: 50px;">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>借出人</td>
+    <td>借款金额</td>
+    <td>借款时间</td>
+    <td>还款时间</td>
+    <td>状态</td>
+  </tr>
+  <foreach name="data" item="vo">
+   
+    <tr>
+        <td>{$vo.name}</td>
+        <td>{$vo.price}</td>
+        <td>{$vo.start_time}</td>
+        <td>{$vo.end_time}</td>
+        <td>
+          <a href="{:url('huxin/order/xz',array('id'=> $vo.id))}">
+            <if condition="$vo.status eq 0"><p style="color: #F39C12">未同意</p></if>
+            <if condition="$vo.status eq 1"><p style="color: #3498DB">已同意</p></if>
+            <if condition="$vo.status eq 2"><p style="color: #95a5a6">还款中</p></if>
+            <if condition="$vo.status eq 3"><p style="color: green">已还款</p></if>
+            <if condition="$vo.status eq 4"><p style="color: #d62c1a">已逾期</p></if>
+          </a>
+        </td>
+    </tr>
+    
+  </foreach>
+
+</table>
+</div>
+</div>
+</body>
+</html>

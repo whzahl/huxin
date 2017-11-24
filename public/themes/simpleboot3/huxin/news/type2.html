@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对ios的safari ios7.0版本以后，safari上已看不到效果-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
+    <meta name="format-detection" content="telphone=no, email=no" />
+    <title>新闻列表_互信网</title>
+    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="__TMPL__/huxin/static/css/style.css">
+    <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+</head>
+<body>
+<header class="header">
+  
+    <div class="top-container" style="background:#116fec; color:#FFF;"><span class="left"></span>新闻列表<span class="right"><a href="#">&nbsp;</a></span></div>
+    <div class="wrapper">
+    <nav>
+        <ul style="padding-top: 10px;">
+            <li><a href="{:url('news/newslist')}">全部</a></li>
+            <li><a href="{:url('news/type1')}">理财类</a></li>
+            <li><a href="{:url('news/type2')}">投资类</a></li>
+            <li><a href="{:url('news/type3')}">专访类</a></li>
+        </ul>
+        <span id="navActiveBG"></span>
+    </nav>
+    <div class="content">
+        
+        <div id="1stSection" class="section">
+         <foreach name="data" item="vo">
+          <ul>
+            <li><h1><a href="{:url('news/newsshow')}?id={$vo.id}">{$vo.main_title}</a></h1></li>
+          </ul>
+         </foreach>
+        </div>
+        
+       
+    </div>
+</div>
+</header>
+  
+
+<script type="text/javascript" src='__TMPL__/huxin/static/js/jquery.min.js'></script>
+<script type="text/javascript" src="__TMPL__/huxin/static/js/index.js"></script>
+<include file="huxin@footer"/>
+</body>
+</html>
+<div class="wrap-list" style="padding-top: 100px;">

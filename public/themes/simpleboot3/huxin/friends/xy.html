@@ -20,44 +20,39 @@
 </head>
 
 <body>
+<header class="header">
+<div>
+  <div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>信用<span class="right"></span>
+    </div>
+</div>
+</header>
 <div class="wrap-page wrap-page-noheader">
-<div class="xy-container">
+<div class="xy-container" style="padding-top: 50px;">
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <th>借出人</th>
-    <th>借款金额</th>
-    <th>借款时间</th>
-    <th>还款时间</th>
-    <th>状态</th>
+    <td>借出人</th>
+    <td>借款金额</th>
+    <td>借款时间</th>
+    <td>还款时间</th>
+    <td>状态</th>
   </tr>
-  <tr>
-    <td>张*</td>
-    <td>1200</td>
-    <td>2017-10-5</td>
-    <td>2017-10-20</td>
-    <td>已逾期</td>
-  </tr>
-  <tr>
-    <td>李*</td>
-    <td>3200</td>
-    <td>2017-10-5</td>
-    <td>2017-10-20</td>
-    <td>已逾期</td>
-  </tr>
-  <tr>
-    <td>安*</td>
-    <td>5600</td>
-    <td>2017-10-5</td>
-    <td>2017-10-20</td>
-    <td>已逾期</td>
-  </tr>
-  <tr>
-    <td>张*</td>
-    <td>6500</td>
-    <td>2017-10-5</td>
-    <td>2017-10-20</td>
-    <td>已逾期</td>
-  </tr>
+  <foreach name="arrName" item="vo">
+    <tr>
+      <td>{$vo.name}</th>
+      <td>{$vo.price}</th>
+      <td>{$vo.start_time}</th>
+      <td>{$vo.end_time}</th>
+      <td>
+        <if condition="$vo.status eq 0"><p style="color: #F39C12">未同意</p></if>
+        <if condition="$vo.status eq 1"><p style="color: #3498DB">已同意</p></if>
+        <if condition="$vo.status eq 2"><p style="color: #95a5a6">还款中</p></if>
+        <if condition="$vo.status eq 3"><p style="color: green">已还款</p></if>
+        <if condition="$vo.status eq 4"><p style="color: #d62c1a">已逾期</p></if>
+      </th>
+    </tr>
+  </foreach>
+  
 </table>
 </div>
 </div>
