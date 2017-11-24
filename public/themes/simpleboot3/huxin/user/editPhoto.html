@@ -38,9 +38,10 @@
         </li>
         <li class="item item-input">
             <div id="sss" style="height: 100px; text-align:center; margin:0 auto">
-                <if condition="$photo.photo neq 0">
+                <if condition="$photo.photo eq ''">
                     <img src="__TMPL__/huxin/static/images/default.jpg" class="ml50 mt20" id="img0" style="width:100px; heigth:100px; border:3px dashed #eee;">
-                <else />
+                </if>
+                 <if condition="$photo.photo neq ''">
                     <img src="__ROOT__/.{$photo.photo}" class="ml50 mt20" id="img0" style="width:100px; heigth:100px; border:3px dashed #eee;">
                 </if>
                 <div style="z-index:100; margin:-97px 0px 10px 0px; opacity: 0;">

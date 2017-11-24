@@ -11,7 +11,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-	<title>借入_互信网</title>
+	<title>借出_互信网</title>
     <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
@@ -22,12 +22,23 @@
 
 <body>
 <div class="wrap-page wrap-page-noheaderfooter">
-<div class="login-tx"><img src="images/icon-tx.png" class="tx"><p>安以轩</p></div>
+<div class="login-tx">
+    <if condition="$user.photo eq ''">
+        <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"><p>{$user.name}</p>
+    </if>
+    <if condition="$user.photo neq ''">
+        <img src="__ROOT__/.{$user.photo}" class="tx"><p>{$user.name}</p>
+    </if>
+</div>
 <div class="list-container">
 	<ul class="list">
-    <li class="item item-linked" style="border-bottom:.6rem solid #f0f0f0;"><a href="#">
-	<h3 class="item-title">借入</h3><span class="field-label">0.00</span>
-	<span class="icon icon-right-nav"></span></a></li>
+    <li class="item item-linked" style="border-bottom:.6rem solid #f0f0f0;">
+        <a href="#">
+    	    <h3 class="item-title">借入</h3>
+            <span class="field-label">{$order.price}元</span>
+    	    <span class="icon icon-right-nav"></span>
+        </a>
+    </li>
     </ul>
     <div class="login-threelist" >
     <ul>
@@ -56,7 +67,7 @@
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">借款日期</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">2017-11-10</h3>
+    <h3 class="item-title" style="text-align:right;">{$order.start_time}</h3>
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
@@ -64,7 +75,7 @@
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">还款日期</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">2017-11-18</h3>
+    <h3 class="item-title" style="text-align:right;">{$order.end_time}</h3>
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
@@ -84,7 +95,18 @@
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
-    <li class="item item-noline"><button class="btn btn-block btn-green">取消</button>&nbsp;<button class="btn btn-block btn-green">确认出借</button></li>
+    <a href="javascript:history.back()">
+        <li class="item item-noline">
+            <button class="btn btn-block btn-green">返回</button>
+        </li>
+    </a>
+    <if condition="$order.status eq 0">
+        <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 1))}">
+            <li class="item item-noline">
+               <button class="btn btn-block btn-green">确认出借</button>
+            </li>
+        </a>
+    </if>
 	</ul>
 </div>
 </div>

@@ -15,8 +15,8 @@ use think\Db;
 class NewsController extends HomeBaseController
 {
 
-    public function xxzx()
-    {
+    public function xxzx(){
+
         return $this->fetch();
     }
 
