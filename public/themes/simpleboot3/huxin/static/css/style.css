@@ -88,7 +88,7 @@ nav ul li a.selected {
   /* IE 10+, Fx 29+ */
   display: none;
   background-color:orange;
-  padding: 30px;
+  padding: 10px 30px;
   border-radius: 4px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
   color: black;

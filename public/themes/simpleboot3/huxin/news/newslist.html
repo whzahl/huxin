@@ -26,16 +26,15 @@
     <div class="top-container" style="background:#116fec; color:#FFF;"><span class="left"></span>新闻列表<span class="right"><a href="#">&nbsp;</a></span></div>
     <div class="wrapper">
     <nav>
-        <ul>
-            <li><a  data-identify="1"  href="{:url('huxin/news/money')}">理财类</a></li>
-            <li><a  data-identify="2" href="{:url('huxin/news/invest')}">投资类</a></li>
-            <li><a  data-identify="3" href="{:url('huxin/news/invest')}">专访类</a></li>
-            
+        <ul style="padding-top: 10px;">
+            <li><a href="{:url('news/newslist')}">全部</a></li>
+            <li><a href="{:url('news/type1')}">理财类</a></li>
+            <li><a href="{:url('news/type2')}">投资类</a></li>
+            <li><a href="{:url('news/type3')}">专访类</a></li>
         </ul>
         <span id="navActiveBG"></span>
     </nav>
     <div class="content">
-        
         <div id="1stSection" class="section">
          <foreach name="data" item="vo">
           <ul>
@@ -43,8 +42,6 @@
           </ul>
          </foreach>
         </div>
-        
-       
     </div>
 </div>
 </header>

@@ -21,7 +21,10 @@
 
 <body>
 <header class="header">
-	<div class="top-container"><span class="left"></span>首页<span class="right"><a href="#">&nbsp;</a></span></div>
+	<div class="top-container">
+        <span class="left"></span>首页
+        <span class="right"><a href="{:url('huxin/order/jtxx')}">&nbsp;</a></span>
+    </div>
 </div>
 </header>
 <div class="wrap-page">
@@ -43,9 +46,15 @@
 <!--end 活动头条-->
 <div class="index-threegg">
 	<ul>
-    	<li><img src="__TMPL__/huxin/static/images/index-hxxw-btn.png" ></li>
-        <li><img src="__TMPL__/huxin/static/images/index-lczs-btn.png" ></li>
-        <li><img src="__TMPL__/huxin/static/images/index-aqbz-btn.png" ></li>
+    	<a href="{:url('huxin/news/newslist')}">
+            <li><img src="__TMPL__/huxin/static/images/index-hxxw-btn.png" ></li>
+        </a>
+        <a href="{:url('huxin/news/newslist')}">
+            <li><img src="__TMPL__/huxin/static/images/index-lczs-btn.png" ></li>
+        </a>
+        <a href="{:url('huxin/news/newslist')}">
+            <li><img src="__TMPL__/huxin/static/images/index-aqbz-btn.png" ></li>
+        </a>
     </ul>
 </div>
 <div class="index-ksrk">
@@ -55,7 +64,7 @@
             <a href="{:url('huxin/friends/hy')}"><img src="__TMPL__/huxin/static/images/icon-jr.jpg" class="img-responsive center-block"><span>借入</span></a>
         </li>
         <li>
-            <a href="{:url('huxin/friends/jt')}"><img src="__TMPL__/huxin/static/images/icon-jc.jpg" class="img-responsive center-block"><span>借出</span></a>
+            <a href="{:url('huxin/friends/hy')}"><img src="__TMPL__/huxin/static/images/icon-jc.jpg" class="img-responsive center-block"><span>借出</span></a>
         </li>
         <li>
             <img src="__TMPL__/huxin/static/images/icon-smrz.jpg" class="img-responsive center-block"><span>实名认证</span>
