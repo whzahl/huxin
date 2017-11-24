@@ -66,6 +66,7 @@ class LoginController extends HomeBaseController
                             'idcard'    => $data['idcard'],
                             'phone'     => $data['phone'],
                             'password'  => $data['password'],
+                            'deal_password' => $data['deal_password'],
                             'create_time'   => $this->request->time(),
                             'sex'       => 2,
                             'level'     => 1,

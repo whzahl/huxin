@@ -11,7 +11,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-	<title>忘记密码_互信网</title>
+	<title>改绑手机号_互信网</title>
     <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
@@ -70,12 +70,12 @@
 <header class="header">
 <div>
 	<div class="top-container" style="background:#116fec; color:#FFF;">
-        <span class="left""></span>改绑手机号<span class="right"></span>
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>改绑手机号<span class="right"></span>
     </div>
 </div>
 </header>
 <div class="wrap-page">
-<form method="post" action="{:url('login/editPassword')}">
+<form method="post" action="{:url('user/editPhone')}">
 <div class="list-container">
     <ul class="list">
         <li class="item item-input">
@@ -90,20 +90,6 @@
             <label class="field-container">
                 <input type="text" name="cmsCode" label="yzcode" icon="person" placeholder="请输入验证码" class="field">
                 <input type="button" class="obtain generate_code" value=" 获取验证码"> 
-            </label>
-            </div>
-        </li>
-        <li class="item item-input">
-            <div class="item-main">
-            <label class="field-container">
-                <input type="text" name="passwordNew1" label="phone" icon="person" id="mobile" placeholder="新密码" class="field">
-            </label>
-            </div>
-        </li>
-        <li class="item item-input">
-            <div class="item-main">
-            <label class="field-container">
-                <input type="text" name="passwordNew2" label="phone" icon="person" id="mobile" placeholder="再次输入" class="field">
             </label>
             </div>
         </li>
