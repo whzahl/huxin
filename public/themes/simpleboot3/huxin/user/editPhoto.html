@@ -1,147 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{$site_info.site_name}</title>
-    <meta name="keywords" content=""/>
-    <meta name="description" content="">
-    <include file="public@head"/>
-    <style type="text/css">
-        .tab-content {
-            overflow: visible;
-        }
-
-        .uploaded_avatar_area {
-            margin-top: 20px;
-        }
-
-        .uploaded_avatar_btns {
-            margin-top: 20px;
-        }
-
-        .uploaded_avatar_area .uploaded_avatar_btns {
-            display: none;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对ios的safari ios7.0版本以后，safari上已看不到效果-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
+    <meta name="format-detection" content="telphone=no, email=no" />
+    <title>补借条_互信网</title>
+    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
+    <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+        <script type="text/javascript">
+        $(function(){  
+        $(".generate_code").click(function(){  
+          var disabled = $(".generate_code").attr("disabled");  
+          if(disabled){  
+            return false;  
+          }  
+          if($("#mobile").val() == "" || isNaN($("#mobile").val()) || $("#mobile").val().length != 11 ){  
+            alert("请填写正确的手机号！");  
+            return false;  
+          }  
+          $.ajax({  
+            async:false,  
+            type: "GET",  
+            url: "{:url('/huxin/login/sendSMS')}",  
+            data: {mobile:$("#mobile").val()},  
+            dataType: "json",  
+            async:false,  
+            success:function(data){  
+              console.log(data);  
+              settime();  
+            },  
+            error:function(err){  
+              console.log(err);  
+            }  
+          });  
+        });  
+        var countdown=60;  
+        var _generate_code = $(".generate_code");  
+        function settime() {  
+          if (countdown == 0) {  
+            _generate_code.attr("disabled",false);  
+            _generate_code.val("获取验证码");  
+            countdown = 60;  
+            return false;  
+          } else {  
+            $(".generate_code").attr("disabled", true);  
+            _generate_code.val("重新发送(" + countdown + ")");  
+            countdown--;  
+          }  
+          setTimeout(function() {  
+            settime();  
+          },1000);  
+        }  
+      })  
+    </script>
 </head>
-<body class="body-white" id="top">
-<include file="public@nav"/>
 
-<div class="container tc-main">
-    <div class="row">
-        <div class="col-md-3">
-            <include file="public@usernav"/>
-        </div>
-        <div class="col-md-9">
-            <div class="tabs">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#one" data-toggle="tab"><i class="fa fa-user"></i> 修改头像</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="one">
-                        <br>
-                        <if condition="empty($avatar)">
-                            <img src="__TMPL__/public/assets/images/headicon_128.png" class="headicon" width="128"/>
-                            <else/>
-                            <img src="{:cmf_get_user_avatar_url($avatar)}?t={:time()}" class="headicon" width="128"/>
-                        </if>
-                        <input type="file" onchange="avatar_upload(this)" id="avatar_uploder" name="file"/>
-                        <div class="uploaded_avatar_area">
-                            <div class="uploaded_avatar_btns">
-                                <a class="btn btn-primary confirm_avatar_btn" onclick="update_avatar()">确定</a>
-                                <a class="btn" onclick="reloadPage()">取消</a>
-                            </div>
-                        </div>
-                        <p class="help-block">头像支持jpg,png,jpeg格式,文件大小最大不能超过1M</p>
-                    </div>
+<body>
+<header class="header">
+<div>
+    <div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>修改头像<span class="right"></span>
+    </div>
+</div>
+</header>
+<div class="wrap-page">
+<form method="post" action="{:url('user/editPhoto')}" enctype="multipart/form-data">
+<div class="list-container">
+    <ul class="list">
+        <li class="item item-input">
+
+        </li>
+        <li class="item item-input">
+            <div id="sss">
+                <img src="/themes/simpleboot3/public/assets/images/default-thumbnail.png" class="ml50 mt20" id="img0" style="width:100px; heigth:100px; border:3px dashed #eee;">
+                <div style="z-index:100; margin:-97px 0px 10px 0px; opacity: 0;">
+                <a href=" " class="tc acc_scicon"></a>
+                <input class="form-control mt20" type="file" name="image" value="" style="width:100px; padding-top:70px;" id="file0"/>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <include file="public@footer"/>
-
+        </li>
+    </ul>
+    <ul>
+        <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
+    </ul>
 </div>
-<!-- /container -->
-
-<include file="public@scripts"/>
-<script type="text/javascript">
-    function update_avatar() {
-        var area = $(".uploaded_avatar_area img").data("area");
-        $.post("{:url('Profile/avatarUpdate')}", area, function (data) {
-            if (data.code == 1) {
-                reloadPage(window);
-            }
-
-        }, "json");
-
-    }
-    function avatar_upload(obj) {
-        var $fileinput = $(obj);
-        /* $(obj)
-         .show()
-         .ajaxComplete(function(){
-         $(this).hide();
-         }); */
-        Wind.css("jcrop");
-        Wind.use("ajaxfileupload", "jcrop", "noty", function () {
-            $.ajaxFileUpload({
-                url: "{:url('Profile/avatarUpload')}",
-                secureuri: false,
-                fileElementId: "avatar_uploder",
-                dataType: 'json',
-                data: {},
-                success: function (data, status) {
-
-                    if (data.code == 1) {
-                        $("#avatar_uploder").hide();
-                        var $uploaded_area = $(".uploaded_avatar_area");
-                        $uploaded_area.find("img").remove();
-                        var src  = "__ROOT__/upload/" + data.data.file;
-                        var $img = $("<img/>").attr("src", src);
-                        $img.prependTo($uploaded_area);
-                        $(".uploaded_avatar_btns").show();
-                        var img = new Image();
-                        img.src = src;
-
-                        var callback = function () {
-                            console.log(img.width);
-                            $img.Jcrop({
-                                aspectRatio: 1,
-                                trueSize: [img.width, img.height],
-                                setSelect: [0, 0, 100, 100],
-                                onSelect: function (c) {
-                                    $img.data("area", c);
-                                }
+<form>
+    <script type="text/javascript">    
+            $(function() { 
+                $("#file0").change(function() {
+                    if (this.files && this.files[0]) {
+                        var objUrl = getObjectURL(this.files[0]);
+                        console.log("objUrl = " + objUrl);
+                        if (objUrl) {
+                            $("#img0").attr("src", objUrl);
+                            $("#file0").click(function(e) {
+                                $("#img0").attr("src", objUrl);
                             });
-                        }
-
-                        if (img.complete) {
-                            callback();
                         } else {
-                            img.onload = callback;
-                        }
-
-                    } else {
-                        noty({
-                            text: data.msg,
-                            type: 'error',
-                            layout: 'center',
-                            callback: {
-                                afterClose: function () {
-                                    reloadPage(window);
-                                }
+                            //IE下，使用滤镜
+                            this.select();
+                            var imgSrc = document.selection.createRange().text;
+                            var localImagId = document.getElementById("sss");
+                            //图片异常的捕捉，防止用户修改后缀来伪造图片
+                            try {
+                                preload.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = data;
+                            } catch (e) {
+                                this._error("filter error");
+                                return;
                             }
-                        });
+                            this.img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod='scale',src=\"" + data + "\")";
+                        }
                     }
-
-                },
-                error: function (data, status, e) {
+                });
+                //建立一個可存取到該file的url
+                function getObjectURL(file) {
+                    var url = null;
+                    if (window.createObjectURL != undefined) { // basic
+                        url = window.createObjectURL(file);
+                    } else if (window.URL != undefined) { // mozilla(firefox)
+                        url = window.URL.createObjectURL(file);
+                    } else if (window.webkitURL != undefined) { // webkit or chrome
+                        url = window.webkitURL.createObjectURL(file);
+                    }
+                    return url;
                 }
-            });
-        });
-
-        return false;
-    }
-</script>
+            })
+        </script>
+<include file="huxin@footer"/>
 </body>
 </html>

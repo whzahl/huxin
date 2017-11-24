@@ -18,9 +18,21 @@
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+    <script>
+        function onload() {
+            for(var i = 0; i < 26; i++){
+                remove(String.fromCharCode(65 + i));//输出A-Z  26个大写字母
+            }
+        }
+
+        function remove(letter) {
+            $(".item-header:contains(" + letter + ")").hide();
+            $(".item-header:contains(" + letter + ")" + ":eq(0)").show();
+        }
+    </script>
 </head>
 
-<body>
+<body onload="onload()">
 <div class="wrap-page wrap-page-noheader">
 <div class="tjhy-right">
 <ul>
@@ -54,27 +66,67 @@
 </div>
     <div class="recoverself">
    <div class="search_box">
+      <form action="/huxin/friends/get_ajax_friend" method="post">
         	<span class="search_input">
-			<input class="hilight1" id="" name="keywords" value="" placeholder="搜索联系人" type="text">
+			<input class="hilight1" id="search_input" name="keywords" value="" placeholder="搜索联系人" type="text">
 			</span>
 			<input value="" class="icon_search" type="submit">
+            </form>
 		</div>
+        <div id="searchFrame" display: none"></div>  
 	</div>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script>
+    $(document).ready(
+        function() {
+            var xhr = null;
+            $("#search_input").bind('keyup', function () {
+                var inputText = $("#search_input").val();
+                if (inputText !== "") {
+                    xhr = $.ajax({
+                        type: 'GET',
+                        url: "{:url('huxin/Frineds/get_ajax_friend')}",
+                        cache: false,
+                        //不从浏览器缓存中加载请求信息
+                        data: "keyword=" + inputText,
+                        //向服务器端发送的数据
+                        dataType: 'json',
+                        success: function (json) {
+                            if (json.length != 0) {
+                                var lists = "<ul>";
+                                $.each(json,
+                                    function () {
+                                        lists += "<li>" + this.fname + "</li>"; //遍历出每一条返回的数据
+                                    });
+                                lists += "</ul>";
+                                $("#searchFrame").html(lists).show();
+
+                            }
+                        }
+                    })
+                }
+            })
+        })
+
+    </script>
     <div class="list-container">
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
-    	<foreach name="list" item="vo" key="k">
-		    <ul class="list">
-			    <li class="item item-header">{$k}</li>
-                <foreach name="vo" item="l">
-			        <li class="item item-linked">
-                        <a href="#">
-                            <h3 class="item-title">{$l}</h3>
-                        </a>
-			        </li>
+        <foreach name="list" item="vo" key="k">
+            <ul class="list">
+                <foreach name="letter" item="vo1">
+                    <if condition="$vo.char eq $vo1">
+                        <li class="item item-header">{$vo.char}</li>
+                        <li class="item item-linked">
+                            <a href="{:url('order/bjt',array('id'=> $vo.fid))}">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </if>
                 </foreach>
-		    </ul>
+            </ul>
         </foreach>
-</div> 
+    </div>
+</div>
 <include file="huxin@footer"/>
 </body>
 </html>

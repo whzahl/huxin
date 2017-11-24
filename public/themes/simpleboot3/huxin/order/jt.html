@@ -18,9 +18,21 @@
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+    <script>
+        function onload() {
+            for(var i = 0; i < 26; i++){
+                remove(String.fromCharCode(65 + i));//输出A-Z  26个大写字母
+            }
+        }
+
+        function remove(letter) {
+            $(".item-header:contains(" + letter + ")").hide();
+            $(".item-header:contains(" + letter + ")" + ":eq(0)").show();
+        }
+    </script>
 </head>
 
-<body>
+<body onload="onload()">
 <header class="header">
 	<div class="top-container"><span class="left"></span>选择出借人<span class="right"><a href="#">&nbsp;</a></span></div>
 </div>
@@ -65,31 +77,22 @@
 		</div>
 	</div>
     <div class="list-container">
-    	<div class="tjhy"><span class="icon icon-tjhy"></span>添加好友</div>
-		<ul class="list">
-			<li class="item item-header">A</li>
-			<li class="item item-linked"><a href="{:url('order/jted')}">
-			<h3 class="item-title">奥若设计</h3></a>
-			</li>
-			<li class="item item-linked"><a href="#">
-			<h3 class="item-title">安以轩</h3></a>
-			</li>
-            <li class="item item-linked"><a href="#">
-			<h3 class="item-title">安志杰</h3></a>
-			</li>
-            
-            <li class="item item-header">B</li>
-			<li class="item item-linked"><a href="#">
-			<h3 class="item-title">保安哥</h3></a>
-			</li>
-			<li class="item item-linked"><a href="#">
-			<h3 class="item-title">保时捷</h3></a>
-			</li>
-            <li class="item item-linked"><a href="#">
-			<h3 class="item-title">宝宝</h3></a>
-			</li>
-            
-		</ul>
+        <div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
+        <foreach name="list" item="vo" key="k">
+            <ul class="list">
+                <foreach name="letter" item="vo1">
+                    <if condition="$vo.char eq $vo1">
+                        <li class="item item-header">{$vo.char}</li>
+                        <li class="item item-linked">
+                            <a href="{:url('order/jted',array('id'=> $vo.fid))}">
+                                <h3 class="item-title">{$vo.fname}</h3>
+                            </a>
+                        </li>
+                    </if>
+                </foreach>
+
+            </ul>
+        </foreach>
 	</div>
 </div> 
 <include file="huxin@footer"/> 
