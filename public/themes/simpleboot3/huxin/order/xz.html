@@ -111,26 +111,34 @@
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
-    <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 1))}">
-        <li class="item item-noline">
-           <button class="btn btn-block btn-green">同意</button>
-        </li>
-    </a>
-    <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">
-        <li class="item item-noline">
-           <button class="btn btn-block btn-green">拒绝</button>
-        </li>
-    </a>
-    <a href="{:url('order/xz1',array('id'=>$order.id, 'status'=> 3))}">
-        <li class="item item-noline">
-           <button class="btn btn-block btn-green">销账</button>
-        </li>
-    </a>
-    <a href="{:url('order/xz1',array('id'=>$order.id))}">
-        <li class="item item-noline">
-            <button class="btn btn-block btn-green">展期</button>
-        </li>
-    </a>
+    <if condition="$order.status eq 0">
+        <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 1))}">
+            <li class="item item-noline">
+               <button class="btn btn-block btn-green">同意</button>
+            </li>
+        </a>
+    </if>
+    <if condition="$order.status eq 0">
+        <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">
+            <li class="item item-noline">
+               <button class="btn btn-block btn-green">拒绝</button>
+            </li>
+        </a>
+    </if>
+    <if condition="$order.status neq 3">
+        <a href="{:url('order/xz1',array('id'=>$order.id, 'status'=> 3))}">
+            <li class="item item-noline">
+               <button class="btn btn-block btn-green">销账</button>
+            </li>
+        </a>
+    </if>
+    <if condition="$order.status neq 3">
+        <a href="{:url('order/xz1',array('id'=>$order.id))}">
+            <li class="item item-noline">
+                <button class="btn btn-block btn-green">展期</button>
+            </li>
+        </a>
+    </if>
 	</ul>
 </div>
 </div>

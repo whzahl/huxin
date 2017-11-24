@@ -67,6 +67,10 @@ class LoginController extends HomeBaseController
                             'phone'   	=> $data['phone'],
                             'password'  => $data['password'],
                             'create_time'   => $this->request->time(),
+                            'sex'       => 2,
+                            'level'     => 1,
+                            'address'   => "beijing",
+
                         );
                         $result = Db::name('hx_user')->insert($res);
                         if(!empty($result)){
