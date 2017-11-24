@@ -33,11 +33,11 @@
 </div>
 <div class="login-dlzc">
 	<ul>
-    	<a href="{:url('friends/xy',array('id'=>$data['id']))}"><li>
+    	<a href="{:url('order/jclist',array('id'=>$data['id']))}"><li>
             <if condition="$lend eq 0">0<br>借出（元）</if>
             <if condition="$lend neq 0">{$lend}<br>借出（元）</if>
         </li></a>
-        <a href="{:url('friends/xy',array('id'=>$data['id']))}"><li>
+        <a href="{:url('order/jrlist',array('id'=>$data['id']))}"><li>
             <if condition="$borrow eq 0">0<br>借入（元）</if>
             <if condition="$borrow neq 0">{$borrow}<br>借入（元）</if>
         </li></a>

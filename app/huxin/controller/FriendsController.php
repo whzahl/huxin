@@ -104,7 +104,7 @@ class FriendsController extends CheckController
         header("Content-Type: text/html; charset=utf-8");
 
         $id = session('userid');
-        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id))->select();
+        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id, 'status' => 1))->select();
         $friends = array();
         foreach ($arrData as $key => $value) {
             $fname = Db::name('hx_user')->field('name')->where(array('id' => $value['fid']))->find();
@@ -224,11 +224,12 @@ class FriendsController extends CheckController
         $t = date("Y-m-d");
         $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
         if($agree){
+            $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
+            Db::name('hx_friends')->where(array('uid' =>  $userid))->insert($user);
+
             $this->success('已同意好友请求！',url('friends/hy'));
         }
-        $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
-        Db::name('hx_friends')->where(array('uid' =>  $userid))->insert($user);
-
+        
     }
 
 

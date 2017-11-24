@@ -99,27 +99,31 @@ class OrderController extends CheckController
         return $this->fetch();
     }
 
-
-    public function jc()
-    {
-        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
-        $friends = array();
-        foreach ($arrData as $key=>$value){
-            $fname = Db::name('hx_user')->field('name')->where(array('id'=>$value['fid']))->find();
-
-            $value['fname'] = $fname['name'];
-            $value['char'] = $this->getFirstChar($value['fname']);
-            $friends[] = $value;
-        }
-        $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
-        $this->assign('list',$friends);
-        $this->assign('letter',range('A','Z'));
+    /**
+     * 借出
+     * weilang
+     * 20171124
+     */
+    public function jc(){
+        $id = $this->request->param('id');
+        $order = Db::name('hx_order')->where(array('id'=>$id))->find();
+        $user = Db::name('hx_user')->where(array('id'=>$order['uid']))->find();
+        $this->assign('user',$user);
+        $this->assign('order',$order);   
         return $this->fetch();
     }
 
-
-    public function jr()
-    {
+    /**
+     * 借入
+     * weilang
+     * 20171124
+     */
+    public function jr(){
+        $id = $this->request->param('id');
+        $order = Db::name('hx_order')->where(array('id'=>$id))->find();
+        $user = Db::name('hx_user')->where(array('id'=>$order['fid']))->find();
+        $this->assign('user',$user);
+        $this->assign('order',$order);   
         return $this->fetch();
     }
 
@@ -201,8 +205,12 @@ class OrderController extends CheckController
     }
 
 
-    public function xz()
-    {
+    public function xz(){
+        $id = $this->request->param("id", 0, 'intval');
+        $order = Db::name('hx_order')->where(array('id'=>$id))->find();
+        $user = Db::name('hx_user')->where(array('id'=>$order['uid']))->find();
+        $this->assign('user',$user);
+        $this->assign('order',$order);   
         return $this->fetch();
     }
 
@@ -217,8 +225,81 @@ class OrderController extends CheckController
     {
         $id = session('userid');
         $data = Db::name('hx_order')->where(array('fid'=>$id))->select();
-        $this->assign('data',$data);
+        $arrName = array();
+        foreach ($data as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+
+        $this->assign('data',$arrName);
         return $this->fetch();
     }
+
+
+    /**
+     * 销账
+     * weilang
+     * 20171124
+     */
+    public function xz1(){
+        $info = $this->request->param();
+        if($info){
+            Db::name('hx_order')->where(array('id'=>$info['id']))->update(['status' => $info['status']]);
+            $this->success('修改成功！', url('order/jtxx'));
+        }
+        return $this->fetch();
+    }
+
+
+    /**
+     * 展期
+     * weilang
+     * 20171124
+     */
+    public function zq(){
+
+
+        return $this->fetch();
+    }
+
+
+    /**
+     * 借入列表页
+     * weilang
+     * 20171124
+     */
+    public function jrlist(){
+        $id = $this->request->param('id');
+        $data = Db::name('hx_order')->where(['uid'=>$id])->select();
+        $arrName = array();
+        foreach ($data as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+        $this->assign('arrName',$arrName);
+        return $this->fetch();
+    }
+
+
+    /**
+     * 借出列表页
+     * weilang
+     * 20171124
+     */
+    public function jclist(){
+        $id = $this->request->param('id');
+        $data = Db::name('hx_order')->where(['fid'=>$id])->select();
+        $arrName = array();
+        foreach ($data as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+        $this->assign('arrName',$arrName);
+        return $this->fetch();
+    }
+
 
 }
