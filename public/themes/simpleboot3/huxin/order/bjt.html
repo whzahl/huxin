@@ -31,9 +31,10 @@
              <li>
              <a href="#">
                 <div class="pic_box">
-                    <if condition="$data.photo neq 0">
+                    <if condition="$data.photo eq ''">
                         <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx">
-                    <else />
+                    </if>
+                    <if condition="$data.photo neq ''">
                         <img src="__ROOT__/.{$data.photo}" class="tx">
                     </if>
                 </div>

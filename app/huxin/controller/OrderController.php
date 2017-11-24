@@ -93,7 +93,7 @@ class OrderController extends CheckController
     public function bjt(){
         $id = $this->request->param("id", 0, 'intval');
         $data = Db::name('hx_user')->where(['id' => $id])->find();
-        // dump($data);
+
         $this->assign('data',$data);
 
         return $this->fetch();
@@ -143,12 +143,14 @@ class OrderController extends CheckController
 
 
     public function jted(){
-        $id = session('userid');
+        $fid = $this->request->param("id", 0, 'intval');
+        $this->assign('fid',$fid);
+        $uid = session('userid');  
         if($this->request->isPost()){
             $data = $this->request->param();
             if($data){
                 $res = array(
-                    'uid'       => $id,
+                    'uid'       => $uid,
                     'fid'       => $data['fid'],
                     'price'     => $data['price'],
                     'start_time'=> $data['start_time'],
@@ -166,6 +168,7 @@ class OrderController extends CheckController
             }
             
         }
+
         return $this->fetch();
     }
 
@@ -209,5 +212,13 @@ class OrderController extends CheckController
         return $this->fetch();
     }
 
+
+    public function jtxx()
+    {
+        $id = session('userid');
+        $data = Db::name('hx_order')->where(array('fid'=>$id))->select();
+        $this->assign('data',$data);
+        return $this->fetch();
+    }
 
 }

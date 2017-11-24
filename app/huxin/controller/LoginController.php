@@ -53,35 +53,33 @@ class LoginController extends HomeBaseController
     		$data = $this->request->param();
 
     		$phone = Db::name('hx_user')->field('phone')->select();
-            
     		foreach ($phone as $key => $value) {
-    			// dump($value['phone']);
+                if($data['phone'] == $value['phone']){
+                    $this->error("手机号已被注册,请重新输入！");
+                }else{
+
+                    $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->field('code')->find();
+
+                    if($data['cmsCode'] == $cmsCode['code']){
+                        $res = array(
+                            'name'    	=> $data['name'],
+                            'idcard'  	=> $data['idcard'],
+                            'phone'   	=> $data['phone'],
+                            'password'  => $data['password'],
+                            'create_time'   => $this->request->time(),
+                        );
+                        $result = Db::name('hx_user')->insert($res);
+                        if(!empty($result)){
+                            $this->success("注册成功！",url('login/login'));
+                        }else{
+                            $this->error("注册失败！");
+                        }
+                    }else{
+                        $this->error("验证码错误！");
+                    }
+                }
     		}
 
-    		if($data['phone'] == $value['phone']){
-    			$this->error("手机号已被注册,请重新输入！");
-    		}else{
-
-    			$cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->field('code')->find();
-    	
-    			if($data['cmsCode'] == $cmsCode['code']){
-    				$res = array(
-                        'name'    	=> $data['name'],
-                        'idcard'  	=> $data['name'],
-                        'phone'   	=> $data['phone'],
-                        'password'  => $data['password'],
-                        'create_time'   => $this->request->time(),
-                    );
-		    		$result = Db::name('hx_user')->insert($res);
-		    		if(!empty($result)){
-						$this->success("注册成功！",url('login/login'));
-					}else{
-						$this->error("注册失败！");
-					}
-    			}else{
-    				$this->error("验证码错误！");
-    			}
-    		}
     	}
         return $this->fetch();
     }
@@ -109,7 +107,8 @@ class LoginController extends HomeBaseController
 	 	$data['phone'] = $mobile;
 	 	$data['code'] = $code;
 	 	$data['create_time'] = time();
-	    $id = Db::name('hx_code')->insert($data);
+	 	$arrId = Db::name('hx_code')->where(array('phone'=>$data['phone']))->find();
+	    $id = Db::name('hx_code')->where(array('id'=>$arrId['id']))->update($data);
 	 	// 发送短信
 	 	$data=array('text'=>$text,'apikey'=>$apikey,'mobile'=>$mobile);
 	 	curl_setopt ($ch, CURLOPT_URL, 'https://sms.yunpian.com/v2/sms/single_send.json');
@@ -118,7 +117,7 @@ class LoginController extends HomeBaseController
 	 	$json_data = curl_exec($ch);
 	 	//解析返回结果（json格式字符串）
 	 	$array = json_decode($json_data,true);
-
+        dump($array);
 	 	$array['smsCode'] = $id;
 	 	echo json_encode($array);
 	 	
