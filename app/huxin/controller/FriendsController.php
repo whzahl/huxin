@@ -102,6 +102,7 @@ class FriendsController extends CheckController
     public function hy()
     {
         header("Content-Type: text/html; charset=utf-8");
+
         $id = session('userid');
         $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id))->select();
         $friends = array();
