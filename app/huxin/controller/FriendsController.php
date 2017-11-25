@@ -221,14 +221,11 @@ class FriendsController extends CheckController
         $fname = $name['name'];
         $me = Db::name('hx_user')->where(array('id' => $userid))->find();
         $uname = $me['name'];
-        $t = date();
+        $t = date("Y-m-d");
         $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
         if($agree){
             $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
-            Db::name('hx_friends')->where(array('uid' =>  $userid))->insert($user);
-            //加两条数据
-            $user2 = ['uid' =>  $id, 'uname' => $uname, 'fid' => $userid, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
-            Db::name('hx_friends')->where(array('uid' =>  $id))->insert($user2);
+            Db::name('hx_friends')->where(array('uid' =>  $id))->insert($user);
 
             $this->success('已同意好友请求！',url('friends/hy'));
         }

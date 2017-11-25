@@ -125,19 +125,29 @@ class OrderController extends CheckController
         $ord = Db::name('hx_order')->where(['fid' => $id])->count();
         $this->assign('ord',$ord);
         //我们的共同好友
-        //好友的好友
-        // $both1 = Db::name('hx_friends')->where(['fid' => $id])->field('fname')->select();
-        // foreach ($both1 as $key => $value1) {
-        //     # code...
-        // }
-        // dump($value1);
-        // //我的好友
-        // $both2 = Db::name('hx_friends')->where(['fid' => $userid])->field('fname')->select();
-        // foreach ($both2 as $key => $value2) {
-        //     # code...
-        // }
-        // dump($value2);die;
+        //我的好友
+        $both1 = Db::name('hx_friends')->where(['uid' => $userid])->field('fname')->select();
+        foreach ($both1 as $key => $value1) {
+            //好友的好友
+            $both2 = Db::name('hx_friends')->where(['uid' => $id])->field('fname')->select();
+            foreach ($both2 as $value2) {
 
+                if($value1['fname'] == $value2['fname']){
+                    echo 111;
+                };
+            }
+        }
+        dump($userid);
+        dump($both1);
+        dump($id);
+        dump($both2);
+        die;
+        //好友的好友数量
+        $numf = count($both2);
+        //共同好友数量
+        $numboth = count($both) - 1;
+        $this->assign('numf',$numf);
+        $this->assign('numboth',$numboth);
         return $this->fetch();
     }
 
