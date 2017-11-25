@@ -118,7 +118,11 @@ class OrderController extends CheckController
     public function jc(){
         $id = $this->request->param('id');
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
+        $end = $order['end_time'];
+        $sta = $order['start_time'];
         $user = Db::name('hx_user')->where(array('id'=>$order['uid']))->find();
+        $date = strtotime("$end") - strtotime("$sta");
+        $this->assign('date',$date/86400);
         $this->assign('user',$user);
         $this->assign('order',$order);   
         return $this->fetch();
@@ -132,7 +136,19 @@ class OrderController extends CheckController
     public function jr(){
         $id = $this->request->param('id');
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
+        $end = $order['end_time'];
+        $sta = $order['start_time'];
         $user = Db::name('hx_user')->where(array('id'=>$order['fid']))->find();
+        //借款时间$date
+        $date = strtotime("$end") - strtotime("$sta");
+        //已经借到 order表uid==id && status!=0
+        $y = Db::name('hx_order')->where(['id' => $id])->where('status','>',0)->sum('price');
+        //待借 order表uid==id && status = 0
+        $d = Db::name('hx_order')->where(['id' => $id])->where(['status' => 0])->sum('price');
+        //输出
+        $this->assign('y',$y);
+        $this->assign('d',$d);
+        $this->assign('date',$date/86400);
         $this->assign('user',$user);
         $this->assign('order',$order);   
         return $this->fetch();
@@ -239,7 +255,23 @@ class OrderController extends CheckController
     public function xz(){
         $id = $this->request->param("id", 0, 'intval');
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
-        $user = Db::name('hx_user')->where(array('id'=>$order['uid']))->find();
+        //借还款时间
+        $end = $order['end_time'];
+        $sta = $order['start_time'];
+        $user = Db::name('hx_user')->where(array('id'=>$order['fid']))->find();
+        //借还款时间转换为天数
+        $date = strtotime("$end") - strtotime("$sta");
+        //利率$rate
+        $p = $order['price'];
+        $o = $order['rate']/100;
+        $d = $date/86400/365;
+        $rate = $p * $o * $d;
+        //借款状态，还差几天到还款时间$t
+        $nowTime = date("Y-m-d");
+        $t = strtotime("$end") - strtotime("$nowTime");
+        $this->assign('t',$t/86400);
+        $this->assign('rate',$rate);
+        $this->assign('date',$date/86400);
         $this->assign('user',$user);
         $this->assign('order',$order);   
         return $this->fetch();
@@ -263,8 +295,11 @@ class OrderController extends CheckController
      */
     public function jtxx(){
         $id = session('userid');
-        $data = Db::name('hx_order')->where(array('fid'=>$id))->select();
-        $arrName = array();
+        //查询fid==id
+        $con = 
+        $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->select();
+
+        //将user表的nema值插入数组
         foreach ($data as $key => $value) {
             $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
             $value['name'] = $name['name'];

@@ -119,22 +119,17 @@ class UserController extends CheckController
         if($this->request->isPost()){
             $data = $this->request->param();
 
-            $phone = Db::name('hx_user')->field('phone')->select()->toArray();
+            $phone = Db::name('hx_user')->field('phone')->select();
 
             foreach ($phone as $key => $value) {
                 // dump($value['phone']);
             }
-
+            // dump($value);die;
             if($data['phone'] == $value['phone']){
                 $this->error("手机号已被注册,请重新输入！");
             }else{
-
-                if(!isset($cmsCode)){
-                    $cmsCode = '';
-                }
                 $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->find();
-
-                if($data['cmsCode'] == $cmsCode['cmsCode']){
+                if($data['cmsCode'] == $cmsCode['code']){
                     $res = array(
                         'phone'  => $data['phone'],
                     );

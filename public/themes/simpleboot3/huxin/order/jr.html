@@ -44,19 +44,19 @@
     <ul>
     	<li>
         	<div class="thumbnail">
-            <a href="#">10</a>
+            <a href="#">{$order.price}</a>
             <div class="caption">金额(元)</div>
             </div>
         </li>
         <li>
         	<div class="thumbnail">
-            <a href="#">0%</a>
+            <a href="#">{$order.rate}%</a>
             <div class="caption">年利率</div>
             </div>
         </li>
         <li>
         	<div class="thumbnail">
-            <a href="#">6</a>
+            <a href="#">{$date}</a>
             <div class="caption">期限(天)</div>
             </div>
         </li>
@@ -66,15 +66,17 @@
 	<li class="item item-input">
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">已借到</span>
-	<input type="text" label="contact" icon="info" placeholder="0" class="field" style="text-align:right;">
+	<!-- <input type="text" label="contact" icon="info" placeholder="0" class="field" style="text-align:right;"> -->
 	</label>
+    <h3 class="item-title" style="text-align:right;">{$y}</h3>
+    <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
     <li class="item item-input">
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">待借</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">10</h3>
+    <h3 class="item-title" style="text-align:right;">{$d}</h3>
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>

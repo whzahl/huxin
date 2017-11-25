@@ -44,19 +44,19 @@
     <ul>
     	<li>
         	<div class="thumbnail">
-            <a href="#">10</a>
+            <a href="#">{$order.price}</a>
             <div class="caption">金额(元)</div>
             </div>
         </li>
         <li>
         	<div class="thumbnail">
-            <a href="#">0%</a>
+            <a href="#">{$order.rate}%</a>
             <div class="caption">年利率</div>
             </div>
         </li>
         <li>
         	<div class="thumbnail">
-            <a href="#">6</a>
+            <a href="#">{$date}</a>
             <div class="caption">期限(天)</div>
             </div>
         </li>
@@ -67,7 +67,7 @@
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">收益</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">0.00</h3>
+    <h3 class="item-title" style="text-align:right;">{$rate|round=###,2}元</h3>
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
@@ -91,7 +91,7 @@
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">借款状态</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">还有6天还款</h3>
+    <h3 class="item-title" style="text-align:right;">还有{$t}天还款</h3>
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>
@@ -125,20 +125,25 @@
             </li>
         </a>
     </if>
-    <if condition="$order.status neq 3">
+    <if condition="$order.status neq 3 && $order.status neq 0">
         <a href="{:url('order/xz1',array('id'=>$order.id, 'status'=> 3))}">
             <li class="item item-noline">
                <button class="btn btn-block btn-green">销账</button>
             </li>
         </a>
     </if>
-    <if condition="$order.status neq 3">
+    <if condition="$order.status neq 3 && $order.status neq 0">
         <a href="{:url('order/xz1',array('id'=>$order.id))}">
             <li class="item item-noline">
                 <button class="btn btn-block btn-green">展期</button>
             </li>
         </a>
     </if>
+    <a href="javascript:history.back()">
+        <li class="item item-noline">
+            <button class="btn btn-block btn-green">返回</button>
+        </li>
+    </a>
 	</ul>
 </div>
 </div>
