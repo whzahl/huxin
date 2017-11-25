@@ -51,7 +51,6 @@ class LoginController extends HomeBaseController
     {
         if($this->request->isPost()){
             $data = $this->request->param();
-
             $phone = Db::name('hx_user')->field('phone')->select();
             foreach ($phone as $key => $value) {
 
