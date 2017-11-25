@@ -58,7 +58,7 @@
         <li>
         	<div class="thumbnail">
             <a href="#"><img src="__TMPL__/huxin/static/images/icon-yq.png"></a>
-            <div class="caption">逾期(0)</div>
+            <div class="caption">逾期({$overdue})</div>
             </div>
         </li>
         <li>
@@ -73,10 +73,15 @@
 <div class="list-container">
 	<ul class="list">
     <li class="item item-linked" style="border-bottom:.6rem solid #f0f0f0;"><a href="#">
-	<h3 class="item-title">进行中的借款</h3><span class="field-label">当前无借款</span>
+	<h3 class="item-title">进行中的借款</h3>
+    <if condition="$ing eq ''">
+        <span class="field-label">当前无借款</span>
+    <else />
+        <span class="field-label">{$ing}</span>
+    </if>  
 	<span class="icon icon-right-nav"></span></a></li>
     <li class="item item-linked" style="border-bottom:.6rem solid #f0f0f0;"><a href="#">
-	<h3 class="item-title">我们间交易</h3><span class="field-label">共2笔</span>
+	<h3 class="item-title">我们间交易</h3><span class="field-label">共{$ord}笔</span>
 	<span class="icon icon-right-nav"></span></a></li>
     </ul>
 	<ul class="list">
@@ -108,7 +113,7 @@
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">注册于</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">{$data.create_time|date="Y-m-d H:i:s",###}</h3>
+    <h3 class="item-title" style="text-align:right;">{$data.create_time|date="Y-m-d H:i",###}</h3>
     <div class="icon icon-right-nav">&nbsp;</div>
 	</div>
 	</li>

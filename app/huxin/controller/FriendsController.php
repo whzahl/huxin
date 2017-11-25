@@ -207,7 +207,7 @@ class FriendsController extends CheckController
     public function unfriend()
     {
         $id = session('userid');
-        $unread = Db::name('hx_friends')->where(array('fid' => $id, 'status' => 2))->select();
+        $unread = Db::name('hx_friends')->where(array('fid' => $id, 'status' => 2))->order('id desc')->select();
 
         $this->assign('data', $unread);
         return $this->fetch();
@@ -221,11 +221,14 @@ class FriendsController extends CheckController
         $fname = $name['name'];
         $me = Db::name('hx_user')->where(array('id' => $userid))->find();
         $uname = $me['name'];
-        $t = date("Y-m-d");
+        $t = date();
         $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
         if($agree){
             $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
             Db::name('hx_friends')->where(array('uid' =>  $userid))->insert($user);
+            //加两条数据
+            $user2 = ['uid' =>  $id, 'uname' => $uname, 'fid' => $userid, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
+            Db::name('hx_friends')->where(array('uid' =>  $id))->insert($user2);
 
             $this->success('已同意好友请求！',url('friends/hy'));
         }
@@ -285,7 +288,7 @@ class FriendsController extends CheckController
             if ($arr) {
                 $this->success("查询成功~", url('friends/xy'));
             } else {
-                $this->error("查无此人，请注意输入姓名与身份证号码是否匹配！");
+                $this->error("查询为空，请注意输入姓名与身份证号码是否匹配！");
             }
 
         }

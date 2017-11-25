@@ -103,9 +103,41 @@ class OrderController extends CheckController
      * 20171124
      */
     public function bjt(){
-        $id = $this->request->param("id", 0, 'intval');
+        $userid = session('userid');
+        $userdata = Db::name('hx_user')->where(['id' => $userid])->find();
+        if(empty($userdata['idcard'])){
+            $this->error('还未实名认证，请实名认证！', url('user/auidcard'));
+        }
+        if(empty($userdata['deal_password'])){
+            $this->error('还未设置交易密码，请设置交易密码并注意保密！', url('user/audeal_password'));
+        }
+        $id = $this->request->param("id");
+        //全部数据
         $data = Db::name('hx_user')->where(['id' => $id])->find();
         $this->assign('data',$data);
+        //逾期数据
+        $overdue = Db::name('hx_order')->where(['fid' => $id])->where(['status' => 4])->count();
+        $this->assign('overdue',$overdue);
+        //进行中的借款
+        $ing = Db::name('hx_order')->where(['fid' => $id])->where(['status' => 1])->count();
+        $this->assign('ing',$ing);
+        //我们间的交易
+        $ord = Db::name('hx_order')->where(['fid' => $id])->count();
+        $this->assign('ord',$ord);
+        //我们的共同好友
+        //好友的好友
+        // $both1 = Db::name('hx_friends')->where(['fid' => $id])->field('fname')->select();
+        // foreach ($both1 as $key => $value1) {
+        //     # code...
+        // }
+        // dump($value1);
+        // //我的好友
+        // $both2 = Db::name('hx_friends')->where(['fid' => $userid])->field('fname')->select();
+        // foreach ($both2 as $key => $value2) {
+        //     # code...
+        // }
+        // dump($value2);die;
+
         return $this->fetch();
     }
 
@@ -162,11 +194,11 @@ class OrderController extends CheckController
      */
     public function jt()
     {
-        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
+        $userid = session('userid');
+        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>$userid))->select();
         $friends = array();
         foreach ($arrData as $key=>$value){
             $fname = Db::name('hx_user')->field('name')->where(array('id'=>$value['fid']))->find();
-
             $value['fname'] = $fname['name'];
             $value['char'] = $this->getFirstChar($value['fname']);
             $friends[] = $value;
@@ -184,9 +216,16 @@ class OrderController extends CheckController
      * 20171124
      */
     public function jted(){
-        $fid = $this->request->param("id", 0, 'intval');
+        $fid = $this->request->param("id");
         $this->assign('fid',$fid);
-        $uid = session('userid');  
+        $uid = session('userid');
+        $userdata = Db::name('hx_user')->where(['id' => $uid])->find();
+        if(empty($userdata['idcard'])){
+            $this->error('还未实名认证，请实名认证！', url('user/auidcard'));
+        }
+        if(empty($userdata['deal_password'])){
+            $this->error('还未设置交易密码，请设置交易密码并注意保密！', url('user/audeal_password'));
+        }  
         if($this->request->isPost()){
             $data = $this->request->param();
             if($data){
@@ -253,7 +292,7 @@ class OrderController extends CheckController
      * 20171124
      */
     public function xz(){
-        $id = $this->request->param("id", 0, 'intval');
+        $id = $this->request->param("id");
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
         //借还款时间
         $end = $order['end_time'];
@@ -288,6 +327,7 @@ class OrderController extends CheckController
         return $this->fetch();
     }
 
+
 /**
      * 借条中心
      * weilang
@@ -298,7 +338,7 @@ class OrderController extends CheckController
         //查询fid==id
         $con = 
         $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
-
+        $arrName = array();
         //将user表的nema值插入数组
         foreach ($data as $key => $value) {
             $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();

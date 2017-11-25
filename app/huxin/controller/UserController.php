@@ -183,6 +183,54 @@ class UserController extends CheckController
         return $this->fetch();
         
     }
+
+
+
+/**
+     * 身份证实名认证
+     * weilang
+     * 20171125
+     */
+    public function auidcard(){
+        $id = session('userid');
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            if(empty($data['name'])){
+                $this->error('请输入姓名！');
+            }elseif(empty($data['idcard'])){
+                $this->error('请输入正确身份证号码！');
+            }else{
+                Db::name('hx_user')->where(['id' => $id])->update($data);
+                $this->success('身份证认证成功！', url('user/grzx'));
+            }
+        }
+        return $this->fetch();
+    }
+
+
+/**
+     * 设置交易密码
+     * weilang
+     * 20171125
+     */
+    public function audeal_password(){
+        $id = session('userid');
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            if(empty($data)){
+                $this->error('交易密码为空，请输入后提交！');
+            }elseif($data['passwordNew1'] != $data['passwordNew2']){
+                $this->error('两次密码不一致！');
+            }else{
+                $arr = array(
+                    'deal_password'  => $data['passwordNew2'],
+                );
+                Db::name('hx_user')->where(['id' => $id])->update($arr);
+                $this->success('交易密码设置成功！', url('user/grzx'));
+            }
+        }
+        return $this->fetch();
+    }
   
 
 
