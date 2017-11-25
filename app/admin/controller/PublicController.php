@@ -84,6 +84,7 @@ class PublicController extends AdminBaseController
         $result = Db::name('user')->where($where)->find();
 
         if (!empty($result) && $result['user_type'] == 1) {
+            $abc = cmf_compare_password($pass, $result['user_pass']);
             if (cmf_compare_password($pass, $result['user_pass'])) {
                 $groups = Db::name('RoleUser')
                     ->alias("a")
@@ -107,6 +108,7 @@ class PublicController extends AdminBaseController
                 session("__LOGIN_BY_CMF_ADMIN_PW__", null);
                 $this->success(lang('LOGIN_SUCCESS'), url("admin/Index/index"));
             } else {
+
                 $this->error(lang('PASSWORD_NOT_RIGHT'));
             }
         } else {

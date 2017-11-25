@@ -19,20 +19,33 @@
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
 </head>
-
+<header class="header">
+<div>
+  <div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>好友请求列表<span class="right"></span>
+    </div>
+</div>
+</header>
 <body>
-  <div>
-    <div class="left">
+  <div class="wrap-page">
+    <div style="width: 100%" class="left">
       <foreach name="data" item="vo">
         <ul>
-          <li>{$vo.uname}</li>
-          <li>请求加你为好友</li>
-          <li class="item item-noline"> 
+          <li class="item item-input">
+            <p style="padding-left: 20px;"><b>{$vo.uname}</b></p>&nbsp;请求加为好友
+            <div style="float: right">
+              <a href="{:url('friends/agreefriend')}?id={$vo.uid}" class="btn btn-block btn-green">同意</a>
+            </div> 
+            <div style="float: right">  
+              <a href="{:url('friends/deletefriend')}?id={$vo.uid}" class="btn btn-block btn-green">拒绝</a>
+            </div>
+          </li>
+<!--           <li class="item item-noline"> 
             <a href="{:url('friends/agreefriend')}?id={$vo.uid}" class="btn btn-block btn-green">同意</a>
           </li>
           <li class="item item-noline"> 
             <a href="{:url('friends/deletefriend')}?id={$vo.uid}" class="btn btn-block btn-green">拒绝</a>
-          </li>
+          </li> -->
         </ul>
       </foreach>
     </div>

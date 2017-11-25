@@ -44,11 +44,11 @@
       <td>{$vo.start_time}</th>
       <td>{$vo.end_time}</th>
       <td>
-        <if condition="$vo.status eq 0">未同意</if>
-        <if condition="$vo.status eq 1">已同意</if>
-        <if condition="$vo.status eq 2">还款中</if>
-        <if condition="$vo.status eq 3">已还款</if>
-        <if condition="$vo.status eq 4">已逾期</if>
+        <if condition="$vo.status eq 0"><p style="color: #F39C12">未同意</p></if>
+        <if condition="$vo.status eq 1"><p style="color: #3498DB">已同意</p></if>
+        <if condition="$vo.status eq 2"><p style="color: #95a5a6">还款中</p></if>
+        <if condition="$vo.status eq 3"><p style="color: green">已还款</p></if>
+        <if condition="$vo.status eq 4"><p style="color: #d62c1a">已逾期</p></if>
       </th>
     </tr>
   </foreach>

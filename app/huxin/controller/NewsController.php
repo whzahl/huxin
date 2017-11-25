@@ -22,50 +22,52 @@ class NewsController extends HomeBaseController
 
 
     public function newsshow()
-    {   header("Content-Type: text/html; charset=utf-8");
-   
-       $id=input('get.id');
-
-    
-       $news=Db::name('hx_news')->where(array('id'=>$id))->find();
-       
-       $this->assign('data',$news);
-
-
-       
-
+    {   
+        header("Content-Type: text/html; charset=utf-8");
+        $id=input('get.id');
+        $news=Db::name('hx_news')->where(array('id'=>$id))->find();
+        $this->assign('data',$news);
         return $this->fetch();
     }
+
+
     public function newslist()
     {   
     	header("Content-Type: text/html; charset=utf-8");
     	$data = Db::name('hx_news')->select();
-
     	$this->assign('data',$data);
     	return $this->fetch();
     }
-     public function money()
+
+
+
+     public function type1()
     {   
         header("Content-Type: text/html; charset=utf-8");
         $data=Db::name('hx_news')->where(array('type'=>0))->select();
+        $this->assign('data',$data);
+        return $this->fetch();
+    }
 
-       $this->assign('data',$data);
-        return $this->fetch();
-    }
-     public function invest()
+
+
+     public function type2()
     {   
         header("Content-Type: text/html; charset=utf-8");
-       $data=Db::name('hx_news')->where(array('type'=>1))->select();
-        
-       $this->assign('data',$data);
+        $data=Db::name('hx_news')->where(array('type'=>1))->select();
+        $this->assign('data',$data);
         return $this->fetch();
     }
-     public function talk()
+
+
+
+     public function type3()
     {   
         header("Content-Type: text/html; charset=utf-8");
-       $data=Db::name('hx_news')->where(array('type'=>2))->select();
-        
-       $this->assign('data',$data);
+        $data=Db::name('hx_news')->where(array('type'=>2))->select();
+        $this->assign('data',$data);
         return $this->fetch();
     }
+
+    
 }

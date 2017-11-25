@@ -18,44 +18,64 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+	<include file="huxin@commonSrc"/>
 	<script type="text/javascript">
-		$(function(){  
-	    $(".generate_code").click(function(){  
+		$(function(){
+	    $(".generate_code").click(function(){
 	      var disabled = $(".generate_code").attr("disabled");  
 	      if(disabled){  
 	        return false;  
 	      }  
-	      if($("#mobile").val() == "" || isNaN($("#mobile").val()) || $("#mobile").val().length != 11 ){  
-	        alert("请填写正确的手机号！");  
-	        return false;  
-	      }  
+	      if($("#mobile").val() == "" || isNaN($("#mobile").val()) || $("#mobile").val().length != 11 ){
+			  swal({
+				  title: "手机号格式错误",
+				  text:"请重新输入!",
+				  type:"error"
+			  });
+	        return false;
+	      }
+			console.log("data之前的东西");
 	      $.ajax({  
-	        async:false,  
-	        type: "GET",  
+	        type: "GET",
 	        url: "{:url('/huxin/login/sendSMS')}",  
 	        data: {mobile:$("#mobile").val()},  
 	        dataType: "json",  
 	        async:false,  
-	        success:function(data){  
-	          console.log(data);  
-	          settime();  
+	        success:function(data){
+	          settime();
 	        },  
-	        error:function(err){  
+	        error:function(err){
 	          console.log(err);  
 	        }  
 	      });  
-	    });  
-	    var countdown=60;  
-	    var _generate_code = $(".generate_code");  
-	    function settime() {  
+	    });
+	    $(":submit").click(function () {
+			var card = $("#idcard").val();
+			if (!isCardNo(card)){
+                swal({
+                    title: "身份证格式错误",
+                    text:"请重新输入!",
+                    type:"error"
+                });
+                return false;
+			}
+        });
+		function isCardNo(card) {
+			var pattern = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/;
+			return pattern.test(card);
+		}
+		var countdown=60;
+	    var _generate_code = $(".generate_code");
+	    function settime() {
 	      if (countdown == 0) {  
-	        _generate_code.attr("disabled",false);  
-	        _generate_code.val("获取验证码");  
+	        _generate_code.attr("disabled",false);
+	        _generate_code.val("获取验证码");
 	        countdown = 60;  
 	        return false;  
-	      } else {  
-	        $(".generate_code").attr("disabled", true);  
-	        _generate_code.val("重新发送(" + countdown + ")");  
+	      }
+	      else {
+	        $(".generate_code").attr("disabled", true);
+	        _generate_code.val("重新发送(" + countdown + ")");
 	        countdown--;  
 	      }  
 	      setTimeout(function() {  
@@ -89,7 +109,7 @@
     <li class="item item-input">
 		<div class="item-main">
 		<label class="field-container">
-			<input type="text" name="idcard" label="contact" icon="info" placeholder="身份证号码" class="field">
+			<input type="text" id="idcard" name="idcard" label="contact" icon="info" placeholder="身份证号码" class="field">
 		</label>
 		</div>
 	</li>
@@ -97,6 +117,13 @@
 		<div class="item-main">
 		<label class="field-container">
 			<input type="password" name="password" label="contact" icon="info" placeholder="登录密码" class="field">
+		</label>
+		</div>
+	</li>
+	<li class="item item-input">
+		<div class="item-main">
+		<label class="field-container">
+			<input type="password" name="deal_password" label="contact" icon="info" placeholder="交易密码" class="field">
 		</label>
 		</div>
 	</li>
@@ -111,7 +138,8 @@
 		<div class="item-main">
 		<label class="field-container">
 			<input type="text" name="cmsCode" label="yzcode" icon="person" placeholder="请输入验证码" class="field">
- 			<input type="button" class="obtain generate_code" value=" 获取验证码"> 
+ 			<input type="button" class="obtain generate_code" value=" 获取验证码">
+
 		</label>
 		</div>
 	</li>

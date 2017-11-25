@@ -35,6 +35,12 @@ class OrderController extends CheckController
         return $array;
     }
 
+
+/**
+     * 还有列表排序
+     * weilang
+     * 20171124
+     */
     public function getFirstChar($s){
         $s0 = mb_substr($s,0,3); //获取名字的姓
         $s = iconv('UTF-8','GB2312', $s0); //将UTF-8转换成GB2312编码
@@ -90,14 +96,19 @@ class OrderController extends CheckController
         }
     }
 
+
+/**
+     * 补借条
+     * weilang
+     * 20171124
+     */
     public function bjt(){
         $id = $this->request->param("id", 0, 'intval');
         $data = Db::name('hx_user')->where(['id' => $id])->find();
-
         $this->assign('data',$data);
-
         return $this->fetch();
     }
+
 
     /**
      * 借出
@@ -128,6 +139,11 @@ class OrderController extends CheckController
     }
 
 
+/**
+     * 好友
+     * name:
+     * time:
+     */
     public function jt()
     {
         $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>4))->select();
@@ -146,6 +162,11 @@ class OrderController extends CheckController
     }
 
 
+/**
+     * 借条额度
+     * weilang
+     * 20171124
+     */
     public function jted(){
         $fid = $this->request->param("id", 0, 'intval');
         $this->assign('fid',$fid);
@@ -177,6 +198,11 @@ class OrderController extends CheckController
     }
 
 
+/**
+     * 借条额度（出）
+     * weilang
+     * 20171124
+     */
     public function jtedc(){
         $id = session('userid');
         if($this->request->isPost()){
@@ -205,6 +231,11 @@ class OrderController extends CheckController
     }
 
 
+/**
+     * 销账
+     * weilang
+     * 20171124
+     */
     public function xz(){
         $id = $this->request->param("id", 0, 'intval');
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
@@ -215,14 +246,22 @@ class OrderController extends CheckController
     }
 
 
+/**
+     * 收还款
+     * weilang
+     * 20171124
+     */
     public function shk()
     {
         return $this->fetch();
     }
 
-
-    public function jtxx()
-    {
+/**
+     * 借条中心
+     * weilang
+     * 20171124
+     */
+    public function jtxx(){
         $id = session('userid');
         $data = Db::name('hx_order')->where(array('fid'=>$id))->select();
         $arrName = array();
@@ -244,9 +283,33 @@ class OrderController extends CheckController
      */
     public function xz1(){
         $info = $this->request->param();
-        if($info){
+        if($info['status'] == 1){
+            $this->success('请输入交易密码！', url('order/dpassword',['id' => $info['id']]));
+        }else{
             Db::name('hx_order')->where(array('id'=>$info['id']))->update(['status' => $info['status']]);
             $this->success('修改成功！', url('order/jtxx'));
+        }
+        return $this->fetch();
+    }
+
+
+    /**
+     * 交易密码
+     * weilang
+     * 20171124
+     */
+    public function dpassword(){
+        $info = $this->request->param();
+        $this->assign('info',$info);
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            $dpw = Db::name('hx_user')->where(array('id' => session('userid')))->field('deal_password')->find();
+            if($data['password'] == $dpw['deal_password']){
+                Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => 1]);
+                $this->success('操作成功！',url('order/jtxx'));
+            }else{
+                $this->success('密码错误，请重新输入！');
+            }
         }
         return $this->fetch();
     }
