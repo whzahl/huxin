@@ -297,7 +297,7 @@ class OrderController extends CheckController
         $id = session('userid');
         //查询fid==id
         $con = 
-        $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->select();
+        $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
 
         //将user表的nema值插入数组
         foreach ($data as $key => $value) {

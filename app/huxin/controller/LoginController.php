@@ -51,37 +51,40 @@ class LoginController extends HomeBaseController
     {
         if($this->request->isPost()){
             $data = $this->request->param();
-            $phone = Db::name('hx_user')->field('phone')->select();
-            foreach ($phone as $key => $value) {
 
-                 }
-            if($data['phone'] == $value['phone']){
+            if(!empty($data['phone'])){
+                //查询所有手机号
+                $phone = Db::name('hx_user')->field('phone')->select();
+                foreach ($phone as $key => $value) {
 
-                $this->error("手机号已被注册,请重新输入！");
-            }else{
-                $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->field('code')->find();
-                if($data['cmsCode'] == $cmsCode['code']){
-                    $res = array(
-                        'name'      => $data['name'],
-                        'idcard'    => $data['idcard'],
-                        'phone'     => $data['phone'],
-                        'password'  => $data['password'],
-                        'deal_password' => $data['deal_password'],
-                        'create_time'   => $this->request->time(),
-                        'sex'       => 2,
-                        'level'     => 1,
-                        'address'   => "beijing",
-
-                    );
-                    $result = Db::name('hx_user')->insert($res);
-                    if(!empty($result)){
-                        $this->success("注册成功！",url('login/login'));
-                    }else{
-                        $this->error("注册失败！");
-                    }
+                     }
+                //验证手机号是否被注册
+                if($data['phone'] == $value['phone']){
+                    $this->error("该手机号已被注册！");
+                }elseif(empty($data['passwordt'])){
+                    $this->error("请输入密码！");
+                }elseif($data['password'] != $data['passwordt']){
+                    $this->error("密码不一致！");
                 }else{
-                    $this->error("验证码错误！");
+                    $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->field('code')->find();
+                    if($data['cmsCode'] == $cmsCode['code']){
+                        $res = array(
+                            'phone'     => $data['phone'],
+                            'password'  => $data['password'],
+                            'create_time'   => $this->request->time(),
+                        );
+                        $result = Db::name('hx_user')->insert($res);
+                        if(!empty($result)){
+                            $this->success("注册成功！",url('login/login'));
+                        }else{
+                            $this->error("注册失败！");
+                        }
+                    }else{
+                        $this->error("验证码错误！");
+                    }
                 }
+            }else{
+                $this->error("请输入手机号！");
             }
         }
         return $this->fetch();
