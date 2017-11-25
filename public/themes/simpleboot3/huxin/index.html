@@ -17,12 +17,25 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+    <include file="huxin@commonSrc"/>
+    <!--<link rel="stylesheet" type="text/css" href="http://sandbox.runjs.cn/uploads/rs/499/ixc5vbvz/sweetalert.css"/>-->
+    <!--<script src="http://sandbox.runjs.cn/uploads/rs/499/ixc5vbvz/sweetalert.min.js"></script>-->
+    <script>
+        $(document).ready(function () {
+            $(".showAlert").click(function () {
+                swal({
+                    title: "密码错误",
+                    text:"请重新输入!",
+                    type:"error"
+                });
+            })
+        })
+    </script>
 </head>
 
 <body>
 <header class="header">
 	<div class="top-container"><span class="left"></span>首页<span class="right"><a href="#">&nbsp;</a></span></div>
-</div>
 </header>
 <div class="wrap-page">
 <div class="flexslider-banner carousel clearfix">
@@ -71,6 +84,8 @@
     <a href="http://www.miitbeian.gov.cn" target="_blank">沪ICP备15013778号</a>
 </div>
 </div>
+
 <include file="huxin@footer"/>
+
 </body>
 </html>
