@@ -385,6 +385,28 @@ class OrderController extends CheckController
     }
 
 
+/**
+     * 借条中心--进行中的
+     * weilang
+     * 20171124
+     */
+    public function jtxxj(){
+        $id = session('userid');
+        //查询fid==id
+        $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
+        $arrName = array();
+        //将user表的nema值插入数组
+        foreach ($data as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+
+        $this->assign('data',$arrName);
+        return $this->fetch();
+    }
+
+
     /**
      * 同意/销账/拒绝
      * weilang
