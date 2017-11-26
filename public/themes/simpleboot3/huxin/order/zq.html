@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对ios的safari ios7.0版本以后，safari上已看不到效果-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
+    <meta name="format-detection" content="telphone=no, email=no" />
+    <title>销账_互信网</title>
+    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
+    <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+        -webkit-appearance: none; //去掉浏览器默认样式
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-touch-callout: none;
+        box-sizing: border-box;
+    }
+    
+    html,
+    body {
+        margin: 0 auto;
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+        -webkit-user-select: none;
+    }
+    
+    body {
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        -webkit-text-size-adjust: 100%; //关闭自动调整字体
+        -webkit-overflow-scrolling: touch;
+        overflow-scrolling: touch;
+    }
+    
+    input {
+        width: 90%;
+        height: 40px;
+        font-size: 18px;
+        border: 1px solid #b72f20;
+        border-radius: 5px;
+        margin: 20px 5% 0 5%;
+        padding: 5px;
+    }
+    
+    h1 {
+        background-color: #b72f20;
+        color: #fff;
+        font-size: 25px;
+        text-align: center;
+        padding: 10px;
+    }
+    </style>
+    <link rel="stylesheet" href="__TMPL__/huxin/static/css/LCalendar.css">
+</head>
+
+<body>
+<div class="wrap-page wrap-page-noheaderfooter">
+<div class="login-tx">
+    <if condition="$user.photo eq ''">
+        <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"><p>{$user.name}</p>
+    </if>
+    <if condition="$user.photo neq ''">
+        <img src="__ROOT__/.{$user.photo}" class="tx"><p>{$user.name}</p>
+    </if>
+</div>
+<div class="list-container">
+    <ul class="list">
+    <li class="item item-linked" style="border-bottom:.6rem solid #f0f0f0;">
+        <a href="#">
+        <h3 class="item-title">借入</h3>
+        <span class="field-label">{$order.price}元</span>
+        <span class="icon icon-right-nav"></span>
+        </a>
+    </li>
+    </ul>
+    <div class="login-threelist" >
+    <ul>
+        <li>
+            <div class="thumbnail">
+            <a href="#">{$order.price}</a>
+            <div class="caption">金额(元)</div>
+            </div>
+        </li>
+        <li>
+            <div class="thumbnail">
+            <a href="#">{$order.rate}%</a>
+            <div class="caption">年利率</div>
+            </div>
+        </li>
+        <li>
+            <div class="thumbnail">
+            <a href="#">{$date}</a>
+            <div class="caption">期限(天)</div>
+            </div>
+        </li>
+    </ul>
+    </div>
+    <ul class="list">
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">收益</span>
+    </label>
+    <h3 class="item-title" style="text-align:right;">{$rate|round=###,2}元</h3>
+    &nbsp;
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">借款日期</span>
+    </label>
+    <h3 class="item-title" style="text-align:right;">{$order.start_time}</h3>
+    &nbsp;
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">还款日期</span>
+    </label>
+    <h3 class="item-title" style="text-align:right;">{$order.end_time}</h3>
+    &nbsp;
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">借款状态</span>
+    </label>
+    <h3 class="item-title" style="text-align:right;">还有{$t}天还款</h3>
+    &nbsp;
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">还款方式</span>
+    </label>
+    <h3 class="item-title" style="text-align:right;">到期一次性还本付息</h3>
+    &nbsp;
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">借款合同</span>
+    </label>
+    <h3 class="item-title" style="text-align:right;">PW0000000050565</h3>
+    &nbsp;
+    </div>
+    </li>
+    <form method="post" action="{:url('order/zq')}">
+        <li class="item item-input">
+        <div class="item-main">
+        <label class="field-container"><span class="field-label">展期至</span>
+        </label>
+        <input id="demo2" type="text"  onclick="return Calendar('demo2');" name="end_time" readonly="" placeholder="请输入还款日期" data-lcalendar="2016-05-11,2016-05-11" />
+        &nbsp;
+        </div>
+        </li> 
+        <input type="hidden" name="id" value="{$order.id}">
+        <li class="item item-noline">
+           <button class="btn btn-block btn-green">确认展期</button>
+        </li>
+    </form>
+    <a href="javascript:history.back()">
+        <li class="item item-noline">
+            <button class="btn btn-block btn-green">返回</button>
+        </li>
+    </a>
+    </ul>
+</div>
+</div>
+<script src="__TMPL__/huxin/static/js/LCalendar.js"></script>
+    <script>
+    var calendardatetime = new LCalendar();
+    calendardatetime.init({
+        'trigger': '#demo2',
+        'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+        'minDate': '1990-1-1', //最小日期
+        'maxDate': '2030-1-1'//最大日期
+    });
+    </script>
+</body>
+</html>

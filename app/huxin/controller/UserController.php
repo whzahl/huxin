@@ -193,17 +193,24 @@ class UserController extends CheckController
      */
     public function auidcard(){
         $id = session('userid');
-        if($this->request->isPost()){
-            $data = $this->request->param();
-            if(empty($data['name'])){
-                $this->error('请输入姓名！');
-            }elseif(empty($data['idcard'])){
-                $this->error('请输入正确身份证号码！');
-            }else{
-                Db::name('hx_user')->where(['id' => $id])->update($data);
-                $this->success('身份证认证成功！', url('user/grzx'));
+        $idc = Db::name('hx_user')->where(['id' => $id])->field('idcard')->find();
+        if(empty($idc['idcard'])){
+            if($this->request->isPost()){
+                $data = $this->request->param();
+                if(empty($data['name'])){
+                    $this->error('请输入姓名！');
+                }elseif(empty($data['idcard'])){
+                    $this->error('请输入正确身份证号码！');
+                }else{
+                    Db::name('hx_user')->where(['id' => $id])->update($data);
+                    $this->success('身份证认证成功！', url('user/grzx'));
+                }
             }
+        }else{
+
+            $this->success('已经认证！');
         }
+        
         return $this->fetch();
     }
 

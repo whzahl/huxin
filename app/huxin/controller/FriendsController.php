@@ -167,10 +167,8 @@ class FriendsController extends CheckController
     public function mynewfriend()
     {
         $phone = Request::instance()->param('phone');
-
         $friends = Db::name('hx_user')->where('phone', $phone)->find();
         $this->assign('data', $friends);
-
         return $this->fetch();
     }
 
@@ -196,6 +194,16 @@ class FriendsController extends CheckController
         );
         $res = Db::name('hx_friends')->where(array('uid' => $id))->insert($user);
         if($res){
+            //添加消息
+                $infos = array(
+                    'uid'       => $id,
+                    'fid'       => $newfriendid,
+                    'content'   => '添加好友',
+                    'type'      => 1,
+                    'create_time'=> $this->request->time(),
+                );
+                Db::name('hx_infos')->insert($infos);
+                //添加消息结束
             $this->success('好友请求已发送，等待好友审核！',url('friends/hy'));
         }else{
             $this->error('添加失败！');

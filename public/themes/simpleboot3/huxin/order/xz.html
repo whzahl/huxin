@@ -23,11 +23,11 @@
 <body>
 <div class="wrap-page wrap-page-noheaderfooter">
 <div class="login-tx">
-    <if condition="$user.photo eq ''">
-        <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"><p>{$user.name}</p>
+    <if condition="$friend.photo eq ''">
+        <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx"><p>{$friend.name}</p>
     </if>
-    <if condition="$user.photo neq ''">
-        <img src="__ROOT__/.{$user.photo}" class="tx"><p>{$user.name}</p>
+    <if condition="$friend.photo neq ''">
+        <img src="__ROOT__/.{$friend.photo}" class="tx"><p>{$friend.name}</p>
     </if>
 </div>
 <div class="list-container">
@@ -36,7 +36,7 @@
         <a href="#">
 	    <h3 class="item-title">借入</h3>
         <span class="field-label">{$order.price}元</span>
-	    <span class="icon icon-right-nav"></span>
+	    &nbsp;
         </a>
     </li>
     </ul>
@@ -68,7 +68,7 @@
 	<label class="field-container"><span class="field-label">收益</span>
 	</label>
     <h3 class="item-title" style="text-align:right;">{$rate|round=###,2}元</h3>
-    <div class="icon icon-right-nav">&nbsp;</div>
+    &nbsp;
 	</div>
 	</li>
     <li class="item item-input">
@@ -76,7 +76,7 @@
 	<label class="field-container"><span class="field-label">借款日期</span>
 	</label>
     <h3 class="item-title" style="text-align:right;">{$order.start_time}</h3>
-    <div class="icon icon-right-nav">&nbsp;</div>
+    &nbsp;
 	</div>
 	</li>
     <li class="item item-input">
@@ -84,15 +84,21 @@
 	<label class="field-container"><span class="field-label">还款日期</span>
 	</label>
     <h3 class="item-title" style="text-align:right;">{$order.end_time}</h3>
-    <div class="icon icon-right-nav">&nbsp;</div>
+    &nbsp;
 	</div>
 	</li>
     <li class="item item-input">
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">借款状态</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">还有{$t}天还款</h3>
-    <div class="icon icon-right-nav">&nbsp;</div>
+    <h3 class="item-title" style="text-align:right;">
+        <if condition="$t < 0">
+            <p style="color: #d62c1a">已逾期</p>
+        <else />
+            还有{$t}天还款
+        </if>
+    </h3>
+    &nbsp;
 	</div>
 	</li>
     <li class="item item-input">
@@ -100,7 +106,7 @@
 	<label class="field-container"><span class="field-label">还款方式</span>
 	</label>
     <h3 class="item-title" style="text-align:right;">到期一次性还本付息</h3>
-    <div class="icon icon-right-nav">&nbsp;</div>
+    &nbsp;
 	</div>
 	</li>
 	<li class="item item-input">
@@ -108,11 +114,11 @@
 	<label class="field-container"><span class="field-label">借款合同</span>
 	</label>
     <h3 class="item-title" style="text-align:right;">PW0000000050565</h3>
-    <div class="icon icon-right-nav">&nbsp;</div>
+    &nbsp;
 	</div>
 	</li>
     <if condition="$order.status eq 0">
-        <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 1))}">
+        <a href="{:url('order/dpassword',array('id'=>$order.id, 'status' => 1))}">
             <li class="item item-noline">
                <button class="btn btn-block btn-green">同意</button>
             </li>
@@ -126,14 +132,14 @@
         </a>
     </if>
     <if condition="$order.status neq 3 && $order.status neq 0">
-        <a href="{:url('order/xz1',array('id'=>$order.id, 'status'=> 3))}">
+        <a href="{:url('order/dpassword',array('id'=>$order.id, 'status'=> 3))}">
             <li class="item item-noline">
                <button class="btn btn-block btn-green">销账</button>
             </li>
         </a>
     </if>
     <if condition="$order.status neq 3 && $order.status neq 0">
-        <a href="{:url('order/xz1',array('id'=>$order.id))}">
+        <a href="{:url('order/zq',array('id'=>$order.id))}">
             <li class="item item-noline">
                 <button class="btn btn-block btn-green">展期</button>
             </li>
