@@ -56,12 +56,12 @@ class LoginController extends HomeBaseController
                 //查询所有手机号
                 $phone = Db::name('hx_user')->field('phone')->select();
                 foreach ($phone as $key => $value) {
-
-                     }
+                    if($data['phone'] == $value['phone']){
+                        $this->error("该手机号已被注册！");
+                    }
+                 }
                 //验证手机号是否被注册
-                if($data['phone'] == $value['phone']){
-                    $this->error("该手机号已被注册！");
-                }elseif(empty($data['passwordt'])){
+                if(empty($data['passwordt'])){
                     $this->error("请输入密码！");
                 }elseif($data['password'] != $data['passwordt']){
                     $this->error("密码不一致！");

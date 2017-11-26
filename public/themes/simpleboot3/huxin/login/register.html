@@ -18,6 +18,7 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/showInfo.js"></script>
 	<!-- 验证-->
 	<link type="text/css" rel="stylesheet" href="__TMPL__/huxin/static/css/slide-unlock.css">
 
@@ -51,41 +52,6 @@
 	        }  
 	      });  
 	    });
-	 //    $(":submit").click(function () {
-		// 	var card = $("#idcard").val();
-		// 	if (!isCardNo(card)){
-  //               swal({
-  //                   title: "身份证格式错误",
-  //                   text:"请重新输入!",
-  //                   type:"error"
-  //               });
-  //               return false;
-		// 	}
-		// 	$.ajax({
-		// 		type:"POST",
-		// 		url:$("form").attr("action"),
-		// 		data:decodeURIComponent($("form").serialize()),
-		// 		dataType:"json",
-		// 		success:function (data,textStatus) {
-  //                   swal(data.msg);
-  //                   //额外绑定一个事件，当确定执行之后返回成功的页面的确定按钮，点击之后刷新当前页面或者跳转其他页面
-		// 			if (data.url !== ""){
-  //                       $('.confirm').click(function () {
-  //                           window.location = data.url;
-  //                       });
-		// 			}
-		// 			console.log(data);
-  //               },
-		// 		error:function (error) {
-		// 			console.log(error);
-  //               }
-		// 	});
-		// 	return false;
-  //       });
-		// function isCardNo(card) {
-		// 	var pattern = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/;
-		// 	return pattern.test(card);
-		// }
 		var countdown=60;
 	    var _generate_code = $(".generate_code");
 	    function settime() {
@@ -163,11 +129,11 @@
 <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.slideunlock.js"></script> 
 <script>
 $(function () {
+    $(":submit").attr("disabled",true);
     var slider = new SliderUnlock("#slider",{
 			successLabelTip : "验证成功"	
 		},function(){
-			// alert("");
-   //      	window.location.href="{:url('huxin/login/login')}"
+        	$(":submit").attr("disabled",false);
     	});
     slider.init();
 })
