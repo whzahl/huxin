@@ -11,34 +11,24 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-	<title>常见问题_互信网</title>
-    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
+	<title>好友请求</title>
+	<meta content="互信网" name="keywords">
+	<meta content="互信网" name="description">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
-    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
-	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-	<script type="text/javascript" src="__TMPL__/huxin/static/js/showInfo.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/showInfo.js"></script>
 </head>
 
 <body>
-<header class="header">
-<div>
-	<div class="top-container" style="background:#116fec; color:#FFF;">
-        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>常见问题<span class="right"></span>
-    </div>
-</div>
-</header>
-	<div class="wrap-page">
-		<div class="list-container">
-			<ul class="list">
-			    <li class="item item-input">Q:你好？</li>
-			    <li class="item item-input">A:这是一个回答这是一个回答这是一个回答这是一个回答这是一个回答这是一个回答这是一个回答</li>
-			</ul>
-		</div>
-	</div>
+  <table>
+    <tr>{$data.uname}请求添加你为好友</tr>
+    <tr>
+      <td><a href="{:url(huxin/friends/agreefriend)}">添加</a></td>
+      <td><a href="{:url(huxin/friends/delfriend)}">拒绝</a></td>
+    </tr>
 
-
-<include file="huxin@footer"/>
+  </table>
 </body>
 </html>
