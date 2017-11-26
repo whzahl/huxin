@@ -15,8 +15,37 @@ use think\Db;
 class NewsController extends HomeBaseController
 {
 
-    public function xxzx(){
 
+/**
+     * 消息中心
+     * weilang
+     * 20171126
+     */
+    public function xxzx(){
+        $id = session('userid');
+        $data = Db::name('hx_infos')->where(['fid' => $id])->order('create_time desc')->select();
+
+        foreach ($data as $key => $value) {
+            # code...
+        }
+            $infos =array();
+            foreach ($data as $key => $value) {
+                //将user表里的name插入infos
+                $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+                $value['name'] = $name['name'];
+                //将order表里的信息插入infos
+                $info = Db::name('hx_order')->where(['fid' => $id])->where(['create_time' => $value['create_time']])->find();
+                $value['price'] = $info['price'];
+                    $end = strtotime($info['end_time']);
+                    $sta = strtotime($info['start_time']);
+                    $date = $end - $sta;
+                    $d = $date/86400;
+                $value['time'] = $d;
+                $value['rate'] = $info['rate'];
+                $value['nid'] = $info['id'];
+                $infos[] = $value;
+            }
+        $this->assign('info',$infos);
         return $this->fetch();
     }
 

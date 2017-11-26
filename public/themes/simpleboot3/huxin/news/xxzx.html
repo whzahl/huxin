@@ -25,40 +25,52 @@
 </div>
 </header>
 <div class="wrap-page">
-<div class="card-container">
-	<div class="card-container-title"><span>2017年10月28日 上午10:05</span></div>
-	<div class="card">
-	<div class="card-header" role="card-header">
-	<div class="card-title">消息通知<span>10月28日</span></div>
+<foreach name="info" item="vo">
+	<div class="card-container">
+		<div class="card-container-title">
+			<span>{$vo.create_time|date = ("Y年m月d日 H时i分"),###}</span>
+		</div>
+		<div class="card">
+			<div class="card-header" role="card-header">
+				<div class="card-title">消息通知
+					<span>{$vo.create_time|date = ("m月d日"),###}</span>
+				</div>
+			</div>
+
+			<if condition="$vo.type eq 1">
+				<div class="card-body">
+			    	<p><span>尊敬的客户，您有新的<b>好友添加</b>申请！</span></p>
+					<p><span>name&nbsp;</span>请求添加为好友</p>
+				</div>
+				<div class="card-footer card-linked" role="card-footer">
+					<a href="messageshow.htm">详情
+						<span class="icon icon-right-nav"></span>
+					</a>
+				</div>
+			<else />
+				<div class="card-body">
+			    	<p>
+			    		<if condition="$vo.type eq 2"><span>尊敬的客户，您有新的<b>借款通知</b></span></if>
+			    		<if condition="$vo.type eq 3"><span>尊敬的客户，您有新的<b>确认通知</b></span></if>
+			    		<if condition="$vo.type eq 4"><span>尊敬的客户，您有新的<b>销账通知</b></span></if>
+			    		<if condition="$vo.type eq 5"><span>尊敬的客户，您有新的<b>展期通知</b></span></if>
+			    		<if condition="$vo.type eq 6"><span>尊敬的客户，您有新的<b>逾期通知</b></span></if>
+					</p>
+			    	<p>借款人：<span>{$vo.name}</span></p>
+			    	<p>借款金额：<span>{$vo.price}元</span></p>
+			    	<p>借款期限：<span>{$vo.time}天</span></p>
+			    	<p>借款年化利率：<span>{$vo.rate}%</span></p>
+			    	<p><span>感谢您的使用！</span></p>
+				</div>
+				<div class="card-footer card-linked" role="card-footer">
+					<a href="{:url('order/xz', ['id' => $vo.nid])}">详情
+						<span class="icon icon-right-nav"></span>
+					</a>
+				</div>
+			</if>
+		</div> 
 	</div>
-	<div class="card-body">
-    <p><span>尊敬的客户，您有新的借款申请！</span></p>
-    <p>借款人：<span>安以轩</span></p>
-    <p>借款金额：<span>100元</span></p>
-    <p>借款期限：<span>5天</span></p>
-    <p>借款年化利率：<span>0%</span></p>
-    <p><span>感谢您的使用！</span></p>
-	</div>
-	<div class="card-footer card-linked" role="card-footer"><a href="messageshow.htm">详情<span class="icon icon-right-nav"></span></a></div>
-	</div>
-    
-    <div class="card-container-title"><span>2017年10月28日 上午10:05</span></div>
-	<div class="card">
-	<div class="card-header" role="card-header">
-	<div class="card-title">消息通知<span>10月28日</span></div>
-	</div>
-	<div class="card-body">
-    <p><span>尊敬的客户，您有新的借款申请！</span></p>
-    <p>借款人：<span>安以轩</span></p>
-    <p>借款金额：<span>100元</span></p>
-    <p>借款期限：<span>5天</span></p>
-    <p>借款年化利率：<span>0%</span></p>
-    <p><span>感谢您的使用！</span></p>
-	</div>
-	<div class="card-footer card-linked" role="card-footer"><a href="messageshow.htm">详情<span class="icon icon-right-nav"></span></a></div>
-	</div>
-     
-</div>
+</foreach>
 </div>
 <include file="huxin@footer"/>
 </body>

@@ -11,7 +11,7 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-	<title>收还款_互信网</title>
+	<title>借条信息_互信网</title>
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
@@ -23,7 +23,7 @@
 <header class="header">
 <div>
   <div class="top-container" style="background:#116fec; color:#FFF;">
-        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>收还款<span class="right"></span>
+        <span class="left""><a href="{:url('user/grzx')}">&nbsp;</a></span>借条信息<span class="right"></span>
     </div>
 </div>
 </header>
@@ -31,26 +31,34 @@
 <div class="xy-container" style="padding-top: 50px;">
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td>关系人</th>
-    <td>借款金额</th>
-    <td>借款时间</th>
-    <td>还款时间</th>
-    <td>状态</th>
+    <td>借出人</td>
+    <td>借款金额</td>
+    <td>借款时间</td>
+    <td>还款时间</td>
+    <td>状态</td>
   </tr>
-
+  <foreach name="data" item="vo">
+   
     <tr>
-      <td>1</th>
-      <td>2</th>
-      <td>3</th>
-      <td>4</th>
-      <td>5</th>
+        <td>{$vo.name}</td>
+        <td>{$vo.price}</td>
+        <td>{$vo.start_time}</td>
+        <td>{$vo.end_time}</td>
+        <td>
+          <a href="{:url('huxin/order/xz',array('id'=> $vo.id))}">
+            <if condition="$vo.status eq 0"><p style="color: #F39C12">未同意</p></if>
+            <if condition="$vo.status eq 1"><p style="color: #3498DB">已同意</p></if>
+            <if condition="$vo.status eq 2"><p style="color: #95a5a6">还款中</p></if>
+            <if condition="$vo.status eq 3"><p style="color: green">已还款</p></if>
+            <if condition="$vo.status eq 4"><p style="color: #d62c1a">已逾期</p></if>
+          </a>
+        </td>
     </tr>
+    
+  </foreach>
 
-
-  
 </table>
 </div>
 </div>
-
 </body>
 </html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对ios的safari ios7.0版本以后，safari上已看不到效果-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式-->
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
+    <meta name="format-detection" content="telphone=no, email=no" />
+	<title>身份证认证_互信网</title>
+    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
+    <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
+	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+	<script type="text/javascript">
+		$(function(){
+	    $(":submit").click(function () {
+			var card = $("#idcard").val();
+			if (!isCardNo(card)){
+                swal({
+                    title: "身份证格式错误",
+                    text:"请重新输入!",
+                    type:"error"
+                });
+                return false;
+			}
+			$.ajax({
+				type:"POST",
+				url:$("form").attr("action"),
+				data:decodeURIComponent($("form").serialize()),
+				dataType:"json",
+				success:function (data,textStatus) {
+                    swal(data.msg);
+                    //额外绑定一个事件，当确定执行之后返回成功的页面的确定按钮，点击之后刷新当前页面或者跳转其他页面
+					if (data.url !== ""){
+                        $('.confirm').click(function () {
+                            window.location = data.url;
+                        });
+					}
+					console.log(data);
+                },
+				error:function (error) {
+					console.log(error);
+                }
+			});
+			return false;
+        });
+		function isCardNo(card) {
+			var pattern = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/;
+			return pattern.test(card);
+		}
+	  })  
+	</script>
+</head>
+
+<body>
+<header class="header">
+<div>
+	<div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>身份证认证<span class="right"></span>
+    </div>
+</div>
+</header>
+<div class="wrap-page">
+<form method="post" action="{:url('user/auidcard')}">
+<div class="list-container">
+    <ul class="list">
+		<li class="item item-input">
+		<div class="item-main">
+		<label class="field-container"><span class="field-label" style="width: 25%">姓名</span>
+		<input type="text" name="name" label="username" icon="person" placeholder="" class="field">
+		</label>
+		</div>
+		</li>
+	    <li class="item item-input">
+		<div class="item-main">
+		<label class="field-container"><span class="field-label" style="width: 25%">身份证号码</span>
+		<input type="text" name="idcard" label="username" icon="person" placeholder="" class="field">
+		</label>
+		</div>
+		</li>
+		<li class="item item-noline"><button class="btn btn-block btn-green">认证</button></li>
+	</ul>
+</div>
+</div>
+<form>
+
+<include file="huxin@footer"/>
+</body>
+</html>

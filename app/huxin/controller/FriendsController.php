@@ -167,10 +167,8 @@ class FriendsController extends CheckController
     public function mynewfriend()
     {
         $phone = Request::instance()->param('phone');
-
         $friends = Db::name('hx_user')->where('phone', $phone)->find();
         $this->assign('data', $friends);
-
         return $this->fetch();
     }
 
@@ -196,6 +194,16 @@ class FriendsController extends CheckController
         );
         $res = Db::name('hx_friends')->where(array('uid' => $id))->insert($user);
         if($res){
+            //添加消息
+                $infos = array(
+                    'uid'       => $id,
+                    'fid'       => $newfriendid,
+                    'content'   => '添加好友',
+                    'type'      => 1,
+                    'create_time'=> $this->request->time(),
+                );
+                Db::name('hx_infos')->insert($infos);
+                //添加消息结束
             $this->success('好友请求已发送，等待好友审核！',url('friends/hy'));
         }else{
             $this->error('添加失败！');
@@ -207,7 +215,7 @@ class FriendsController extends CheckController
     public function unfriend()
     {
         $id = session('userid');
-        $unread = Db::name('hx_friends')->where(array('fid' => $id, 'status' => 2))->select();
+        $unread = Db::name('hx_friends')->where(array('fid' => $id, 'status' => 2))->order('id desc')->select();
 
         $this->assign('data', $unread);
         return $this->fetch();
@@ -225,7 +233,7 @@ class FriendsController extends CheckController
         $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
         if($agree){
             $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
-            Db::name('hx_friends')->where(array('uid' =>  $userid))->insert($user);
+            Db::name('hx_friends')->where(array('uid' =>  $id))->insert($user);
 
             $this->success('已同意好友请求！',url('friends/hy'));
         }
@@ -285,7 +293,7 @@ class FriendsController extends CheckController
             if ($arr) {
                 $this->success("查询成功~", url('friends/xy'));
             } else {
-                $this->error("查无此人，请注意输入姓名与身份证号码是否匹配！");
+                $this->error("查询为空，请注意输入姓名与身份证号码是否匹配！");
             }
 
         }
