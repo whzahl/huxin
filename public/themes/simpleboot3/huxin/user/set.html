@@ -11,14 +11,41 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-	<title>互信网</title>
+	<title>互信网</title>	
 	<meta content="互信网" name="keywords">
 	<meta content="互信网" name="description">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-	<include file="huxin@commonSrc"/>
+	<link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
+	<script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
+	<!--<include file="huxin@commonSrc"/>-->
+	<script>
+        $(document).ready(function () {
+            $(".loginout").click(function () {
+                $.ajax({
+                    type:"GET",
+                    url:$(".loginout").attr("href"),
+                    dataType:"json",
+                    success:function (data) {
+                        console.log(data);
+                        swal(data.msg);
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                    },
+                    error:function (error) {
+						console.log(error);
+                    }
+                })
+                return false;
+            })
+        })
+	</script>
 
 </head>
 
@@ -71,7 +98,7 @@
     	<a href="javascript:history.back()"><li class="item item-noline"><button class="btn btn-block btn-green">返回</button></li></a>
     </ul>
     <ul class="list">
-    	<a href="{:url('user/loginout')}"><li class="item item-noline"><button class="btn btn-block btn-green">退出登录</button></li></a>
+    	<a class="loginout" href="{:url('user/loginout')}"><li class="item item-noline"><button class="btn btn-block btn-green">退出登录</button></li></a>
     </ul>
 </div>
 </div>

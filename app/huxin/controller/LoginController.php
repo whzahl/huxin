@@ -18,7 +18,6 @@ class LoginController extends HomeBaseController
 
     public function login()
     {
-
         return $this->fetch();
     }
 

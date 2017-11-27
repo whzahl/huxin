@@ -21,7 +21,7 @@ class CheckController extends HomeBaseController
     	$id = session('userid');
     	
     	if(!isset($id)){
-    		$this->error('账户未登录，请登录后操作！',url('login/login'));
+            $this->redirect('/huxin/login/login');
     	}
 
 
