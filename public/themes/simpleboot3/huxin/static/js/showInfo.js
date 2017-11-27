@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     $(":submit").click(function () {
         // var card = $("#idcard").val();
