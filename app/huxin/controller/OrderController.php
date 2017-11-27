@@ -12,6 +12,7 @@ namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
 use think\Db;
+use think\File;
 
 class OrderController extends CheckController
 {
@@ -249,6 +250,18 @@ class OrderController extends CheckController
                     'status'    => 0,
                     'create_time'=> $this->request->time(),
                 );
+                if(empty($data['price'])){
+                    $this->error('请输入借款金额！');
+                }
+                if(empty($data['start_time'])){
+                    $this->error('请选择借款日期！');
+                }
+                if(empty($data['end_time'])){
+                    $this->error('请选择还款日期！');
+                }
+                if(empty($data['rate'])){
+                    $this->error('请输入年利率');
+                }
                 $result = Db::name('hx_order')->insert($res);
                 if(!empty($result)){
                 //添加消息1126
@@ -261,7 +274,7 @@ class OrderController extends CheckController
                     );
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
-                    $this->success("新增成功！",url('user/grzx'));
+                    $this->success("提交成功！",url('user/grzx'));
                 }else{
                     $this->error("新增失败！");
                 }
@@ -344,12 +357,14 @@ class OrderController extends CheckController
         }
         //
         $friend = Db::name('hx_user')->where(array('id'=>$order['uid']))->find();
+        $sid = session('userid');
         $this->assign('t',$t/86400);
         $this->assign('rate',$rate);
         $this->assign('date',$date/86400);
         $this->assign('user',$user);
         $this->assign('order',$order); 
         $this->assign('friend',$friend); 
+        $this->assign('sid',$sid); 
         return $this->fetch();
     }
 
@@ -432,7 +447,7 @@ class OrderController extends CheckController
             Db::name('hx_order')->where(array('id'=>$info['id']))->update(['status' => $info['status']]);
             $this->success('处理成功！', url('order/jtxx'));
         }else{
-            $this->success('请输入交易密码！', url('order/dpassword',['id' => $info['id']]));
+            $this->error('请输入交易密码！', url('order/dpassword',['id' => $info['id'], 'status' => $info['status']]));
         }
         return $this->fetch();
     }
@@ -480,7 +495,7 @@ class OrderController extends CheckController
                 Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => 1]);
                 $this->success('操作成功！',url('order/jtxx'));
             }else{
-                $this->success('密码错误，请重新输入！');
+                $this->error('密码错误，请重新输入！');
             }
         }
         return $this->fetch();
@@ -546,7 +561,7 @@ class OrderController extends CheckController
      */
     public function jrlist(){
         $id = $this->request->param('id');
-        $data = Db::name('hx_order')->where(['uid'=>$id])->select();
+        $data = Db::name('hx_order')->where(['uid'=>$id])->order('id desc')->select();
         $arrName = array();
         foreach ($data as $key => $value) {
             $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
@@ -565,7 +580,7 @@ class OrderController extends CheckController
      */
     public function jclist(){
         $id = $this->request->param('id');
-        $data = Db::name('hx_order')->where(['fid'=>$id])->select();
+        $data = Db::name('hx_order')->where(['fid'=>$id])->order('id desc')->select();
         $arrName = array();
         foreach ($data as $key => $value) {
             $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();

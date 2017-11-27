@@ -61,6 +61,9 @@ class UserController extends CheckController
         $id = session('userid');
         if($this->request->isPost()){
             $data = $this->request->param();
+            if(empty($data['passwordNew2'])){
+                $this->error("请输入新密码！");
+            }
             $arr = Db::name('hx_user')->where(array('id' => $id))->field('password')->find();
             if($data['passwordOld'] == $arr['password']){
                 $pw1 = $data['passwordNew1'];
@@ -90,6 +93,9 @@ class UserController extends CheckController
         $id = session('userid');
         if($this->request->isPost()){
             $data = $this->request->param();
+            if(empty($data['passwordNew2'])){
+                $this->error("请输入新密码！");
+            }
             $arr = Db::name('hx_user')->where(array('id' => $id))->field('deal_password')->find();
             if($data['passwordOld'] == $arr['deal_password']){
                 $pw1 = $data['passwordNew1'];

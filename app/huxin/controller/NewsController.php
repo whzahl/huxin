@@ -46,6 +46,7 @@ class NewsController extends HomeBaseController
                 $infos[] = $value;
             }
         $this->assign('info',$infos);
+        Db::name('hx_infos')->where(['fid' => $id, 'status' => 0])->update(['status' => 1]);
         return $this->fetch();
     }
 

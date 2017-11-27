@@ -26,7 +26,13 @@
 <header class="header">
     <div class="top-container">
         <span class="left"></span>首页
-        <span class="right"><a href="{:url('huxin/news/xxzx')}">&nbsp;</a></span>
+        <span class="right">
+            <if condition="empty($info) neq true">
+                <a href="{:url('huxin/news/xxzx')}" class="link2">&nbsp;</a>
+            <else />
+                <a href="{:url('huxin/news/xxzx')}" class="link1">&nbsp;</a>
+            </if>
+        </span>
     </div>
 </div>
 </header>
@@ -70,7 +76,7 @@
             <a href="{:url('huxin/friends/hy')}"><img src="__TMPL__/huxin/static/images/icon-jc.jpg" class="img-responsive center-block"><span>借出</span></a>
         </li>
         <li>
-            <img src="__TMPL__/huxin/static/images/icon-smrz.jpg" class="img-responsive center-block"><span>实名认证</span>
+            <a href="{:url('user/auidcard')}"><img src="__TMPL__/huxin/static/images/icon-smrz.jpg" class="img-responsive center-block"><span>实名认证</span></a>
         </li>
         <li>
             <a href="{:url('huxin/friends/xycx')}"><img src="__TMPL__/huxin/static/images/icon-xycx.jpg" class="img-responsive center-block"><span>信用查询</span></a>

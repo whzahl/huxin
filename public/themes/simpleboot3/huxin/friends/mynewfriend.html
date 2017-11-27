@@ -23,7 +23,7 @@
 
 <body>
 <header class="header">
-    <div class="top-container" style="background:#116fec; color:#FFF;"><span class="left"></span>详情<span class="right"><a href="#">&nbsp;</a></span></div>
+    <div class="top-container" style="background:#116fec; color:#FFF;"><span class="left"></span>详情<span class="right"><a href="{:url('huxin/news/xxzx')}">&nbsp;</a></span></div>
     </div>
 </header>
 <div class="wrap-page">
@@ -106,7 +106,7 @@
                 <div class="item-main">
                     <label class="field-container"><span class="field-label">注册于</span>
                     </label>
-                    <h3 class="item-title" style="text-align:right;">{$data.create_time}</h3>
+                    <h3 class="item-title" style="text-align:right;">{$data.create_time|date = ("Y-m-d H:i"),###}</h3>
                     <div class="icon icon-right-nav">&nbsp;</div>
                 </div>
             </li>
@@ -120,7 +120,7 @@
                 </div>
             </li>
 
-            <li class="item item-noline"> <a href="{:url('friends/addfriends')}?phone={$data.phone}" class="btn btn-block btn-green">添加好友</a></li>
+            <li class="item item-noline"> <a href="{:url('friends/addfriends')}?phone={$data.phone}" class="ajaxA btn btn-block btn-green">添加好友</a></li>
 
         </ul>
     </div>

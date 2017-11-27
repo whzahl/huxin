@@ -526,8 +526,21 @@ img.tx{
 	margin-top:14px;
 	display:block;
 }
-.top-container span.right a{
+
+/*.top-container span.right a{
 	background:url(../images/icon-message.png) no-repeat;
+	background-size:22px 22px;
+	margin-top:14px;
+	display:block;
+}*/
+.top-container span.right a.link1{
+	background:url(../images/icon-message.png) no-repeat;
+	background-size:22px 22px;
+	margin-top:14px;
+	display:block;
+}
+.top-container span.right a.link2{
+	background:url(../images/icon-message2.png) no-repeat;
 	background-size:22px 22px;
 	margin-top:14px;
 	display:block;

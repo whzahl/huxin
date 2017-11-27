@@ -33,7 +33,12 @@ class LoginController extends HomeBaseController
         $pwd=input('post.password');
         $res=Db::name('hx_user')->where(array('phone'=>$phone,'password'=>$pwd))->find();
         $id=$res['id'];
+
         session('userid', $id);
+        session([
+            'expire' => 3600,
+            'name'=>'userid'
+        ]);
         // $se=session('userid');
         if($res){
             $this->success('登录成功',url('/huxin/user/grzx'));

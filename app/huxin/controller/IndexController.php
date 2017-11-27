@@ -11,12 +11,15 @@
 namespace app\huxin\controller;
 
 use cmf\controller\HomeBaseController;
+use think\Db;
 
 class IndexController extends HomeBaseController
 {
     public function index()
     {
-    	
+    	$id = session('userid');
+    	$info = Db::name('hx_infos')->where(['fid' => $id])->where(['status' => 0])->select()->toArray();
+    	$this->assign('info',$info);
         return $this->fetch(':index');
     }
 

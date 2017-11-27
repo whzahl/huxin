@@ -18,7 +18,7 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-<!--     <include file="huxin@commonSrc"/> -->
+    <!-- <include file="huxin@commonSrc"/> -->
 </head>
 
 <body>
@@ -118,40 +118,43 @@
     &nbsp;
 	</div>
 	</li>
+<if condition="$order.uid neq $sid">
     <if condition="$order.status eq 0">
-        <a href="{:url('order/dpassword',array('id'=>$order.id, 'status' => 1))}">
+        <ul>
             <li class="item item-noline">
-               <button class="btn btn-block btn-green">同意</button>
+                <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status' => 1))}">同意</a>
             </li>
-        </a>
+        </ul>
     </if>
     <if condition="$order.status eq 0">
-        <a href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">
+        <ul>
             <li class="item item-noline">
-               <button class="btn btn-block btn-green">拒绝</button>
+                <a class="btn btn-block btn-green" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">拒绝</a>
             </li>
-        </a>
+        </ul>
     </if>
     <if condition="$order.status neq 3 && $order.status neq 0">
-        <a href="{:url('order/dpassword',array('id'=>$order.id, 'status'=> 3))}">
+        <ul>
             <li class="item item-noline">
-               <button class="btn btn-block btn-green">销账</button>
+                <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status'=> 3))}">销账</a>
             </li>
-        </a>
+        </ul>
     </if>
     <if condition="$order.status neq 3 && $order.status neq 0">
-        <a href="{:url('order/zq',array('id'=>$order.id))}">
+        <ul>
             <li class="item item-noline">
-                <button class="btn btn-block btn-green">展期</button>
+                <a class="btn btn-block btn-green" href="{:url('order/zq',array('id'=>$order.id))}">展期</a>
             </li>
-        </a>
+        </ul>
     </if>
+</if>
     <a href="javascript:history.back()">
         <li class="item item-noline">
             <button class="btn btn-block btn-green">返回</button>
         </li>
     </a>
 	</ul>
+
 </div>
 </div>
 </body>
