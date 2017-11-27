@@ -326,6 +326,7 @@ class OrderController extends CheckController
      */
     public function xz(){
         $id = $this->request->param("id");
+        dump($id);
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
         //借还款时间
         $end = $order['end_time'];
@@ -492,7 +493,7 @@ class OrderController extends CheckController
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
                 }
-                Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => 1]);
+                Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => $data['status']]);
                 $this->success('操作成功！',url('order/jtxx'));
             }else{
                 $this->error('密码错误，请重新输入！');
@@ -509,7 +510,7 @@ class OrderController extends CheckController
      */
     public function zq(){
         $id = $this->request->param('id');
-        $fid = Db::name('hx_order')->where(['id' => $id])->fielsd('fid')->find();
+        $fid = Db::name('hx_order')->where(['id' => $id])->field('fid')->find();
         if($this->request->isPost()){
             $endt = $this->request->param();
             if($endt){
