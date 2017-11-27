@@ -249,10 +249,14 @@ class UserController extends CheckController
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         }
         $output = curl_exec($curl);
-$data = json_decode($output);
-//         dump($data);die;
-        dump($output);
-        dump($data);
+    
+    if ($output) {  
+        curl_close($curl);  
+        return $output;  
+    } else {  
+        curl_close($curl);  
+        return false;  
+    } 
     }
    
     
