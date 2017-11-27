@@ -157,12 +157,12 @@ class FriendsController extends CheckController
                 $myfriend[] = $mid[$x];
             }
             //print_r($myfriend);die;
-                if (in_array($friendid, $myfriend)) {
-                    $this->assign('data', $friends);
-                } 
-                else {
-                    $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
-                }
+            if (in_array($friendid, $myfriend)) {
+                $this->assign('data', $friends);
+            }
+            else {
+                $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
+            }
         }
         return $this->fetch();
     }
@@ -188,25 +188,25 @@ class FriendsController extends CheckController
         $newfriendid = $newfriend['id'];
         $now = date("Y-m-d");
         $user = array(
-            'uid'       => $id, 
-            'fid'       => $newfriendid, 
-            'fname'     => $newfriendname, 
-            'uname'     => $me, 
+            'uid'       => $id,
+            'fid'       => $newfriendid,
+            'fname'     => $newfriendname,
+            'uname'     => $me,
             'status'    => 2,
             'create_time' => $this->request->time(),
         );
         $res = Db::name('hx_friends')->where(array('uid' => $id))->insert($user);
         if($res){
             //添加消息
-                $infos = array(
-                    'uid'       => $id,
-                    'fid'       => $newfriendid,
-                    'content'   => '添加好友',
-                    'type'      => 1,
-                    'create_time'=> $this->request->time(),
-                );
-                Db::name('hx_infos')->insert($infos);
-                //添加消息结束
+            $infos = array(
+                'uid'       => $id,
+                'fid'       => $newfriendid,
+                'content'   => '添加好友',
+                'type'      => 1,
+                'create_time'=> $this->request->time(),
+            );
+            Db::name('hx_infos')->insert($infos);
+            //添加消息结束
             $this->success('好友请求已发送，等待好友审核！',url('friends/hy'));
         }else{
             $this->error('添加失败！');
@@ -240,7 +240,7 @@ class FriendsController extends CheckController
 
             $this->success('已同意好友请求！',url('friends/hy'));
         }
-        
+
     }
 
 
@@ -294,7 +294,7 @@ class FriendsController extends CheckController
 
             $arr = Db::name('hx_user')->where(array('name' => $data['name'], 'idcard' => $data['idcard']))->find();
             if ($arr) {
-                $this->success("查询成功~", url('friends/xy'));
+                $this->success("查询成功", url('friends/xy'));
             } else {
                 $this->error("查询为空，请注意输入姓名与身份证号码是否匹配！");
             }
