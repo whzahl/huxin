@@ -18,7 +18,7 @@
     <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <script type="text/javascript" src="__TMPL__/huxin/static/js/showInfo.js"></script>
+    <include file="huxin@commonSrc"/>
     
 </head>
 
@@ -26,7 +26,7 @@
 <header class="header">
 <div>
     <div class="top-container" style="background:#116fec; color:#FFF;">
-        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>修改头像<span class="right"></span>
+        <span class="left"><a href="javascript:history.back()">&nbsp;</a></span>修改头像<span class="right"></span>
     </div>
 </div>
 </header>
@@ -56,8 +56,8 @@
         <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
     </ul>
 </div>
-<form>
-    <script type="text/javascript">    
+</form>
+    <script type="text/javascript">
             $(function() { 
                 $("#file0").change(function() {
                     if (this.files && this.files[0]) {

@@ -18,8 +18,13 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-	<script type="text/javascript" src="__TMPL__/huxin/static/js/showInfo.js"></script>
+	<include file="huxin@commonSrc"/>
 	<script>
+		$(document).ready(function () {
+			setInterval(function () {
+                changeMoney();
+            },500);
+        });
         function getTime2Time()
         {
             var endTime = document.getElementById("demo2").value;
@@ -28,10 +33,17 @@
             startTime = Date.parse(startTime)/1000;
             var time_ = endTime - startTime;
             var result = time_/(3600*24);
-            if (result < 0 || typeof result !== "number"){
+            if (result < 0 || typeof result !== "number" || isNaN(result)){
                 result = 0;
 			}
             document.getElementById("days").value = result;
+        }
+        function calculate(borrowMoney, days, rate) {
+			return (borrowMoney*(days/365)*(rate/100+1)).toFixed(2);
+        }
+        function changeMoney() {
+			var money = calculate($("[name='price']").val(),$("#days").val(),$("[name='rate']").val());
+			$("#money").text("到期本息合计约为" + money + "元");
         }
 	</script>
 	<style type="text/css">
@@ -122,7 +134,7 @@
 				</label>
 			</div>
 		</li>
-    	<li class="item item-noline" style=" text-align:right; display:block;">到期本息合计约为0.00元</li>
+    	<li class="item item-noline" id="money" style=" text-align:right; display:block;">到期本息合计约为0.00元</li>
     	<li class="item item-noline"><input class="magic-checkbox" type="checkbox" name="layout" id="c4" checked disabled><label for="c4" style="color:#ccc">已阅读并同意<a href="#" class="link-green2">相关协议</a></label></li>
     	<input type="hidden" name="fid" value="{$fid}">
     	<li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>

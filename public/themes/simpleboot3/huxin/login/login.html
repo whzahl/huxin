@@ -18,7 +18,7 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-	<script type="text/javascript" src="__TMPL__/huxin/static/js/showInfo.js"></script>
+	<include file="huxin@commonSrc"/>
 </head>
 <body>
 <div class="wrap-page wrap-page-noheader">
@@ -31,22 +31,21 @@
 </div>
 <div class="list-container">
 	<ul class="list">
-	<li class="item item-input">
-	<div class="item-main">
-	<form action="/huxin/login/index" method="post">
-	<input type="text" icon="user" placeholder="手机号" class="field" name="phone">
-	</div>
-	</li>
-	<li class="item item-input">
-	<div class="item-main">
-	<input type="password" icon="info" placeholder="密码" class="field" name="password">
-	
-	</div>
-    <div class="item-after"><span class="icon icon-bkj"></span></div>
-	</li> 
-    <li class="item item-noline"><input type="submit" class="btn btn-block btn-green" value="登录"></li>
-    </form>
-    <li class="item item-noline"><span class="left"><a href="#" class="link-green">&nbsp;</a></span><span class="right"><a href="{:url('login/editPassword')}" class="link-gray1">忘记密码？</a></span></li>
+		<form action="/huxin/login/index" method="post">
+			<li class="item item-input">
+				<div class="item-main">
+					<input type="text" icon="user" placeholder="手机号" class="field" name="phone">
+				</div>
+			</li>
+			<li class="item item-input">
+				<div class="item-main">
+					<input type="password" icon="info" placeholder="密码" class="field" name="password">
+				</div>
+				<div class="item-after"><span class="icon icon-bkj"></span></div>
+			</li>
+			<li class="item item-noline"><input type="submit" class="btn btn-block btn-green" value="登录"></li>
+			<li class="item item-noline"><span class="left"><a href="#" class="link-green">&nbsp;</a></span><span class="right"><a href="{:url('login/editPassword')}" class="link-gray1">忘记密码？</a></span></li>
+		</form>
 	</ul>
 </div>
 </div>
