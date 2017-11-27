@@ -138,29 +138,32 @@ class FriendsController extends CheckController
     {
         header("Content-Type: text/html; charset=utf-8");
         $id = session('userid');
-
+        $uidcard =  Db::name('hx_user')->where(['id' => $id])->field('idcard')->find();
+        if($uidcard['idcard'] == ''){
+            $this->error('您还未实名认证，请实名认证！', url('user/auidcard'));
+        }
         $phone = input('post.phone');
         session('phone', $phone);
         $myfriend = array();
-
         $friends = Db::name('hx_user')->where('phone', $phone)->find();
-
-        $friendname = $friends['name'];
-        $friendid = $friends['id'];
-
-        $mid = Db::name('hx_friends')->where(array('uid' => $id))->column('fid');
-        $count = count($mid);
-        for ($x = 0; $x < $count; $x++) {
-            $myfriend[] = $mid[$x];
+        if($friends['idcard'] == ''){
+            $this->error('该用户还未实名认证！', url('friends/hy'));
+        }else{
+            $friendname = $friends['name'];
+            $friendid = $friends['id'];
+            $mid = Db::name('hx_friends')->where(array('uid' => $id))->column('fid');
+            $count = count($mid);
+            for ($x = 0; $x < $count; $x++) {
+                $myfriend[] = $mid[$x];
+            }
+            //print_r($myfriend);die;
+                if (in_array($friendid, $myfriend)) {
+                    $this->assign('data', $friends);
+                } 
+                else {
+                    $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
+                }
         }
-        //print_r($myfriend);die;
-        if (in_array($friendid, $myfriend)) {
-            $this->assign('data', $friends);
-        } 
-        else {
-            $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
-        }
-
         return $this->fetch();
     }
 

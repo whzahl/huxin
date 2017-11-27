@@ -202,18 +202,20 @@ class OrderController extends CheckController
      */
     public function jt()
     {
-        $userid = session('userid');
-        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid'=>$userid))->select();
+        $id = session('userid');
+        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id, 'status' => 1))->select();
         $friends = array();
-        foreach ($arrData as $key=>$value){
-            $fname = Db::name('hx_user')->field('name')->where(array('id'=>$value['fid']))->find();
+        foreach ($arrData as $key => $value) {
+            $fname = Db::name('hx_user')->field('name')->where(array('id' => $value['fid']))->find();
             $value['fname'] = $fname['name'];
             $value['char'] = $this->getFirstChar($value['fname']);
             $friends[] = $value;
         }
-        $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
-        $this->assign('list',$friends);
-        $this->assign('letter',range('A','Z'));
+        if(!empty($friends)){
+            $friends = $this->arraySequence($friends, 'char', $sort = 'SORT_ASC');
+        }
+        $this->assign('list', $friends);
+        $this->assign('letter', range('A', 'Z'));
         return $this->fetch();
     }
 
@@ -415,8 +417,7 @@ class OrderController extends CheckController
     public function xz1(){
         $id = session('userid');
         $info = $this->request->param();
-        dump($info);die;
-        $fid = Db::name('hx_order')->where(['id' => $info['fid']])->field('fid')->find();
+        $fid = Db::name('hx_order')->where(['id' => $info['id']])->field('fid')->find();
         if($info['status'] == 0){
             //添加消息1126
                 $infos = array(

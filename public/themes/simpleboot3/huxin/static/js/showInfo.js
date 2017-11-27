@@ -17,8 +17,8 @@ $(document).ready(function () {
             success:function (data,textStatus) {
                 if(data.code === 1){
                     swal({
-                       title:data.msg,
-                       type:"success"
+                        title:data.msg,
+                        type:"success"
                     });
                 }
                 else

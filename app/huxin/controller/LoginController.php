@@ -101,7 +101,7 @@ class LoginController extends HomeBaseController
 
 
     /**
-     *  发送验证码
+      *  发送验证码--注册
      */
     public  function sendSMSl(){
         $ch = curl_init();
@@ -129,9 +129,11 @@ class LoginController extends HomeBaseController
         echo json_encode($array);
     }
 
+
+
     /**
-      *  发送验证码
-      */
+     *  发送验证码
+     */
     public  function sendSMS(){
         $ch = curl_init();
         // 必要参数
@@ -156,7 +158,9 @@ class LoginController extends HomeBaseController
         $array = json_decode($json_data,true);
         $array['smsCode'] = $id;
         echo json_encode($array);
-     }
+    }
+
+
      /**
       *  随机生成4位验证码
       */
