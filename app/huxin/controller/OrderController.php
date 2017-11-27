@@ -417,8 +417,7 @@ class OrderController extends CheckController
     public function xz1(){
         $id = session('userid');
         $info = $this->request->param();
-        dump($info);die;
-        $fid = Db::name('hx_order')->where(['id' => $info['fid']])->field('fid')->find();
+        $fid = Db::name('hx_order')->where(['id' => $info['id']])->field('fid')->find();
         if($info['status'] == 0){
             //添加消息1126
                 $infos = array(

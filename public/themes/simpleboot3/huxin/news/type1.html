@@ -23,33 +23,33 @@
 </head>
 <body>
 <header class="header">
-  
+
     <div class="top-container" style="background:#116fec; color:#FFF;"><span class="left"></span>新闻列表<span class="right"><a href="#">&nbsp;</a></span></div>
     <div class="wrapper">
-    <nav>
-        <ul style="padding-top: 10px;">
-            <li><a href="{:url('news/newslist')}">全部</a></li>
-            <li><a href="{:url('news/type1')}">理财类</a></li>
-            <li><a href="{:url('news/type2')}">投资类</a></li>
-            <li><a href="{:url('news/type3')}">专访类</a></li>
-        </ul>
-        <span id="navActiveBG"></span>
-    </nav>
-    <div class="content">
-        
-        <div id="1stSection" class="section">
-         <foreach name="data" item="vo">
-          <ul>
-            <li><h1><a href="{:url('news/newsshow')}?id={$vo.id}">{$vo.main_title}</a></h1></li>
-          </ul>
-         </foreach>
+        <nav>
+            <ul style="padding-top: 10px;">
+                <li><a href="{:url('news/newslist')}">全部</a></li>
+                <li><a href="{:url('news/type1')}">理财类</a></li>
+                <li><a href="{:url('news/type2')}">投资类</a></li>
+                <li><a href="{:url('news/type3')}">专访类</a></li>
+            </ul>
+            <span id="navActiveBG"></span>
+        </nav>
+        <div class="content">
+
+            <div id="1stSection" class="section">
+                <foreach name="data" item="vo">
+                    <ul>
+                        <li><h1><a href="{:url('news/newsshow')}?id={$vo.id}">{$vo.main_title}</a></h1></li>
+                    </ul>
+                </foreach>
+            </div>
+
+
         </div>
-        
-       
     </div>
-</div>
 </header>
-  
+
 
 <script type="text/javascript" src='__TMPL__/huxin/static/js/jquery.min.js'></script>
 <script type="text/javascript" src="__TMPL__/huxin/static/js/index.js"></script>
