@@ -206,20 +206,62 @@ class UserController extends CheckController
                 if(empty($data['name'])){
                     $this->error('请输入姓名！');
                 }elseif(empty($data['idcard'])){
-                    $this->error('请输入正确身份证号码！');
+                    $this->error('请输入身份证号码！');
                 }else{
-                    Db::name('hx_user')->where(['id' => $id])->update($data);
-                    $this->success('身份证认证成功！', url('user/grzx'));
+                    $this->redirect('user/idcard',['card'=>$data['idcard'], 'name'=>$data['name']]);
+//                     Db::name('hx_user')->where(['id' => $id])->update($data);
+//                     $this->success('身份证认证成功！', url('user/grzx'));
                 }
             }
         }else{
-
             $this->success('已经认证！');
         }
-        
         return $this->fetch();
     }
 
+
+/**
+     * 实名认证
+     * weilang
+     * 20171127
+     */
+    public function idcard($card,$name){
+        $host = "http://idcard.market.alicloudapi.com";
+        $path = "/lianzhuo/idcard";
+        $method = "GET";
+        $appcode = "8d7e5748c7144d828b831dc30c4a56ae";
+        $headers = array();
+        array_push($headers, "Authorization:APPCODE " . $appcode);
+        $querys = "cardno=$card&name=$name";
+        $bodys = "";
+        $url = $host . $path . "?" . $querys;
+        
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        if (1 == strpos("$".$host, "https://"))
+        {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+        $output = curl_exec($curl);
+$data = json_decode($output);
+//         dump($data);die;
+        dump($output);
+        dump($data);
+    }
+   
+    
+    public function checkidcard($data){
+        
+        
+        dump($data);die;
+    }
+    
 
 /**
      * 设置交易密码
