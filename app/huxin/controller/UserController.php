@@ -129,11 +129,12 @@ class UserController extends CheckController
 
             foreach ($phone as $key => $value) {
                 // dump($value['phone']);
+                if($data['phone'] == $value['phone']){
+                    $this->error("手机号已被注册,请重新输入！");
+                }
             }
             // dump($value);die;
-            if($data['phone'] == $value['phone']){
-                $this->error("手机号已被注册,请重新输入！");
-            }else{
+
                 $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->find();
                 if($data['cmsCode'] == $cmsCode['code']){
                     $res = array(
@@ -148,7 +149,7 @@ class UserController extends CheckController
                     $this->error("验证码错误！");
                 }
             }
-        }
+
         return $this->fetch();
     }
 
@@ -158,33 +159,39 @@ class UserController extends CheckController
         $photo = Db::name('hx_user')->where(array('id'=>$id))->field('photo')->find();
         $this->assign('photo',$photo);
 
-        // 获取表单上传文件 
-        $file = request()->file('image');
+        if($this->request->isPost()){
+                // 获取表单上传文件
+            $file = request()->file('image');
 
-        // 移动到框架应用根目录/public/uploads/ 目录下
-        if($file){
-            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
-            if($info){
-  
-                $arr['photo'] = '/uploads/' . $info->getSaveName();
-                
-                $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
-                $res = array(
+            // 移动到框架应用根目录/public/uploads/ 目录下
+            if($file){
+                $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
+                if($info){
+
+                    $arr['photo'] = '/uploads/' . $info->getSaveName();
+
+                    $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
+                    $res = array(
                         'photo'  => $arr['photo'],
                     );
 
-                if(!isset($photo)){
-                    $arrData = Db::name('hx_user')->insert($res);
-                    $this->success("新增成功！", url('user/grzx'));
+                    if(!isset($photo)){
+                        $arrData = Db::name('hx_user')->insert($res);
+                        $this->success("新增成功！", url('user/grzx'));
+                    }else{
+                        $arrData = Db::name('hx_user')->where(['id' => $id])->update($res);
+                        $this->success("修改成功！", url('user/grzx'));
+                    }
                 }else{
-                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($res);
-                    $this->success("修改成功！", url('user/grzx'));
+                    // 上传失败获取错误信息
+                    echo $file->getError();
                 }
-            }else{
-                // 上传失败获取错误信息
-                echo $file->getError();
+            }
+            else{
+                $this->error("没有改动");
             }
         }
+
 
         return $this->fetch();
         
@@ -206,20 +213,66 @@ class UserController extends CheckController
                 if(empty($data['name'])){
                     $this->error('请输入姓名！');
                 }elseif(empty($data['idcard'])){
-                    $this->error('请输入正确身份证号码！');
+                    $this->error('请输入身份证号码！');
                 }else{
-                    Db::name('hx_user')->where(['id' => $id])->update($data);
-                    $this->success('身份证认证成功！', url('user/grzx'));
+                    $this->redirect('user/idcard',['card'=>$data['idcard'], 'name'=>$data['name']]);
+//                     Db::name('hx_user')->where(['id' => $id])->update($data);
+//                     $this->success('身份证认证成功！', url('user/grzx'));
                 }
             }
         }else{
-
             $this->success('已经认证！');
         }
-        
         return $this->fetch();
     }
 
+
+/**
+     * 实名认证
+     * weilang
+     * 20171127
+     */
+    public function idcard($card,$name){
+        $host = "http://idcard.market.alicloudapi.com";
+        $path = "/lianzhuo/idcard";
+        $method = "GET";
+        $appcode = "8d7e5748c7144d828b831dc30c4a56ae";
+        $headers = array();
+        array_push($headers, "Authorization:APPCODE " . $appcode);
+        $querys = "cardno=$card&name=$name";
+        $bodys = "";
+        $url = $host . $path . "?" . $querys;
+        
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_FAILONERROR, false);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        if (1 == strpos("$".$host, "https://"))
+        {
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        }
+        $output = curl_exec($curl);
+    
+    if ($output) {  
+        curl_close($curl);  
+        return $output;  
+    } else {  
+        curl_close($curl);  
+        return false;  
+    } 
+    }
+   
+    
+    public function checkidcard($data){
+        
+        
+        dump($data);die;
+    }
+    
 
 /**
      * 设置交易密码

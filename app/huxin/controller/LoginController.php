@@ -115,7 +115,7 @@ class LoginController extends HomeBaseController
 
         $mobile =  $_GET['mobile']; //请用手机号代替
         $code = $this->createSMSCode();
-        $text="【天使家教】您的验证码是".$code."，如非本人操作，请忽略本短信";
+        $text="【互信网】您的验证码是".$code."，如非本人操作，请忽略本短信";
         //将验证码存入数据库
         $data['phone'] = $mobile;
         $data['code'] = $code;
@@ -146,7 +146,7 @@ class LoginController extends HomeBaseController
 
         $mobile =  $_GET['mobile']; //请用手机号代替
         $code = $this->createSMSCode();
-        $text="【天使家教】您的验证码是".$code."，如非本人操作，请忽略本短信";
+        $text="【互信网】您的验证码是".$code."，如非本人操作，请忽略本短信";
         //将验证码存入数据库
         $data['phone'] = $mobile;
         $data['code'] = $code;
