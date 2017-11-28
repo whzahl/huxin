@@ -24,7 +24,7 @@
             $(".certification").click(function () {
                 $.ajax({
                     type:"GET",
-                    url:$(".certification").attr("href"),
+                    url:$(".certification").attr(""),
                     dataType:"json",
                     success:function (data) {
                         swal(data.msg);
@@ -32,8 +32,30 @@
                 })
                 return false;
             })
+            
+            $(".auidcard").click(function () {
+                $.ajax({
+                    type:"GET",
+                    url:$(".auidcard").attr(""),
+                    dataType:"json",
+                    success:function (data) {
+                        console.log(data);
+                        swal(data.msg);
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                    },
+                    error:function (error) {
+						console.log(error);
+                    }
+                })
+                return false;
+            })
         })
     </script>
+
 </head>
 <body>
 <div class="wrap-page wrap-page-noheader wrap-page-nofooter bg-white">
@@ -93,7 +115,7 @@
         </li>
         <li>
         	<div class="thumbnail">
-            <a href="{:url('user/auidcard')}" class="certification"><img src="__TMPL__/huxin/static/images/icon-smrz.png"></a>
+            <a class="auidcard" href="{:url('user/auidcard')}"><img src="__TMPL__/huxin/static/images/icon-smrz.png"></a>
             <div class="caption">实名认证</div>
             </div>
         </li>

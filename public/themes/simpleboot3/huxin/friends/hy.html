@@ -109,8 +109,31 @@
                 }
             })
         })
-
     </script>
+    <script>
+        $(document).ready(function () {
+            $(".auidcard").click(function () {
+                $.ajax({
+                    type:"GET",
+                    url:$(".auidcard").attr("href"),
+                    dataType:"json",
+                    success:function (data) {
+                        console.log(data);
+                        swal(data.msg);
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                    },
+                    error:function (error) {
+						console.log(error);
+                    }
+                })
+                return false;
+            })
+        })
+	</script>
     <div class="list-container">
     	<div class="tjhy"><span class="icon icon-tjhy"></span><a href="{:url('huxin/friends/hy2')}">添加好友</a></div>
         <foreach name="list" item="vo" key="k">

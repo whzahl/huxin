@@ -19,33 +19,14 @@
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
 	<include file="huxin@commonSrc"/>
-	<script type="text/javascript">
-        $(function(){
-            $(":submit").click(function () {
-                var card = $("#idcard").val();
-                if (!isCardNo(card)){
-                    swal({
-                        title: "身份证格式错误",
-                        text:"请重新输入!",
-                        type:"error"
-                    });
-                    return false;
-                }
-                return false;
-            });
-            function isCardNo(card) {
-                var pattern = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/;
-                return pattern.test(card);
-            }
-        })
-	</script>
+
 </head>
 
 <body>
 <header class="header">
 	<div>
 		<div class="top-container" style="background:#116fec; color:#FFF;">
-			<span class="left""><a href="javascript:history.back()">&nbsp;</a></span>身份证认证<span class="right"></span>
+			<span class="left""><a href="javascript:history.back()">&nbsp;</a></span>身份证实名认证<span class="right"></span>
 		</div>
 	</div>
 </header>
@@ -67,7 +48,9 @@
 						</label>
 					</div>
 				</li>
-				<li class="item item-noline"><button class="btn btn-block btn-green">认证</button></li>
+				<li class="item item-noline">
+					<button type="submit" class="btn btn-block btn-green">认证</button>
+				</li>
 			</ul>
 		</div>
 	</form>

@@ -129,12 +129,11 @@ class UserController extends CheckController
 
             foreach ($phone as $key => $value) {
                 // dump($value['phone']);
-                if($data['phone'] == $value['phone']){
-                    $this->error("手机号已被注册,请重新输入！");
-                }
             }
             // dump($value);die;
-
+            if($data['phone'] == $value['phone']){
+                $this->error("手机号已被注册,请重新输入！");
+            }else{
                 $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->find();
                 if($data['cmsCode'] == $cmsCode['code']){
                     $res = array(
@@ -149,7 +148,7 @@ class UserController extends CheckController
                     $this->error("验证码错误！");
                 }
             }
-
+        }
         return $this->fetch();
     }
 
@@ -159,39 +158,33 @@ class UserController extends CheckController
         $photo = Db::name('hx_user')->where(array('id'=>$id))->field('photo')->find();
         $this->assign('photo',$photo);
 
-        if($this->request->isPost()){
-                // 获取表单上传文件
-            $file = request()->file('image');
+        // 获取表单上传文件 
+        $file = request()->file('image');
 
-            // 移动到框架应用根目录/public/uploads/ 目录下
-            if($file){
-                $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
-                if($info){
-
-                    $arr['photo'] = '/uploads/' . $info->getSaveName();
-
-                    $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
-                    $res = array(
+        // 移动到框架应用根目录/public/uploads/ 目录下
+        if($file){
+            $info = $file->validate(['size'=>3145728,'ext'=>'jpg,png,gif,jpeg'])->move(CMF_ROOT . 'public' . DS . 'uploads');
+            if($info){
+  
+                $arr['photo'] = '/uploads/' . $info->getSaveName();
+                
+                $photo = Db::name('hx_user')->where(array('id' => $id))->field('photo')->find();
+                $res = array(
                         'photo'  => $arr['photo'],
                     );
 
-                    if(!isset($photo)){
-                        $arrData = Db::name('hx_user')->insert($res);
-                        $this->success("新增成功！", url('user/grzx'));
-                    }else{
-                        $arrData = Db::name('hx_user')->where(['id' => $id])->update($res);
-                        $this->success("修改成功！", url('user/grzx'));
-                    }
+                if(!isset($photo)){
+                    $arrData = Db::name('hx_user')->insert($res);
+                    $this->success("新增成功！", url('user/grzx'));
                 }else{
-                    // 上传失败获取错误信息
-                    echo $file->getError();
+                    $arrData = Db::name('hx_user')->where(['id' => $id])->update($res);
+                    $this->success("修改成功！", url('user/grzx'));
                 }
-            }
-            else{
-                $this->error("没有改动");
+            }else{
+                // 上传失败获取错误信息
+                echo $file->getError();
             }
         }
-
 
         return $this->fetch();
         
@@ -216,19 +209,17 @@ class UserController extends CheckController
                     $this->error('请输入身份证号码！');
                 }else{
                     $this->redirect('user/idcard',['card'=>$data['idcard'], 'name'=>$data['name']]);
-//                     Db::name('hx_user')->where(['id' => $id])->update($data);
-//                     $this->success('身份证认证成功！', url('user/grzx'));
                 }
             }
         }else{
-            $this->success('已经认证！');
+            $this->success('已经认证,无需重复认证！');
         }
         return $this->fetch();
     }
 
 
 /**
-     * 实名认证
+     * 实名认证API接口
      * weilang
      * 20171127
      */
@@ -239,10 +230,10 @@ class UserController extends CheckController
         $appcode = "8d7e5748c7144d828b831dc30c4a56ae";
         $headers = array();
         array_push($headers, "Authorization:APPCODE " . $appcode);
+        //根据API的要求，定义相对应的Content-Type
         $querys = "cardno=$card&name=$name";
         $bodys = "";
-        $url = $host . $path . "?" . $querys;
-        
+        $url = $host . $path;
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -255,22 +246,40 @@ class UserController extends CheckController
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         }
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $querys);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($curl);
-    
-    if ($output) {  
-        curl_close($curl);  
-        return $output;  
-    } else {  
-        curl_close($curl);  
-        return false;  
-    } 
+        if (curl_getinfo($curl, CURLINFO_HTTP_CODE) == '200') {
+            $headerSize = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+            $header = substr($output, 0, $headerSize);
+            $body = substr($output, $headerSize);
+            curl_close($curl);
+            $obt = (array)json_decode($body);
+            //$date里面包含["sex"] ="男" ["address"] = "省-地区-县" ["birthday"] = "年-月-日"
+            $data = (array)$obt['data'];
+            //$resp里面包括["code"]=0/1 ["desc"]="匹配/不匹配"
+            $resp = (array)$obt['resp'];  
+            return $this->redirect('user/checkidcard', ['resp'=>$resp['code'], 'idcard'=>$card]);
+        }else{
+            return false;
+        }
     }
-   
+  
     
-    public function checkidcard($data){
-        
-        
-        dump($data);die;
+/**
+     * 实名认证
+     * weilang
+     * 20171128
+     */    
+    public function checkidcard($resp,$idcard){
+        $id = session('userid');
+        $data = array('idcard' => $idcard);
+        if($resp == 0){
+            Db::name('hx_user')->where(['id' => $id])->update($data);
+            $this->success('认证成功', url('user/grzx'));
+        }else{
+            $this->error('认证失败');
+        }
     }
     
 
