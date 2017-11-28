@@ -28,9 +28,10 @@
 </header>
 <div class="wrap-page">
 
-    <ul class="grlist">
-        <li>
-            <a href="#">
+    <div class="grlist">
+        <ul>
+             <li>
+             <a href="#">
                 <div class="pic_box">
                     <if condition="$data.photo eq ''">
                         <img src="__TMPL__/huxin/static/images/icon-tx.png" class="tx">
@@ -40,13 +41,18 @@
                     </if>
                 </div>
                 <div class="pd_info">
-                    <div class="pd_title">{$data.name}</div>
-                    <div class="pd_t">{$data.phone}</div>
-                    <div class="pd_ysm"><span>已实名</span></div>
+                   <div class="pd_title">{$data.name}</div>
+                   <div class="pd_t">{$data.phone}</div>
+                   <if condition="$data.idcard neq ''">
+                   		<div class="pd_ysm"><span>已实名</span></div>
+                   <else />
+                   		<div class="pd_ysm"><span>未实名</span></div>
+                   </if>
                 </div>
-            </a>
-        </li>
+             </a>
+	</li>
     </ul>
+    </div>
     <div class="login-fourlist" >
         <ul>
             <li>

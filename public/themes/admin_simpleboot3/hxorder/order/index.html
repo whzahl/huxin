@@ -3,24 +3,26 @@
 <body>
 <div class="wrap">
     <ul class="nav nav-tabs">
-        <li class="active"><a>全部订单</a></li>
-        <!-- <li class=""><a href="{:url('hxorder/order/add')}">新增订单</a></li> -->
+        <li class="active"><a>全部借条</a></li>
+        <li class=""><a href="{:url('hxorder/order/add')}">新增借条</a></li>
     </ul>
     <form class="well form-inline margin-top-20" method="post" action="{:url('order/index')}">
         ID：
         <input class="form-control" type="text" name="id" style="width: 150px;" value="{:input('request.id')}"
                placeholder="请输入订单ID">
-        &nbsp; &nbsp;关键字搜索:
+        &nbsp; &nbsp;关键字:
+        <!--
         <input class="form-control" type="text" name="keyword" style="width: 200px;" value="{:input('request.keyword')}"
-               placeholder="借款人/放贷人">
+               placeholder="关键字">
+                 -->
         &nbsp; &nbsp;订单状态:
-        <select class="form-control" name="type" style="width: 160px;" placeholder="请输入订单状态">
+        <select class="form-control" name="status" style="width: 160px;" placeholder="请输入订单状态">
             <option value=''>请输入订单状态</option>
-            <option value='0'<if condition="isset($type) && $status eq 0">selected</if>>未同意</option>
-            <option value='1'<if condition="isset($type) && $status eq 1">selected</if>>已同意</option>
-            <option value='2'<if condition="isset($type) && $status eq 2">selected</if>>还款中</option>
-            <option value='1'<if condition="isset($type) && $status eq 3">selected</if>>已还款</option>
-            <option value='2'<if condition="isset($type) && $status eq 4">selected</if>>已逾期</option>
+            <option value='0'<if condition="isset($status) && $status eq 0">selected</if>>未同意</option>
+            <option value='1'<if condition="isset($status) && $status eq 1">selected</if>>已同意</option>
+            <option value='2'<if condition="isset($status) && $status eq 2">selected</if>>还款中</option>
+            <option value='3'<if condition="isset($status) && $status eq 3">selected</if>>已还款</option>
+            <option value='4'<if condition="isset($status) && $status eq 4">selected</if>>已逾期</option>
         </select>
         &nbsp; &nbsp;时间:
         <input type="text" class="form-control js-bootstrap-datetime" name="start_time"
@@ -40,8 +42,8 @@
                 <th>订单ID</th>
                 <th>借款人</th>
                 <th>放贷人</th>
-                <th>金额</th>
-                <th>年利率</th>
+                <th>金额（元）</th>
+                <th>年利率（%）</th>
                 <th>订单状态</th>
                 <th>最后操作时间</th>
                 <th>{:lang('ACTIONS')}</th>
@@ -51,11 +53,11 @@
             <php>
                 $order_statuses=array("0"=>lang('USER_STATUS_BLOCKED'),"1"=>lang('USER_STATUS_ACTIVATED'),"2"=>lang('USER_STATUS_UNVERIFIED'));
             </php>
-            <foreach name="list" item="vo">
+            <foreach name="data" item="vo">
                 <tr>
                     <td>{$vo.id}</td>
-                    <td>{$user}</td>
-                    <td>{$friends}</td>
+                    <td>{$vo.uname}</td>
+                    <td>{$vo.fname}</td>
                     <td>{$vo.price}</td>
                     <td>{$vo.rate}</td>
                     <td>

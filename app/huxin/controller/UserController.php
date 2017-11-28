@@ -255,11 +255,13 @@ class UserController extends CheckController
             $body = substr($output, $headerSize);
             curl_close($curl);
             $obt = (array)json_decode($body);
-            //$date里面包含["sex"] ="男" ["address"] = "省-地区-县" ["birthday"] = "年-月-日"
+            //$data里面包含["sex"] ="男" ["address"] = "省-地区-县" ["birthday"] = "年-月-日"
             $data = (array)$obt['data'];
             //$resp里面包括["code"]=0/1 ["desc"]="匹配/不匹配"
-            $resp = (array)$obt['resp'];  
-            return $this->redirect('user/checkidcard', ['resp'=>$resp['code'], 'idcard'=>$card]);
+            $resp = (array)$obt['resp'];
+            //名字转码
+            $auname = urldecode($name);
+            return $this->redirect('user/checkidcard', ['resp'=>$resp['code'], 'idcard'=>$card, 'name'=>$auname, 'address'=>$data['address'], 'sex'=>$data['sex']]);
         }else{
             return false;
         }
@@ -271,9 +273,17 @@ class UserController extends CheckController
      * weilang
      * 20171128
      */    
-    public function checkidcard($resp,$idcard){
+    public function checkidcard($resp,$idcard,$name,$address,$sex){
         $id = session('userid');
-        $data = array('idcard' => $idcard);
+        $name = urldecode($name);
+        $address = urldecode($address);
+        $sex = urldecode($sex);
+        $data = array(
+            'idcard'    => $idcard, 
+            'name'      => $name, 
+            'address'   => $address,
+            'sex'       => $sex,
+        );
         if($resp == 0){
             Db::name('hx_user')->where(['id' => $id])->update($data);
             $this->success('认证成功', url('user/grzx'));

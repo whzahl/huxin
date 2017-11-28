@@ -107,7 +107,7 @@ class OrderController extends CheckController
         $userid = session('userid');
         $userdata = Db::name('hx_user')->where(['id' => $userid])->find();
         if(empty($userdata['idcard'])){
-            $this->error('还未实名认证，请实名认证！', url('user/auidcard'));
+            $this->error('您还未实名认证，请实名认证！', url('user/auidcard'));
         }
         if(empty($userdata['deal_password'])){
             $this->error('还未设置交易密码，请设置交易密码并注意保密！', url('user/audeal_password'));
@@ -115,6 +115,9 @@ class OrderController extends CheckController
         $id = $this->request->param("id");
         //全部数据
         $data = Db::name('hx_user')->where(['id' => $id])->find();
+        if(empty($data['idcard'])){
+            $this->error('该好友还未实名认证，认证后方可交易！');
+        }
         $this->assign('data',$data);
         //逾期数据
         $overdue = Db::name('hx_order')->where(['fid' => $id])->where(['status' => 4])->count();

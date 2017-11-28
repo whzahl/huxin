@@ -19,90 +19,35 @@ class NewsController extends AdminBaseController
 	
 
 	/**
-	*  订单列表
+	*  消息列表
 	*/
     public function index(){
-		//搜索
- 		
-        return $this->fetch();
-	}
-
-
-	/**
-	*  新增订单
-	*/
-	public function add(){
-		if($this->request->isPost()){
-			$data = $this->request->param();
-			if(!isset($data['photo_urls'])){
-				$data['photo_urls'] = '';
-			}else{
-				foreach ($data['photo_urls'] as $key => $value) {
-				$data['picture'] .= $value.';';
-				}
-			}
-			if(!isset($data['status'])){
-				$data['status'] = '';
-			}
-			$res = array(
-				'main_title'  	=> $data['title'],
-				'picture'   	=> $data['picture'],
-				'content' 		=> $data['content'],
-				'type'      	=> $data['type'],
- 	 	   	    'create_time'   => $this->request->time(),
-		    );
-		    unset($data['photo_urls']);
-			unset($data['photo_names']);
-			$result = Db::name('hx_user')->insert($res);
-			if(!empty($result)){
-				$this->success("新增成功！",url('user/index'));
-			}else{
-				$this->error("新增失败！");
-			}
-		}
-		return $this->fetch();
-	}
-
-
-	/**
-	*  修改订单信息
-	*/
-	public function edit(){
-		$id = $this->request->param("id", 0, 'intval');
-        $data = Db::name('hx_user')->where(["id" => $id])->find();
-		$picture = explode(';', rtrim($data['picture'],';'));
-        if ($this->request->isPost()) {
-            $data1  = $this->request->param();
-            $img = '';
-            foreach ($data1['photo_urls'] as $key => $value) {
-				$img .= $value.';';
-			}
-			$res = array(
-				'picture' 		=> rtrim($img,';'),
-				'main_title'  	=> $data['title'],
-				'content' 		=> $data['content'],
-				'type'      	=> $data['type'],
- 	 	   	    'modify_time'   => $this->request->time(),
-		    );
-            if (Db::name('hx_user')->where(['id' => $id])->update($res) !== false) {
-                $this->success("修改成功！", url('user/index'));
-            } else {
-                $this->error("修改失败！");
-            }
+        
+        $list = Db::name('hx_infos')->order("id DESC")->paginate(10);
+        $data = $list->toArray();
+        $data1 = array();
+        foreach ($data['data'] as $key => $value) {
+            $fname = Db::name('hx_user')->field('name')->where(array('id' => $value['fid']))->find();
+            $uname = Db::name('hx_user')->field('name')->where(array('id' => $value['uid']))->find();
+            $value['fname'] = $fname['name'];
+            $value['uname'] = $uname['name'];
+            $data1[] = $value;
         }
-        $this->assign('picture',$picture);
-        $this->assign('data',$data);
+        // 获取分页显示
+        $page = $list->render();
+        $this->assign('list', $data1);
+        $this->assign('page', $page);
+        // 渲染模板输出
         return $this->fetch();
 	}
 
 
-
 	/**
-	*  删除订单
+	*  删除
 	*/
 	public function delete(){
 		$id = $this->request->param("id", 0, 'intval');
-    	$res = Db::name('hx_user')->delete($id);
+    	$res = Db::name('hx_infos')->delete($id);
     	if(!empty($res)){
     		$this->success("删除成功！");
     	}else{
@@ -111,16 +56,6 @@ class NewsController extends AdminBaseController
 	}
 
 
-
-	/**
-	*  订单详细信息
-	*/
-	public function content(){
-		$id = $this->request->param("id", 0, 'intval');
-		$data = Db::name('hx_user')->where(["id" => $id])->find();
-		$this->assign('data',$data);
-		return $this->fetch();
-	}
 
    
 }

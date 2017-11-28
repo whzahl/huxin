@@ -1,1 +1,87 @@
-content
+<include file="public@header" />
+<style>
+    #article_content img {
+        height: auto !important;
+        max-width: 100%;
+    }
+
+    #article_content {
+        word-wrap: break-word;
+    }
+
+    .content{
+    	padding-top: 7px;
+    }
+</style>
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('order/index')}">借条</a></li>
+			<li class="active"><a href="">借条详情</a></li>
+		</ul>
+		<form class="form-horizontal js-ajax-form margin-top-20">
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 订单id</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.id}</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"> 借款人</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.uname}</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"> 放贷人</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.fname}</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"> 金额</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.price} （元）</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 借款时间</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.start_time}</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 还款时间</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.end_time}</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 剩余未还金额</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.price} （元）</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 年利率</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.rate} %</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 借条状态</label>
+				<div class=" col-md-6 col-sm-10 content">
+					<if condition="$data.status eq 0"> <span style="color: #F39C12">未同意</span></if>
+                   	<if condition="$data.status eq 1"> <span style="color: #3498DB">已同意</span></if>
+                   	<if condition="$data.status eq 2"> <span style="color: #95a5a6">还款中</span></if>
+                   	<if condition="$data.status eq 3"> <span style="color: green">已还款</span></if>
+                   	<if condition="$data.status eq 4"> <span style="color: #d62c1a">已逾期</span></if>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 借条生成时间</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.create_time|date = ("Y年m月d日 H时i分"),###}</div>
+			</div>
+			<!-- 
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"> 借款用途</label>
+				<div class=" col-md-6 col-sm-10 content">{$data.purpose}</div>
+			</div>
+			 -->
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="hidden" name="id" value="{$data.id}"/>
+					<a class="btn btn-primary" href="{:url('order/edit',array('id'=>$data['id']))}">修改</a> 
+					<a class="btn btn-default" href="{:url('hxorder/order/index')}">{:lang('BACK')}</a>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>

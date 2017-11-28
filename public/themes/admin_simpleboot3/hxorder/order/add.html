@@ -1,1 +1,76 @@
-add
+<include file="public@header" />
+</head>
+<body>
+	<div class="wrap js-check-wrap">
+		<ul class="nav nav-tabs">
+			<li><a href="{:url('order/index')}">借条</a></li>
+			<li class="active"><a href="{:url('order/add')}">新增借条</a></li>
+		</ul>
+		<form class="form-horizontal js-ajax-form margin-top-20" action="{:url('order/add')}" method="post">
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>借款人姓名</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="uname">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>放贷人人姓名</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="fname">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>借条金额（元）</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="price">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>借款时间</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="start_time">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>还款时间</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="end_time">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-name" class="col-sm-2 control-label"><span class="form-required">*</span>年利率 %</label>
+				<div class="col-md-6 col-sm-10">
+					<input type="text" class="form-control" id="input-name" name="rate">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="input-remark" class="col-sm-2 control-label"><span class="form-required">*</span>借条状态</label>
+				<div class="col-md-6 col-sm-10">
+					<label class="radio-inline">
+						<input type="radio" name="status" value="0"> 未同意
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="1"> 已同意
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="2"> 还款中
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="3"> 已还款
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="status" value="4"> 已逾期
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary js-ajax-submit">保存</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script src="__STATIC__/js/admin.js"></script>
+</body>
+</html>
