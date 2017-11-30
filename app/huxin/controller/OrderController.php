@@ -103,51 +103,64 @@ class OrderController extends CheckController
      * weilang
      * 20171124
      */
-    public function bjt(){
+    public function checkStatus(){
         $userid = session('userid');
         $userdata = Db::name('hx_user')->where(['id' => $userid])->find();
+        $fid = $this->request->param("id");
+        $frienddata = Db::name('hx_user')->where(['id' => $fid])->find();
         if(empty($userdata['idcard'])){
             $this->error('您还未实名认证，请实名认证！', url('user/auidcard'));
         }
         if(empty($userdata['deal_password'])){
             $this->error('还未设置交易密码，请设置交易密码并注意保密！', url('user/audeal_password'));
         }
+        if(empty($frienddata['idcard'])){
+            $this->error('该好友还未实名认证，认证后方可进行操作！');
+        }
+        if(empty($frienddata['deal_password'])){
+            $this->error('该好友还未设置交易密码，设置后后方可进行操作！');
+        }
+        $this->success('OK');
+       
+    }
+    
+    
+    public function bjt(){
+        $userid = session('userid');
         $id = $this->request->param("id");
         //全部数据
         $data = Db::name('hx_user')->where(['id' => $id])->find();
-        if(empty($data['idcard'])){
-            $this->error('该好友还未实名认证，认证后方可交易！');
-        }
         $this->assign('data',$data);
         //逾期数据
         $overdue = Db::name('hx_order')->where(['fid' => $id])->where(['status' => 4])->count();
         $this->assign('overdue',$overdue);
         //进行中的借款
-        $ing = Db::name('hx_order')->where(['fid' => $id])->where(['status' => 1])->count();
+        $ing1 = Db::name('hx_order')->where(['fid' => $id, 'uid' => $userid])->where(['status' => 0])->count();
+        $ing2 = Db::name('hx_order')->where(['fid' => $id, 'uid' => $userid])->where(['status' => 1])->count();
+        $ing3 = Db::name('hx_order')->where(['fid' => $id, 'uid' => $userid])->where(['status' => 2])->count();
+        $ing4 = Db::name('hx_order')->where(['fid' => $userid, 'uid' => $id])->where(['status' => 0])->count();
+        $ing5 = Db::name('hx_order')->where(['fid' => $userid, 'uid' => $id])->where(['status' => 1])->count();
+        $ing6 = Db::name('hx_order')->where(['fid' => $userid, 'uid' => $id])->where(['status' => 2])->count();
+        $ing = $ing1 + $ing2 + $ing3 + $ing4 + $ing5 + $ing6;
         $this->assign('ing',$ing);
         //我们间的交易
-        $ord = Db::name('hx_order')->where(['fid' => $id])->count();
+        $ord1 = Db::name('hx_order')->where(['fid' => $id, 'uid' => $userid])->count();
+        $ord2 = Db::name('hx_order')->where(['uid' => $id, 'fid' => $userid])->count();
+        $ord = $ord1 + $ord2;
         $this->assign('ord',$ord);
         //我们的共同好友
+        //好友的好友
+        $both1 = Db::name('hx_friends')->where(['uid' => $id])->field('fname')->select(); 
         //我的好友
-        $both1 = Db::name('hx_friends')->where(['uid' => $userid])->field('fname')->select();
         foreach ($both1 as $key => $value1) {
             // echo $value1['fname'].'*';
             // echo '</br>';
-            //好友的好友
-            $both2 = Db::name('hx_friends')->where(['uid' => $id])->field('fname')->select();
-            foreach ($both2 as $key => $value2) {
-                // echo $value2['fname'];
-                // echo '</br>';
-                if($value1['fname'] == $value2['fname']){
-                    echo count($value2['fname']);
-                };
-            }
+            //我们的共同好友
+            $numboth = Db::name('hx_friends')->where(['uid' => $userid])->where(['fname' => $value1['fname']])->field('fname')->count(); 
         }
         //好友的好友数量
-        $numf = count($both2);
-        //共同好友数量
-        $numboth = count($value2['fname']);
+//         dump($numboth);
+        $numf = Db::name('hx_friends')->where(['uid' => $id])->count();
         $this->assign('numf',$numf);
         $this->assign('numboth',$numboth);
         return $this->fetch();
@@ -234,24 +247,32 @@ class OrderController extends CheckController
         $this->assign('fid',$fid);
         $uid = session('userid');
         $userdata = Db::name('hx_user')->where(['id' => $uid])->find();
+        //该好友已借总额
+        $totle1 = Db::name('hx_order')->where(['fid' => $fid])->where(['status'=>0])->sum('price');
+        $totle2 = Db::name('hx_order')->where(['fid' => $fid])->where(['status'=>1])->sum('price');
+        $totle3 = Db::name('hx_order')->where(['fid' => $fid])->where(['status'=>2])->sum('price');
+        $totle4 = Db::name('hx_order')->where(['fid' => $fid])->where(['status'=>4])->sum('price');
+        $totle = 200000 - ($totle1 + $totle2 +$totle3 + $totle4);
+        $this->assign('totle',$totle);
         if(empty($userdata['idcard'])){
             $this->error('还未实名认证，请实名认证！', url('user/auidcard'));
         }
         if(empty($userdata['deal_password'])){
             $this->error('还未设置交易密码，请设置交易密码并注意保密！', url('user/audeal_password'));
-        }  
+        }
         if($this->request->isPost()){
             $data = $this->request->param();
             if($data){
                 $res = array(
-                    'uid'       => $uid,
-                    'fid'       => $data['fid'],
+                    'uid'       => $data['fid'],
+                    'fid'       => $uid,
                     'price'     => $data['price'],
                     'start_time'=> $data['start_time'],
                     'end_time'  => $data['end_time'],
                     'rate'      => $data['rate'],
                     'status'    => 0,
                     'create_time'=> $this->request->time(),
+                    'orderid'   =>  $this->request->time(),
                 );
                 if(empty($data['price'])){
                     $this->error('请输入借款金额！');
@@ -268,12 +289,14 @@ class OrderController extends CheckController
                 $result = Db::name('hx_order')->insert($res);
                 if(!empty($result)){
                 //添加消息1126
+                //这条消息是给fid的人看的
                     $infos = array(
                         'uid'       => $uid,
                         'fid'       => $data['fid'],
                         'content'   => '发起借款通知',
                         'type'      => 2,
                         'create_time'=> $this->request->time(),
+                        'orderid'   =>  $this->request->time(),
                     );
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
@@ -329,11 +352,11 @@ class OrderController extends CheckController
      */
     public function xz(){
         $id = $this->request->param("id");
-        dump($id);
         $order = Db::name('hx_order')->where(array('id'=>$id))->find();
         //借还款时间
         $end = $order['end_time'];
         $sta = $order['start_time'];
+        //查询 对方/收到钱的人/借款人/的个人信息
         $user = Db::name('hx_user')->where(array('id'=>$order['fid']))->find();
         //借还款时间转换为天数
         $date = strtotime("$end") - strtotime("$sta");
@@ -341,33 +364,42 @@ class OrderController extends CheckController
         $p = $order['price'];
         $o = $order['rate']/100;
         $d = $date/86400/365;
-        $rate = $p * $o * $d;
+        //利率计算--本息和=本金*[(1+利率)的n次方],n就是你一共经过了多少个结算期
+        //pow(x,y) 函数返回 x 的 y 次方。
+        //$rate = $p * [pow((1+$o),$d)]
+        $a = 1+$o;
+        $b = pow($a,$d);
+        $rate = $p * $b - $p;
         //借款状态，还差几天到还款时间$t
         $nowTime = date("Y-m-d");
         $t = strtotime("$end") - strtotime("$nowTime");
         //判断如果还款时间小于当当时间，则改变状态为逾期
-        if($t < 0){
-             //添加消息1126
-                $infos = array(
-                    'uid'       => session('userid'),
-                    'fid'       => $order['fid'],
-                    'content'   => '逾期通知',
-                    'type'      => 7,
-                    'create_time'=> $this->request->time(),
-                );
-                Db::name('hx_infos')->insert($infos);
-                //添加消息结束
-            Db::name('hx_order')->where(array('id'=>$id))->update(['status' => 4]);
-        }
+//         if($t < 0){
+//              //添加消息1126
+//                 $infos = array(
+//                     'uid'       => session('userid'),
+//                     'fid'       => $order['fid'],
+//                     'content'   => '逾期通知',
+//                     'type'      => 7,
+//                     'create_time'=> $this->request->time(),
+//                     'orderid'   => $order['orderid'],
+//                 );
+//                 Db::name('hx_infos')->insert($infos);
+//                 //添加消息结束
+//             Db::name('hx_order')->where(array('id'=>$id))->update(['status' => 4]);
+//         }
         //
-        $friend = Db::name('hx_user')->where(array('id'=>$order['uid']))->find();
+        $friend = Db::name('hx_user')->where(array('id'=>$order['fid']))->find();
         $sid = session('userid');
         $this->assign('t',$t/86400);
         $this->assign('rate',$rate);
         $this->assign('date',$date/86400);
         $this->assign('user',$user);
-        $this->assign('order',$order); 
-        $this->assign('friend',$friend); 
+        //当前订单信息
+        $this->assign('order',$order);
+        //消息方个人信息
+        $this->assign('friend',$friend);
+        //当前账号人
         $this->assign('sid',$sid); 
         return $this->fetch();
     }
@@ -385,18 +417,19 @@ class OrderController extends CheckController
 
 
 /**
-     * 借条中心
+     * 全部的借条
      * weilang
      * 20171124
      */
     public function jtxx(){
         $id = session('userid');
+        $status = $this->request->param('status');
         //查询fid==id
         $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
         $arrName = array();
         //将user表的nema值插入数组
         foreach ($data as $key => $value) {
-            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $name = Db::name('hx_user')->where(['id' => $value['fid']])->find();
             $value['name'] = $name['name'];
             $arrName[] = $value;
         }
@@ -404,25 +437,91 @@ class OrderController extends CheckController
         $this->assign('data',$arrName);
         return $this->fetch();
     }
-
-
+    
+    
 /**
-     * 借条中心--进行中的
+     * 进行中的借条
      * weilang
-     * 20171124
+     * 20171130
      */
-    public function jtxxj(){
+    public function jtxxing(){
         $id = session('userid');
+        $status = $this->request->param('status');
         //查询fid==id
-        $data = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
+        $map = array();
+        $map['status'] =  array(['=',0],['=',1],'or');
+        $data1 = Db::name('hx_order')->where($map)->order('id desc')->select(); 
+        $data2 = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
         $arrName = array();
-        //将user表的nema值插入数组
-        foreach ($data as $key => $value) {
+        foreach ($data2 as $key =>$value2){
+            foreach ($data1 as $key =>$value1){
+                if($value2['orderid'] == $value1['orderid']){
+                    //将user表的nema值插入数组       
+                    $name = Db::name('hx_user')->where(['id' => $value1['fid']])->find();
+                    $value1['name'] = $name['name'];
+                    $arrName[] = $value1;
+                    
+                }
+            }
+            
+        }
+        $this->assign('data',$arrName);
+        return $this->fetch();
+    }
+    
+    
+/**
+     * 我们之间的交易
+     * weilang
+     * 20171129
+     */
+    public function ouring(){
+        $id = $this->request->param("id");
+        $userid = session('userid');
+        //分别查询相互发生的交易
+        $data1 = Db::name('hx_order')->where(['uid'=>$id])->where(['fid'=>$userid])->order('id desc')->select();
+        $data2 = Db::name('hx_order')->where(['uid'=>$userid])->where(['fid'=>$id])->order('id desc')->select();
+        $arrName = array();
+        //将user表的nema值插入数组 
+        foreach ($data1 as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['fid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+        foreach ($data2 as $key => $value) {
             $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
             $value['name'] = $name['name'];
             $arrName[] = $value;
         }
-
+        $this->assign('data',$arrName);
+        return $this->fetch();
+    }
+    
+    
+/**
+     * 进行中的借款
+     * weilang
+     * 20171129
+     */
+    public function ordering(){
+        $id = $this->request->param("id");
+        $userid = session('userid');
+        //分别查询相互发生的交易
+        $data1 = Db::name('hx_order')->where(['uid'=>$id, 'fid'=>$userid])->whereOr(['status'=>0, 'status'=>1, 'status'=>2])->order('id desc')->select();
+        $data2 = Db::name('hx_order')->where(['uid'=>$userid, 'fid'=>$id])->whereOr(['status'=>0, 'status'=>1, 'status'=>2])->order('id desc')->select();
+        $arrName = array();
+        //将user表的nema值插入数组
+        foreach ($data1 as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+        foreach ($data2 as $key => $value) {
+            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['name'] = $name['name'];
+            $arrName[] = $value;
+        }
+    
         $this->assign('data',$arrName);
         return $this->fetch();
     }
@@ -436,15 +535,16 @@ class OrderController extends CheckController
     public function xz1(){
         $id = session('userid');
         $info = $this->request->param();
-        $fid = Db::name('hx_order')->where(['id' => $info['id']])->field('fid')->find();
+        $fid = Db::name('hx_order')->where(['id' => $info['id']])->find();
         if($info['status'] == 0){
             //添加消息1126
                 $infos = array(
                     'uid'       => $id,
-                    'fid'       => $fid,
+                    'fid'       => $fid['fid'],
                     'content'   => '拒绝借款',
                     'type'      => 4,
                     'create_time'=> $this->request->time(),
+                    'orderid'   => $fid['orderid'],
                 );
                 Db::name('hx_infos')->insert($infos);
                 //添加消息结束
@@ -467,7 +567,7 @@ class OrderController extends CheckController
         $this->assign('info',$info);
         if($this->request->isPost()){
             $data = $this->request->param();
-            $fid = Db::name('hx_order')->where(['id' => $data['id']])->field('fid')->find();
+            $fid = Db::name('hx_order')->where(['id' => $data['id']])->find();
             $dpw = Db::name('hx_user')->where(array('id' => session('userid')))->field('deal_password')->find();
             if($data['password'] == $dpw['deal_password']){
                 //同意
@@ -475,10 +575,11 @@ class OrderController extends CheckController
                  //添加消息1126
                     $infos = array(
                         'uid'       => session('userid'),
-                        'fid'       => $fid,
+                        'fid'       => $fid['fid'],
                         'content'   => '同意借款',
                         'type'      => 3,
                         'create_time'=> $this->request->time(),
+                        'orderid'   => $fid['orderid'],
                     );
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
@@ -488,10 +589,11 @@ class OrderController extends CheckController
                 //添加消息1126
                     $infos = array(
                         'uid'       => session('userid'),
-                        'fid'       => $fid,
+                        'fid'       => $fid['fid'],
                         'content'   => '销账',
                         'type'      => 5,
                         'create_time'=> $this->request->time(),
+                        'orderid'   => $fid['orderid'],
                     );
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
@@ -513,17 +615,18 @@ class OrderController extends CheckController
      */
     public function zq(){
         $id = $this->request->param('id');
-        $fid = Db::name('hx_order')->where(['id' => $id])->field('fid')->find();
+        $fid = Db::name('hx_order')->where(['id' => $id])->find();
         if($this->request->isPost()){
             $endt = $this->request->param();
             if($endt){
                 //添加消息1126
                     $infos = array(
                         'uid'       => session('userid'),
-                        'fid'       => $fid,
+                        'fid'       => $fid['fid'],
                         'content'   => '展期通知',
                         'type'      => 6,
                         'create_time'=> $this->request->time(),
+                        'orderid'   => $fid['orderid'],
                     );
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
@@ -545,7 +648,12 @@ class OrderController extends CheckController
         $p = $order['price'];
         $o = $order['rate']/100;
         $d = $date/86400/365;
-        $rate = $p * $o * $d;
+        //利率计算--本息和=本金*[(1+利率)的n次方],n就是你一共经过了多少个结算期
+        //pow(x,y) 函数返回 x 的 y 次方。
+        //$rate = $p * [pow((1+$o),$d)]
+        $a = 1+$o;
+        $b = pow($a,$d);
+        $rate = $p * $b - $p;
         //借款状态，还差几天到还款时间$t
         $nowTime = date("Y-m-d");
         $t = strtotime("$end") - strtotime("$nowTime");
@@ -565,7 +673,7 @@ class OrderController extends CheckController
      */
     public function jrlist(){
         $id = $this->request->param('id');
-        $data = Db::name('hx_order')->where(['uid'=>$id])->order('id desc')->select();
+        $data = Db::name('hx_order')->where(['fid'=>$id])->order('id desc')->select();
         $arrName = array();
         foreach ($data as $key => $value) {
             $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
@@ -584,10 +692,10 @@ class OrderController extends CheckController
      */
     public function jclist(){
         $id = $this->request->param('id');
-        $data = Db::name('hx_order')->where(['fid'=>$id])->order('id desc')->select();
+        $data = Db::name('hx_order')->where(['uid'=>session('userid')])->order('id desc')->select();
         $arrName = array();
         foreach ($data as $key => $value) {
-            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $name = Db::name('hx_user')->where(['id' => $value['fid']])->find();
             $value['name'] = $name['name'];
             $arrName[] = $value;
         }

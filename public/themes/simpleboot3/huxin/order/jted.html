@@ -96,7 +96,7 @@
 <div class="wrap-page wrap-page-noheader bg-white">
 <div class="list-container">
 <form method="post" action="{:url('order/jted')}">
-	<p>当前可借款额度100,000元</p>
+	<p>当前可借款额度 {$totle} 元</p>
 	<input type="hidden" name="fid" value="4">
 	<ul class="list">
 		<li class="item item-input">
@@ -135,7 +135,10 @@
 			</div>
 		</li>
     	<li class="item item-noline" id="money" style=" text-align:right; display:block;">到期本息合计约为0.00元</li>
-    	<li class="item item-noline"><input class="magic-checkbox" type="checkbox" name="layout" id="c4" checked disabled><label for="c4" style="color:#ccc">已阅读并同意<a href="#" class="link-green2">相关协议</a></label></li>
+    	<li class="item item-noline">
+    		<input class="magic-checkbox" type="checkbox" name="layout" id="c4" checked disabled>
+    		<label for="c4" style="color:#ccc">已阅读并同意<a href="#" class="link-green2">相关协议</a></label>
+   		</li>
     	<input type="hidden" name="fid" value="{$fid}">
     	<li class="item item-noline"><button type="submit" class="btn btn-block btn-green">确定</button></li>
 	</ul>
@@ -156,7 +159,7 @@
     calendardatetime.init({
         'trigger': '#demo2',
         'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
-        'minDate': '1990-1-1', //最小日期
+        'minDate': new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(), //当前日期
         'maxDate': '2030-1-1'//最大日期
     });
     </script>

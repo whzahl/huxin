@@ -16,9 +16,49 @@
     <meta content="互信网" name="description">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
-    <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
-    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <include file="huxin@commonSrc"/>
+    <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
+	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+	<link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
+	<script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
+    <script>
+	function getPara(str){
+		var times = 4;
+		var x = str.lastIndexOf("/");
+        var dotIndex = str.indexOf(".");
+        str = str.substring(x+1,dotIndex);
+        return str;
+		
+	}
+        $(document).ready(function () {
+            $(".ffname").click(function () {
+            	var para = getPara($(this).attr("href"));
+                $.ajax({
+                	async:false,
+                    type:"GET",
+                    url:"/huxin/order/checkStatus",
+                    dataType:"json",
+                    data:{id:para},
+                    success:function (data) {
+                    	if(data.msg !=="OK"){
+                    		console.log(data);
+                            swal(data.msg);
+                            if (data.url !== ""){
+                                $('.confirm').click(function () {
+                                    window.location = data.url;
+                                });
+                            }
+                            event.preventDefault();
+                    	}
+                    },
+                    error:function (error) {
+						console.log(error);
+                    }
+                })
+            })
+        })
+	</script>
     <script>
         function onload() {
             for(var i = 0; i < 26; i++){
@@ -84,7 +124,7 @@
                     <if condition="$vo.char eq $vo1">
                         <li class="item item-header">{$vo.char}</li>
                         <li class="item item-linked">
-                            <a href="{:url('order/jted',array('id'=> $vo.fid))}">
+                            <a class="ffname" href="{:url('order/jted',array('id'=> $vo.fid))}">
                                 <h3 class="item-title">{$vo.fname}</h3>
                             </a>
                         </li>
@@ -95,6 +135,16 @@
         </foreach>
     </div>
 </div> 
-<include file="huxin@footer"/> 
+<footer class="footer">
+	<div class="footerlist">
+    	<ul>
+        	<li><a href="/huxin/index.html" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-home.png" class="img-responsive center-block"><span>首页</span></a></li>
+            <li><a href="{:url('friends/hy')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-hy.png" class="img-responsive center-block"><span>好友</span></a></li>
+            <li><a href="{:url('order/jt')}" style="color: #006699"><img src="__TMPL__/huxin/static/images/icon-bjt.png" class="img-responsive center-block"><span>补借条</span></a></li>
+            <li><a href="{:url('friends/xycx')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-xycx.png" class="img-responsive center-block"><span>信用查询</span></a></li>
+            <li><a href="{:url('user/grzx')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-grzx.png" class="img-responsive center-block"><span>个人中心</span></a></li>
+        </ul>
+    </div>
+</footer> 
 </body>
 </html>

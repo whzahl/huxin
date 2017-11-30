@@ -171,6 +171,9 @@ class FriendsController extends CheckController
     {
         $phone = Request::instance()->param('phone');
         $friends = Db::name('hx_user')->where('phone', $phone)->find();
+        //查询逾期借条数量1129
+        $over =  Db::name('hx_order')->where(['fid' => $friends['id']])->where(['status' => 4])->count();
+        $friends['over'] = $over;
         $this->assign('data', $friends);
         return $this->fetch();
     }
@@ -219,7 +222,6 @@ class FriendsController extends CheckController
     {
         $id = session('userid');
         $unread = Db::name('hx_friends')->where(array('fid' => $id, 'status' => 2))->order('id desc')->select();
-
         $this->assign('data', $unread);
         return $this->fetch();
     }
@@ -235,9 +237,16 @@ class FriendsController extends CheckController
         $t = date("Y-m-d");
         $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
         if($agree){
-            $user = ['uid' =>  $userid, 'uname' => $uname, 'fid' => $id, 'fname' => $fname, 'status' => 1, 'create_time' => $t];
+            $user = [
+                'uid' =>  $userid,
+                'orderid'=> 1,
+                'uname' => $uname,
+                'fid' => $id,
+                'fname' => $fname,
+                'status' => 1,
+                'create_time' => $t
+            ];
             Db::name('hx_friends')->where(array('uid' =>  $id))->insert($user);
-
             $this->success('已同意好友请求！',url('friends/hy'));
         }
 

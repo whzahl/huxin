@@ -26,7 +26,7 @@
 </div>
 </header>
 <div class="wrap-page">
-<foreach name="info" item="vo">
+<foreach name="info1" item="vo">
 	<div class="card-container">
 		<div class="card-container-title">
 			<span>{$vo.create_time|date = ("Y年m月d日 H时i分"),###}</span>
@@ -53,11 +53,12 @@
 			    	<p>
 			    		<if condition="$vo.type eq 2"><span>尊敬的客户，您有新的<b>借款通知</b></span></if>
 			    		<if condition="$vo.type eq 3"><span>尊敬的客户，您有新的<b>确认通知</b></span></if>
-			    		<if condition="$vo.type eq 4"><span>尊敬的客户，您有新的<b>销账通知</b></span></if>
-			    		<if condition="$vo.type eq 5"><span>尊敬的客户，您有新的<b>展期通知</b></span></if>
-			    		<if condition="$vo.type eq 6"><span>尊敬的客户，您有新的<b>逾期通知</b></span></if>
+			    		<if condition="$vo.type eq 5"><span>尊敬的客户，您有新的<b>销账通知</b></span></if>
+			    		<if condition="$vo.type eq 4"><span>尊敬的客户，您有新的<b>拒绝通知</b></span></if>
+			    		<if condition="$vo.type eq 6"><span>尊敬的客户，您有新的<b>展期通知</b></span></if>
+			    		<if condition="$vo.type eq 7"><span>尊敬的客户，您有新的<b>逾期通知</b></span></if>
 					</p>
-			    	<p>借款人：<span>{$vo.name}</span></p>
+			    	<p><if condition="$vo.type eq 3">出借人：<else />借款人：</if><span>{$vo.name}</span></p>
 			    	<p>借款金额：<span>{$vo.price}元</span></p>
 			    	<p>借款期限：<span>{$vo.time}天</span></p>
 			    	<p>借款年化利率：<span>{$vo.rate}%</span></p>
@@ -72,6 +73,7 @@
 		</div> 
 	</div>
 </foreach>
+
 </div>
 <include file="huxin@footer"/>
 </body>

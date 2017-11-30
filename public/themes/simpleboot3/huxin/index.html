@@ -67,7 +67,6 @@
     </ul>
 </div>
 <div class="index-ksrk">
-    <h2>快速入口</h2>
       <ul>
         <li>
             <a href="{:url('huxin/friends/hy')}"><img src="__TMPL__/huxin/static/images/icon-jr.jpg" class="img-responsive center-block"><span>借入</span></a>
@@ -84,13 +83,25 @@
     </ul>
 </div>
 <div class="idnex-copyright">
+<!-- 
     <a href="#">隐私条款</a> | <a href="#">法律声明</a> | <a href="#">联系我们</a><br>
     Copyright 2017&copy; 互信网 版权所有<br>
     <a href="http://www.miitbeian.gov.cn" target="_blank">沪ICP备15013778号</a>
+     -->
 </div>
 </div>
 
-<include file="huxin@footer"/>
+<footer class="footer">
+	<div class="footerlist">
+    	<ul>
+        	<li><a href="/huxin/index.html" style="color: #006699"><img src="__TMPL__/huxin/static/images/icon-home.png" class="img-responsive center-block"><span>首页</span></a></li>
+            <li><a href="{:url('friends/hy')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-hy.png" class="img-responsive center-block"><span>好友</span></a></li>
+            <li><a href="{:url('order/jt')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-bjt.png" class="img-responsive center-block"><span>补借条</span></a></li>
+            <li><a href="{:url('friends/xycx')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-xycx.png" class="img-responsive center-block"><span>信用查询</span></a></li>
+            <li><a href="{:url('user/grzx')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-grzx.png" class="img-responsive center-block"><span>个人中心</span></a></li>
+        </ul>
+    </div>
+</footer>
 
 </body>
 </html>

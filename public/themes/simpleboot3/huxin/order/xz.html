@@ -18,7 +18,33 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <!-- <include file="huxin@commonSrc"/> -->
+    <link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
+	<script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
+	<!--<include file="huxin@commonSrc"/>-->
+	<script>
+        $(document).ready(function () {
+            $(".loginout").click(function () {
+                $.ajax({
+                    type:"GET",
+                    url:$(".loginout").attr("href"),
+                    dataType:"json",
+                    success:function (data) {
+                        console.log(data);
+                        swal(data.msg);
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                    },
+                    error:function (error) {
+						console.log(error);
+                    }
+                })
+                return false;
+            })
+        })
+	</script>
 </head>
 
 <body>
@@ -118,7 +144,7 @@
     &nbsp;
 	</div>
 	</li>
-<if condition="$order.uid neq $sid">
+<if condition="$order.uid eq $sid">
     <if condition="$order.status eq 0">
         <ul>
             <li class="item item-noline">
@@ -126,11 +152,12 @@
             </li>
         </ul>
     </if>
-    <if condition="$order.status eq 0">
+    <if condition="$order.status neq 0">
         <ul>
-            <li class="item item-noline">
-                <a class="btn btn-block btn-green" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">拒绝</a>
-            </li>
+                <!-- <a class="btn btn-block btn-green" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">拒绝</a> -->
+             <a class="loginout" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">
+             	<li class="item item-noline"><button class="btn btn-block btn-green">拒绝</button></li>
+             </a>
         </ul>
     </if>
     <if condition="$order.status neq 3 && $order.status neq 0">

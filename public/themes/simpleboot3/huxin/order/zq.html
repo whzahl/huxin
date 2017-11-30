@@ -171,11 +171,13 @@
                     <button class="btn btn-block btn-green">确认展期</button>
                 </li>
             </form>
+            <!-- 
             <a href="javascript:history.back()">
                 <li class="item item-noline">
                     <button class="btn btn-block btn-green">返回</button>
                 </li>
             </a>
+             -->
         </ul>
     </div>
 </div>
@@ -185,7 +187,7 @@
     calendardatetime.init({
         'trigger': '#demo2',
         'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
-        'minDate': '1990-1-1', //最小日期
+        'minDate': '{$order.end_time}',
         'maxDate': '2030-1-1'//最大日期
     });
 </script>

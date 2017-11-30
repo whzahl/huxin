@@ -23,30 +23,31 @@ class NewsController extends HomeBaseController
      */
     public function xxzx(){
         $id = session('userid');
-        $data = Db::name('hx_infos')->where(['fid' => $id])->order('create_time desc')->select();
-
-        foreach ($data as $key => $value) {
-            # code...
-        }
-            $infos =array();
-            foreach ($data as $key => $value) {
+        //
+        //这条信息是收到消息的看到的$data1 fid
+        //
+        //查infos表里该看到这条信息的人
+        $data1 = Db::name('hx_infos')->where(['fid' => $id])->order('create_time desc')->select();
+            $infos1 =array();
+            foreach ($data1 as $key => $value) {
                 //将user表里的name插入infos
+                //user表里发消息的人
+                //同意
                 $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+                $info1 = Db::name('hx_order')->where(['orderid' => $value['orderid']])->find();
                 $value['name'] = $name['name'];
                 //将order表里的信息插入infos
-                $info = Db::name('hx_order')->where(['fid' => $id])->where(['create_time' => $value['create_time']])->find();
-                $value['price'] = $info['price'];
-                    $end = strtotime($info['end_time']);
-                    $sta = strtotime($info['start_time']);
-                    $date = $end - $sta;
-                    $d = $date/86400;
-                $value['time'] = $d;
-                $value['rate'] = $info['rate'];
-                $value['nid'] = $info['id'];
-                $infos[] = $value;
+                $value['price'] = $info1['price'];
+                $end = strtotime($info1['end_time']);
+                $sta = strtotime($info1['start_time']);
+                $date = ($end - $sta)/86400;
+                $value['time'] = $date;
+                $value['rate'] = $info1['rate'];
+                $value['nid'] = $info1['id'];
+                $infos1[] = $value;
             }
-        $this->assign('info',$infos);
-        Db::name('hx_infos')->where(['fid' => $id, 'status' => 0])->update(['status' => 1]);
+        $this->assign('info1',$infos1);
+        Db::name('hx_infos')->where(['uid' => $id, 'status' => 0])->update(['status' => 1]);
         return $this->fetch();
     }
 

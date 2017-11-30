@@ -18,46 +18,32 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
-	<script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
     <include file="huxin@commonSrc"/>
     <script>
         $(document).ready(function () {
             $(".certification").click(function () {
                 $.ajax({
+                	async:false,
                     type:"GET",
-                    url:$(".certification").attr(""),
+                    url:$(".certification").attr("href"),
                     dataType:"json",
                     success:function (data) {
-                        swal(data.msg);
-                    }
-                })
-                return false;
-            })
-            
-            $(".auidcard").click(function () {
-                $.ajax({
-                    type:"GET",
-                    url:$(".auidcard").attr(""),
-                    dataType:"json",
-                    success:function (data) {
-                        console.log(data);
-                        swal(data.msg);
-                        if (data.url !== ""){
-                            $('.confirm').click(function () {
-                                window.location = data.url;
+                        if (data.code === 1){
+                            swal({
+                                title:data.msg,
+                                type:"error"
                             });
                         }
-                    },
-                    error:function (error) {
-						console.log(error);
+                        else{
+                        	window.location = $(".certification").attr("href");
+                        }
                     }
-                })
+                });
                 return false;
             })
+
         })
     </script>
-
 </head>
 <body>
 <div class="wrap-page wrap-page-noheader wrap-page-nofooter bg-white">
@@ -73,11 +59,11 @@
 </div>
 <div class="login-dlzc">
 	<ul>
-    	<a href="{:url('order/jrlist',array('id'=>$data['id']))}"><li>
+    	<a href="{:url('order/jclist',array('id'=>$data['id']))}"><li>
             <if condition="$borrow eq 0">0<br>借出（元）</if>
             <if condition="$borrow neq 0">{$borrow}<br>借出（元）</if>
         </li></a>
-        <a href="{:url('order/jclist',array('id'=>$data['id']))}"><li>
+        <a href="{:url('order/jrlist',array('id'=>$data['id']))}"><li>
             <if condition="$lend eq 0">0<br>借入（元）</if>
             <if condition="$lend neq 0">{$lend}<br>借入（元）</if>
         </li></a>
@@ -95,13 +81,13 @@
     <ul>
     	<li style="width: 50%">
         	<div class="thumbnail">
-            <a href="{:url('order/jtxx')}"><img src="__TMPL__/huxin/static/images/icon-zhye2.png"></a>
+            <a href="{:url('order/jtxxing', ['status'=>1])}"><img src="__TMPL__/huxin/static/images/icon-zhye2.png"></a>
             <div class="caption">进行中</div>
             </div>
         </li>
         <li style="width: 50%">
         	<div class="thumbnail">
-            <a href="{:url('order/jtxx')}"><img src="__TMPL__/huxin/static/images/icon-shk.png"></a>
+            <a href="{:url('order/jtxx', ['status'=>2])}"><img src="__TMPL__/huxin/static/images/icon-shk.png"></a>
             <div class="caption">收还款</div>
             </div>
         </li>
@@ -117,7 +103,7 @@
         </li>
         <li>
         	<div class="thumbnail">
-            <a class="auidcard" href="{:url('user/auidcard')}"><img src="__TMPL__/huxin/static/images/icon-smrz.png"></a>
+            <a class="certification" href="{:url('user/auidcard')}"><img src="__TMPL__/huxin/static/images/icon-smrz.png"></a>
             <div class="caption">实名认证</div>
             </div>
         </li>
@@ -138,6 +124,16 @@
 </div>
 
 </div>
-<include file="huxin@footer"/>
+<footer class="footer">
+	<div class="footerlist">
+    	<ul>
+        	<li><a href="/huxin/index.html" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-home.png" class="img-responsive center-block"><span>首页</span></a></li>
+            <li><a href="{:url('friends/hy')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-hy.png" class="img-responsive center-block"><span>好友</span></a></li>
+            <li><a href="{:url('order/jt')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-bjt.png" class="img-responsive center-block"><span>补借条</span></a></li>
+            <li><a href="{:url('friends/xycx')}" style="color: #333"><img src="__TMPL__/huxin/static/images/icon-xycx.png" class="img-responsive center-block"><span>信用查询</span></a></li>
+            <li><a href="{:url('user/grzx')}" style="color: #006699"><img src="__TMPL__/huxin/static/images/icon-grzx.png" class="img-responsive center-block"><span>个人中心</span></a></li>
+        </ul>
+    </div>
+</footer> 
 </body>
 </html>

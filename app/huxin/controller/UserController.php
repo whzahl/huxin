@@ -44,13 +44,14 @@ class UserController extends CheckController
         // $this->assign('photo',$photo);
         $data['id'] = $id;
         $this->assign('data',$data);
-
         //借出金额
         $lend = Db::name('hx_order')->where(array('fid' => $id))->sum('price');
         $this->assign('lend',$lend);
         //借入金额
         $borrow = Db::name('hx_order')->where(array('uid' => $id))->sum('price');
         $this->assign('borrow',$borrow);
+        //进行中的
+        $ing = Db::name('hx_order')->where(array('fid' => $id))->select();
 
         return $this->fetch();
     }
