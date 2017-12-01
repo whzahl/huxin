@@ -134,6 +134,29 @@ class FriendsController extends CheckController
         return $this->fetch();
     }
 
+    /*
+     * 添加好友的ajax提示信息
+     * */
+
+    public function tjhyCheck(){
+        $id = session('userid');
+        $uidcard =  Db::name('hx_user')->where(['id' => $id])->field('idcard')->find();
+        if($uidcard['idcard'] == ''){
+            $this->error('您还未实名认证，请实名认证！', url('user/auidcard'));
+        }
+        $phone = input('get.phone');
+
+        $friends = Db::name('hx_user')->where('phone', $phone)->find();
+        if($friends['idcard'] == ''){
+            $this->error($phone);
+            $this->error('该用户还未实名认证！', url('friends/hy'));
+        }
+        $this->success('success');
+    }
+
+    /*
+     * 添加好友
+     * */
     public function tjhy()
     {
         header("Content-Type: text/html; charset=utf-8");
@@ -161,7 +184,8 @@ class FriendsController extends CheckController
                 $this->assign('data', $friends);
             }
             else {
-                $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
+//                $this->success('查询成功', url("friends/mynewfriend", array('phone' => $phone)));
+                $this->redirect( "friends/mynewfriend", array('phone' => $phone));
             }
         }
         return $this->fetch();

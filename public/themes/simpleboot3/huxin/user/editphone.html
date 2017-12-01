@@ -1,107 +1,105 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <!--H5页面窗口自动调整到设备宽度，并禁止用户缩放页面-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <!--当网站添加到主屏幕快速启动方式，可隐藏地址栏，仅针对ios的safari ios7.0版本以后，safari上已看不到效果-->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!--将网站添加到主屏幕快速启动方式，仅针对ios的safari顶端状态条的样式-->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <!--忽略将页面中的数字识别为电话号码 忽略Android平台中对邮箱地址的识别-->
     <meta name="format-detection" content="telphone=no, email=no" />
-    <title>改绑手机号_互信网</title>
+	<title>改绑手机号_互信网</title>
     <link href="__TMPL__/huxin/static/common/bootstrap.min.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
-    <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
-    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <include file="huxin@commonSrc"/>
-    <script type="text/javascript">
-        $(function(){
-            $(".generate_code").click(function(){
-                var disabled = $(".generate_code").attr("disabled");
-                if(disabled){
-                    return false;
-                }
-                if($("#mobile").val() == "" || isNaN($("#mobile").val()) || $("#mobile").val().length != 11 ){
-                    alert("请填写正确的手机号！");
-                    return false;
-                }
-                $.ajax({
-                    async:false,
-                    type: "GET",
-                    url: "{:url('/huxin/login/sendSMS')}",
-                    data: {mobile:$("#mobile").val()},
-                    dataType: "json",
-                    async:false,
-                    success:function(data){
-                        console.log(data);
-                        settime();
-                    },
-                    error:function(err){
-                        console.log(err);
-                    }
-                });
-            });
-            var countdown=60;
-            var _generate_code = $(".generate_code");
-            function settime() {
-                if (countdown == 0) {
-                    _generate_code.attr("disabled",false);
-                    _generate_code.val("获取验证码");
-                    countdown = 60;
-                    return false;
-                } else {
-                    $(".generate_code").attr("disabled", true);
-                    _generate_code.val("重新发送(" + countdown + ")");
-                    countdown--;
-                }
-                setTimeout(function() {
-                    settime();
-                },1000);
-            }
-        })
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+        <script type="text/javascript">
+        $(function(){  
+        $(".generate_code").click(function(){  
+          var disabled = $(".generate_code").attr("disabled");  
+          if(disabled){  
+            return false;  
+          }  
+          if($("#mobile").val() == "" || isNaN($("#mobile").val()) || $("#mobile").val().length != 11 ){  
+            alert("请填写正确的手机号！");  
+            return false;  
+          }  
+          $.ajax({  
+            async:false,  
+            type: "GET",  
+            url: "{:url('/huxin/login/sendSMS')}",  
+            data: {mobile:$("#mobile").val()},  
+            dataType: "json",  
+            async:false,  
+            success:function(data){  
+              console.log(data);  
+              settime();  
+            },  
+            error:function(err){  
+              console.log(err);  
+            }  
+          });  
+        });  
+        var countdown=60;  
+        var _generate_code = $(".generate_code");  
+        function settime() {  
+          if (countdown == 0) {  
+            _generate_code.attr("disabled",false);  
+            _generate_code.val("获取验证码");  
+            countdown = 60;  
+            return false;  
+          } else {  
+            $(".generate_code").attr("disabled", true);  
+            _generate_code.val("重新发送(" + countdown + ")");  
+            countdown--;  
+          }  
+          setTimeout(function() {  
+            settime();  
+          },1000);  
+        }  
+      })  
     </script>
 </head>
 
 <body>
 <header class="header">
-    <div>
-        <div class="top-container" style="background:#116fec; color:#FFF;">
-            <span class="left"><a href="javascript:history.back()">&nbsp;</a></span>改绑手机号<span class="right"></span>
-        </div>
+<div>
+	<div class="top-container" style="background:#116fec; color:#FFF;">
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>改绑手机号<span class="right"></span>
     </div>
+</div>
 </header>
 <div class="wrap-page">
-    <form method="post" action="{:url('user/editPhone')}">
-        <div class="list-container">
-            <ul class="list">
-                <li class="item item-input">
-                    <div class="item-main">
-                        <label class="field-container">
-                            <input type="text" name="phone" label="phone" icon="person" id="mobile" placeholder="手机号" class="field">
-                        </label>
-                    </div>
-                </li>
-                <li class="item item-input">
-                    <div class="item-main">
-                        <label class="field-container">
-                            <input type="text" name="cmsCode" label="yzcode" icon="person" placeholder="请输入验证码" class="field">
-                            <input type="button" class="obtain generate_code" value=" 获取验证码">
-                        </label>
-                    </div>
-                </li>
-            </ul>
-            <ul>
-                <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
-            </ul>
-        </div>
-    </form>
+<form method="post" action="{:url('user/editPhone')}">
+<div class="list-container">
+    <ul class="list">
+        <li class="item item-input">
+            <div class="item-main">
+            <label class="field-container">
+                <input type="text" name="phone" label="phone" icon="person" id="mobile" placeholder="手机号" class="field">
+            </label>
+            </div>
+        </li>
+        <li class="item item-input">
+            <div class="item-main">
+            <label class="field-container">
+                <input type="text" name="cmsCode" label="yzcode" icon="person" placeholder="请输入验证码" class="field">
+                <input type="button" class="obtain generate_code" value=" 获取验证码"> 
+            </label>
+            </div>
+        </li>
+    </ul>
+	<ul>
+        <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
+	</ul>
 </div>
-
+</div>
+<form>
 
 <include file="huxin@footer"/>
 </body>

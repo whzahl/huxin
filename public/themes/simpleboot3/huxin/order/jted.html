@@ -21,10 +21,32 @@
 	<include file="huxin@commonSrc"/>
 	<script>
 		$(document).ready(function () {
+//            阅读并同意现相关协议才给确定按钮生效
+		    $("[type='submit']").attr("disabled",true);
+            $(".magic-checkbox").change(function () {
+                if ($(this).is(':checked')){
+                    $("[type='submit']").attr("disabled",false);
+                }
+                else {
+                    $("[type='submit']").attr("disabled",true)
+				}
+            });
+
+
+//		    实时刷新还款金额
 			setInterval(function () {
                 changeMoney();
             },500);
+
+//			输入框的值改变触发的事件
+			$("#demo2,#demo1").bind("input propertychange",function () {
+                getTime2Time();
+            })
         });
+
+        /**
+         * 计算两个日期之间的相差天数（2017-10-1与2017-10-20）
+         */
         function getTime2Time()
         {
             var endTime = document.getElementById("demo2").value;
@@ -38,13 +60,20 @@
 			}
             document.getElementById("days").value = result;
         }
+        /**
+        * 计算还款金额
+        */
         function calculate(borrowMoney, days, rate) {
-			return (borrowMoney*(days/365)*(rate/100+1)).toFixed(2);
+			return ((borrowMoney*(Math.pow(rate/100+1,days/365)))).toFixed(2);
         }
+        /*
+        * 改变dom节点的文字
+        * */
         function changeMoney() {
 			var money = calculate($("[name='price']").val(),$("#days").val(),$("[name='rate']").val());
 			$("#money").text("到期本息合计约为" + money + "元");
         }
+
 	</script>
 	<style type="text/css">
     * {
@@ -96,13 +125,13 @@
 <div class="wrap-page wrap-page-noheader bg-white">
 <div class="list-container">
 <form method="post" action="{:url('order/jted')}">
-	<p>当前可借款额度 {$totle} 元</p>
+	<p>当前可借款额度 <span id="limit">{$totle}</span> 元</p>
 	<input type="hidden" name="fid" value="4">
 	<ul class="list">
 		<li class="item item-input">
 			<div class="item-main">
 				<label class="field-container"><span class="field-label">借款金额</span>
-					<input type="text" name="price" label="contact" icon="info" placeholder="10的整数倍" class="field" style="text-align:right;">元
+					<input type="text"  name="price" label="contact" icon="info" placeholder="10的整数倍" class="field" style="text-align:right;">元
 				</label>
 			</div>
 		</li>
@@ -136,7 +165,7 @@
 		</li>
     	<li class="item item-noline" id="money" style=" text-align:right; display:block;">到期本息合计约为0.00元</li>
     	<li class="item item-noline">
-    		<input class="magic-checkbox" type="checkbox" name="layout" id="c4" checked disabled>
+    		<input class="magic-checkbox" type="checkbox" name="layout" id="c4">
     		<label for="c4" style="color:#ccc">已阅读并同意<a href="#" class="link-green2">相关协议</a></label>
    		</li>
     	<input type="hidden" name="fid" value="{$fid}">

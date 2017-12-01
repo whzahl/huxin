@@ -18,50 +18,48 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <include file="huxin@commonSrc"/>
 </head>
 
 <body>
 <header class="header">
 <div>
 	<div class="top-container" style="background:#116fec; color:#FFF;">
-        <span class="left"><a href="javascript:history.back()">&nbsp;</a></span>修改交易密码<span class="right"></span>
+        <span class="left""><a href="javascript:history.back()">&nbsp;</a></span>修改交易密码<span class="right"></span>
     </div>
 </div>
 </header>
 <div class="wrap-page">
-    <form method="post" action="{:url('user/editDpw')}">
-        <div class="list-container">
-            <ul class="list">
-                <li class="item item-input">
-                    <div class="item-main">
-                        <label class="field-container"><span class="field-label">旧密码</span>
-                        <input type="password" name="passwordOld" label="username" icon="person" placeholder="" class="field">
-                        </label>
-                    </div>
-                </li>
-                <li class="item item-input">
-                    <div class="item-main">
-                        <label class="field-container"><span class="field-label">新密码</span>
-                        <input type="password" name="passwordNew1" label="username" icon="person" placeholder="" class="field">
-                        </label>
-                    </div>
-                </li>
-                <li class="item item-input">
-                    <div class="item-main">
-                        <label class="field-container"><span class="field-label">再次输入</span>
-                        <input type="password" name="passwordNew2" label="username" icon="person" placeholder="" class="field">
-                        </label>
-                    </div>
-            </li>
-            </ul>
-            <ul>
-                <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
-            </ul>
+<form method="post" action="{:url('user/editDpw')}">
+<div class="list-container">
+    <ul class="list">
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">旧密码</span>
+    <input type="password" name="passwordOld" label="username" icon="person" placeholder="" class="field">
+    </label>
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">新密码</span>
+    <input type="password" name="passwordNew1" label="username" icon="person" placeholder="" class="field">
+    </label>
+    </div>
+    </li>
+    <li class="item item-input">
+    <div class="item-main">
+    <label class="field-container"><span class="field-label">再次输入</span>
+    <input type="password" name="passwordNew2" label="username" icon="person" placeholder="" class="field">
+    </label>
+    </div>
+    </li>
+</ul>
+	<ul>
+    <li class="item item-noline"><button class="btn btn-block btn-green">确定</button></li>
+	</ul>
 </div>
-    </form>
 </div>
-
+<form>
 
 <include file="huxin@footer"/>
 </body>

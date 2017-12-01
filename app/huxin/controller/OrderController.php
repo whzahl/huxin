@@ -120,7 +120,7 @@ class OrderController extends CheckController
         if(empty($frienddata['deal_password'])){
             $this->error('该好友还未设置交易密码，设置后后方可进行操作！');
         }
-        $this->success('OK');
+        $this->success('success');
        
     }
     
@@ -285,6 +285,9 @@ class OrderController extends CheckController
                 }
                 if(empty($data['rate'])){
                     $this->error('请输入年利率');
+                }
+                if(intval($data['price']) > $totle){
+                    $this->error('限制借款金额不能超过可借额度');
                 }
                 $result = Db::name('hx_order')->insert($res);
                 if(!empty($result)){

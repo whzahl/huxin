@@ -17,8 +17,40 @@
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
-    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-	<include file="huxin@commonSrc"/>
+	<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
+	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
+	<link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
+	<script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
+	<!--<include file="huxin@commonSrc"/>-->
+	<script>
+		$(document).ready(function () {
+            $(".icon_search").click(function () {
+                $.ajax({
+                    async:false,
+                    url:"/huxin/friends/tjhyCheck",
+                    type:"GET",
+                    data:{phone:$("[name='phone']").val()},
+                    dataType:"json",
+                    success:function (data) {
+                        if(data.msg !== "success"){
+                            console.log(data);
+                            swal(data.msg);
+                            if (data.url !== ""){
+                                $('.confirm').click(function () {
+                                    window.location = data.url;
+                                });
+                            }
+                            event.preventDefault();
+                        }
+                    },
+                    error:function (error) {
+                        console.log(error);
+                    }
+                })
+            })
+        })
+	</script>
 </head>
 
 <body>
