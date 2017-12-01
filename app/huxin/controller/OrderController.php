@@ -152,6 +152,9 @@ class OrderController extends CheckController
         //好友的好友
         $both1 = Db::name('hx_friends')->where(['uid' => $id])->field('fname')->select(); 
         //我的好友
+        if(!isset($numboth)){
+            $numboth = '';
+        }
         foreach ($both1 as $key => $value1) {
             // echo $value1['fname'].'*';
             // echo '</br>';
@@ -159,7 +162,6 @@ class OrderController extends CheckController
             $numboth = Db::name('hx_friends')->where(['uid' => $userid])->where(['fname' => $value1['fname']])->field('fname')->count(); 
         }
         //好友的好友数量
-//         dump($numboth);
         $numf = Db::name('hx_friends')->where(['uid' => $id])->count();
         $this->assign('numf',$numf);
         $this->assign('numboth',$numboth);

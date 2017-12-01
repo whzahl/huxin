@@ -16,9 +16,62 @@
     <link href="__TMPL__/huxin/static/common/reset.css" rel="stylesheet">
     <link href="__TMPL__/huxin/static/common/main.css" rel="stylesheet">
     <script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
-    <script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-    <include file="huxin@commonSrc"/>
+    <link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
+    <script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
+    <script>
+        $(document).ready(function () {
+//            获取跳转链接里面的id参数值
+            function getPara(str) {
+                str = str.substring(str.indexOf("=")+1);
+                return str;
+            }
+            $("#agree").click(function () {
+                $.ajax({
+                    async:false,
+                    type:"GET",
+                    dataType:"json",
+                    url:"/huxin/friends/agreefriend",
+                    data:{id:getPara($(this).attr("href"))},
+                    success:function (data) {
+                        swal(data.msg);
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                        event.preventDefault();
+                    },
+                    error:function (error) {
+                        console.log(error);
+                    }
+                })
+            })
+            $("#disagree").click(function () {
+                $.ajax({
+                    async:false,
+                    type:"GET",
+                    dataType:"json",
+                    url:"/huxin/friends/deletefriend",
+                    data:{id:getPara($(this).attr("href"))},
+                    success:function (data) {
+                        console.log(data);
+                        swal(data.msg);
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                        event.preventDefault();
+                    },
+                    error:function (error) {
+                        console.log(error);
+                    }
+                })
+            })
+        })
+    </script>
 </head>
 <header class="header">
     <div>
@@ -35,10 +88,10 @@
                 <li class="item item-input">
                     <p style="padding-left: 20px;"><b>{$vo.uname}</b></p>&nbsp;请求加为好友
                     <div style="float: right">
-                        <a href="{:url('friends/agreefriend')}?id={$vo.uid}" class="btn btn-block btn-green">同意</a>
+                        <a id="agree" href="{:url('friends/agreefriend')}?id={$vo.uid}" class="btn btn-block btn-green">同意</a>
                     </div>
                     <div style="float: right">
-                        <a href="{:url('friends/deletefriend')}?id={$vo.uid}" class="btn btn-block btn-green">拒绝</a>
+                        <a id="disagree" href="{:url('friends/deletefriend')}?id={$vo.uid}" class="btn btn-block btn-green">拒绝</a>
                     </div>
                 </li>
                 <!--           <li class="item item-noline">

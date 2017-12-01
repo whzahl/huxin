@@ -104,6 +104,15 @@ class FriendsController extends CheckController
         header("Content-Type: text/html; charset=utf-8");
 
         $id = session('userid');
+//         $request = input('request.');
+//         if(!isset($request['keyword'])){
+//             $request['keyword'] = '';
+//         }
+//         $keywordComplex = [];
+//         if (!empty($request['keyword'])) {
+//             $keyword = $request['keyword'];
+//             $keywordComplex['name'] = ['like', "%$keyword%"];
+//         }
         $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id, 'status' => 1))->select();
         $friends = array();
         foreach ($arrData as $key => $value) {
@@ -121,7 +130,7 @@ class FriendsController extends CheckController
     }
 
     public function get_ajax_friend()
-    {
+    {      
         $name = input('post.keywords');
         $map = array('like', '%' . $name . '%');
         $f_name = Db::name('hx_friends')->where('fname', 'like', $map)->order('id desc')->field('fname')->select();
@@ -147,6 +156,9 @@ class FriendsController extends CheckController
         $phone = input('get.phone');
 
         $friends = Db::name('hx_user')->where('phone', $phone)->find();
+        if(empty($friends['phone'])){
+            $this->error('没有该用户！', url('friends/hy'));
+        }
         if($friends['idcard'] == ''){
             $this->error('该用户还未实名认证！', url('friends/hy'));
         }
@@ -208,6 +220,9 @@ class FriendsController extends CheckController
         $phone = input('get.phone');
         //dump($phone);die;
         $name = Db::name('hx_user')->where(array('id' => $id))->find();
+        if($name['phone'] == $phone){
+            $this->error('不能添加自己为好友！');
+        }
         $me = $name['name'];
         $newfriend = Db::name('hx_user')->where('phone', $phone)->find();
         $newfriendname = $newfriend['name'];
@@ -262,7 +277,6 @@ class FriendsController extends CheckController
         if($agree){
             $user = [
                 'uid' =>  $userid,
-                'orderid'=> 1,
                 'uname' => $uname,
                 'fid' => $id,
                 'fname' => $fname,
