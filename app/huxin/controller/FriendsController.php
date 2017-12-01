@@ -104,16 +104,15 @@ class FriendsController extends CheckController
         header("Content-Type: text/html; charset=utf-8");
 
         $id = session('userid');
-//         $request = input('request.');
-//         if(!isset($request['keyword'])){
-//             $request['keyword'] = '';
-//         }
-//         $keywordComplex = [];
-//         if (!empty($request['keyword'])) {
-//             $keyword = $request['keyword'];
-//             $keywordComplex['name'] = ['like', "%$keyword%"];
-//         }
-        $arrData = Db::name('hx_friends')->field('fid')->where(array('uid' => $id, 'status' => 1))->select();
+        $request = input('request.');
+        //关键词搜索
+        $keywordComplex = [];
+        if (!empty($request['keyword'])) {
+            $keyword = $request['keyword'];
+            $keywordComplex['fname']    = ['like', "%$keyword%"];
+        }
+
+        $arrData = Db::name('hx_friends')->where(array('uid' => $id, 'status' => 1))->where($keywordComplex)->select();
         $friends = array();
         foreach ($arrData as $key => $value) {
             $fname = Db::name('hx_user')->field('name')->where(array('id' => $value['fid']))->find();
