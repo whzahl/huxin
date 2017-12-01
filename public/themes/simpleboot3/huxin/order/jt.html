@@ -41,7 +41,7 @@
                     dataType:"json",
                     data:{id:para},
                     success:function (data) {
-                    	if(data.msg !=="OK"){
+                    	if(data.msg !=="success"){
                     		console.log(data);
                             swal(data.msg);
                             if (data.url !== ""){

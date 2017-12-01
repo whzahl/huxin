@@ -22,44 +22,44 @@
     <link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
     <script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
     <script>
-//        $(document).ready(function () {
-//            $(".ajaxA").click(function () {
-//                $.ajax({
-//                    async:false,
-//                    type:"GET",
-//                    dataType:"json",
-//                    data:{phone:$("#photo").text()},
-//                    url:"/huxin/friends/addfriends",
-//                    success:function (data) {
-//                        console.log(data);
-//                        if(data.code === 1){
-//                            swal({
-//                                title:data.msg,
-//                                type:"success"
-//                            });
-//                        }
-//                        else
-//                        {
-//                            swal({
-//                                title:data.msg,
-//                                type:"error"
-//                            });
-//                        }
-//
-//                        //额外绑定一个事件，当确定执行之后返回成功的页面的确定按钮，点击之后刷新当前页面或者跳转其他页面
-//                        if (data.url !== ""){
-//                            $('.confirm').click(function () {
-//                                window.location = data.url;
-//                            });
-//                        }
-//                    },
-//                    error:function (error) {
-//                        console.log(error);
-//                    }
-//                });
-//                event.preventDefault();
-//            })
-//        })
+        $(document).ready(function () {
+            $(".ajaxA").click(function () {
+                $.ajax({
+                    async:false,
+                    type:"GET",
+                    dataType:"json",
+                    data:{phone:$("#photo").text()},
+                    url:"/huxin/friends/addfriends",
+                    success:function (data) {
+                        console.log(data);
+                        if(data.code === 1){
+                            swal({
+                                title:data.msg,
+                                type:"success"
+                            });
+                        }
+                        else
+                        {
+                            swal({
+                                title:data.msg,
+                                type:"error"
+                            });
+                        }
+
+                        //额外绑定一个事件，当确定执行之后返回成功的页面的确定按钮，点击之后刷新当前页面或者跳转其他页面
+                        if (data.url !== ""){
+                            $('.confirm').click(function () {
+                                window.location = data.url;
+                            });
+                        }
+                    },
+                    error:function (error) {
+                        console.log(error);
+                    }
+                });
+                event.preventDefault();
+            })
+        })
     </script>
     <!--<include file="huxin@commonSrc"/>-->
 </head>

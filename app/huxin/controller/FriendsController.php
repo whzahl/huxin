@@ -148,7 +148,6 @@ class FriendsController extends CheckController
 
         $friends = Db::name('hx_user')->where('phone', $phone)->find();
         if($friends['idcard'] == ''){
-            $this->error($phone);
             $this->error('该用户还未实名认证！', url('friends/hy'));
         }
         $this->success('success');
