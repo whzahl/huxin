@@ -32,8 +32,8 @@
     <div class="xy-container" style="padding-top: 50px;">
         <table width="100%" border="0" cellspacing="0" cellpadding="0">
             <tr>
-            	<td>出借人</td>
-                <td>借出人</td>
+            	<td>借款人</td>
+                <td>出借人</td>
                 <td>借款金额</td>
                 <td>借款时间</td>
                 <td>还款时间</td>
@@ -42,8 +42,8 @@
             <foreach name="data" item="vo">
 
                 <tr>
-                	<td>{$vo.name}</td>
-                    <td>{$vo.name}</td>
+                	<td>{$vo.fname}</td>
+                    <td>{$vo.uname}</td>
                     <td>{$vo.price}</td>
                     <td>{$vo.start_time}</td>
                     <td>{$vo.end_time}</td>

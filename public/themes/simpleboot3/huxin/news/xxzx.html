@@ -48,6 +48,12 @@
 						<span class="icon icon-right-nav"></span>
 					</a>
 				</div>
+			<elseif condition="$vo.type eq 0" />
+				<div class="card-body">
+			    	<p><span>尊敬的客户，您的<b>好友请求</b>消息！</span></p>
+					<p><span><b>{$vo.name}</b>&nbsp;</span>拒绝添加您为好友！</p>
+				</div>
+				
 			<else />
 				<div class="card-body">
 			    	<p>
@@ -57,6 +63,8 @@
 			    		<if condition="$vo.type eq 4"><span>尊敬的客户，您有新的<b>拒绝通知</b></span></if>
 			    		<if condition="$vo.type eq 6"><span>尊敬的客户，您有新的<b>展期通知</b></span></if>
 			    		<if condition="$vo.type eq 7"><span>尊敬的客户，您有新的<b>逾期通知</b></span></if>
+			    		<if condition="$vo.type eq 8"><span>尊敬的客户，您有新的<b>展期同意通知</b></span></if>
+			    		<if condition="$vo.type eq 9"><span>尊敬的客户，您有新的<b>展期拒绝通知</b></span></if>
 					</p>
 			    	<p><if condition="$vo.type eq 3">出借人：<else />借款人：</if><span>{$vo.name}</span></p>
 			    	<p>借款金额：<span>{$vo.price}元</span></p>

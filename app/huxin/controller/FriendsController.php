@@ -104,8 +104,8 @@ class FriendsController extends CheckController
         header("Content-Type: text/html; charset=utf-8");
 
         $id = session('userid');
-        $request = input('request.');
         //关键词搜索
+        $request = input('request.');
         $keywordComplex = [];
         if (!empty($request['keyword'])) {
             $keyword = $request['keyword'];
@@ -184,7 +184,7 @@ class FriendsController extends CheckController
         }else{
             $friendname = $friends['name'];
             $friendid = $friends['id'];
-            $mid = Db::name('hx_friends')->where(array('uid' => $id))->column('fid');
+            $mid = Db::name('hx_friends')->where(array('uid' => $id))->where('status','neq',0)->column('fid');
             $count = count($mid);
             for ($x = 0; $x < $count; $x++) {
                 $myfriend[] = $mid[$x];
@@ -300,6 +300,16 @@ class FriendsController extends CheckController
         $t = date("Y-m-d");
         $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 0, 'create_time' => $t]);
         if($agree){
+            //添加消息
+            $infos = array(
+                'uid'       => $userid,
+                'fid'       => $id,
+                'content'   => '拒绝添加好友请求',
+                'type'      => 0,
+                'create_time'=> $this->request->time(),
+            );
+            Db::name('hx_infos')->insert($infos);
+            //添加消息结束
             $this->error('已拒绝好友请求！',url('friends/hy'));
         }
     }

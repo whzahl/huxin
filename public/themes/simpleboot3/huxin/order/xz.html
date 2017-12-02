@@ -110,7 +110,12 @@
 	<div class="item-main">
 	<label class="field-container"><span class="field-label">还款日期</span>
 	</label>
-    <h3 class="item-title" style="text-align:right;">{$order.end_time}</h3>
+    <h3 class="item-title" style="text-align:right;">
+    	<if condition="$off.id neq '' && $off.type eq 0"><span style="color: #3498DB">展期至 {$off.zq_time}</span>
+    	<else />
+    		{$order.end_time}
+    	</h3>
+    	</if>
     &nbsp;
 	</div>
 	</li>
@@ -119,11 +124,15 @@
 	<label class="field-container"><span class="field-label">借款状态</span>
 	</label>
     <h3 class="item-title" style="text-align:right;">
-        <if condition="$t < 0">
-            <p style="color: #d62c1a">已逾期</p>
-        <else />
-            还有{$t}天还款
-        </if>
+    <if condition="$order.status eq 0">
+    		<p style="color: #F39C12">已拒绝</p>
+    	<else />
+	        <if condition="$t < 0">
+	            <p style="color: #d62c1a">已逾期</p>
+	        <else />
+	            	还有{$t}天还款
+	        </if>
+       </if>
     </h3>
     &nbsp;
 	</div>
@@ -145,43 +154,84 @@
 	</div>
 	</li>
 <if condition="$order.uid eq $sid">
-    <if condition="$order.status eq 0">
-        <ul>
+    <if condition="$order.status eq 5">
+        <!-- 同意或者拒绝借条 -->
+            <ul>
+                <li class="item item-noline">
+                    <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status' => 1, 'end_time'=>1))}">同意</a>
+                </li>
+            </ul>
+
+            <ul>
+                <a class="loginout" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">
+                 	<li class="item item-noline"><button class="btn btn-block btn-green">拒绝</button></li>
+                </a>
+            </ul>
+    <else />       
+        <!-- 同意或者拒绝销账 -->
+        <if condition="$off.id neq '' && $off.type eq 1">
+            <ul>
+                <li class="item item-noline">
+                    <a class="btn btn-block btn-green" href="{:url('order/agreexz',array('id'=>$order.id, 'status' => 1))}">同意销账
+                    </a>
+                </li>
+            </ul>
+            <ul>
+                <li class="item item-noline">
+                    <a class="btn btn-block btn-green" href="{:url('order/agreexz',array('id'=>$order.id, 'status' => 2))}">拒绝销账
+                    </a>
+                </li>
+            </ul>
+        </if>
+        <if condition="$order.status eq 4">
+           <ul>
+               <li class="item item-noline">
+                   <a class="btn btn-block btn-green" href="{:url('order/zq',array('id'=>$order.id))}">展期</a>
+               </li>
+           </ul>
+       	</if>
+        <a href="javascript:history.back()">
             <li class="item item-noline">
-                <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status' => 1))}">同意</a>
+                <button class="btn btn-block btn-green">返回</button>
+            </li>
+        </a>
+    </if>
+<else />
+	<if condition="$off.id neq '' && $off.type eq 2">
+        <if condition="$order.status neq 3">
+		<ul>
+            <li class="item item-noline">
+                <a class="btn btn-block btn-green" href="{:url('order/doff',array('status' => 1, 'id'=>$order.id, 'create_time'=>$off.create_time, 'zq_time'=>$off.zq_time))}">同意展期</a>
             </li>
         </ul>
-    </if>
-    <if condition="$order.status neq 0">
-        <ul>
-                <!-- <a class="btn btn-block btn-green" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">拒绝</a> -->
-             <a class="loginout" href="{:url('order/xz1',array('id'=>$order.id, 'status' => 0))}">
-             	<li class="item item-noline"><button class="btn btn-block btn-green">拒绝</button></li>
-             </a>
-        </ul>
-    </if>
-    <if condition="$order.status neq 3 && $order.status neq 0">
         <ul>
             <li class="item item-noline">
-                <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status'=> 3))}">销账</a>
+                <a class="btn btn-block btn-green" href="{:url('order/doff',array('status' => 2, 'id'=>$order.id, 'create_time'=>$off.create_time, 'zq_time'=>$off.zq_time))}">拒绝展期</a>
             </li>
         </ul>
-    </if>
-    <if condition="$order.status neq 3 && $order.status neq 0">
-        <ul>
-            <li class="item item-noline">
-                <a class="btn btn-block btn-green" href="{:url('order/zq',array('id'=>$order.id))}">展期</a>
-            </li>
-        </ul>
+        <else />
+            <a href="javascript:history.back()">
+                <li class="item item-noline">
+                    <button class="btn btn-block btn-green">返回</button>
+                </li>
+            </a>
+        </if>
+    <else />
+		<if condition="$order.status neq 3 && $order.status neq 0">
+	        <ul>
+	            <li class="item item-noline">
+	                <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status'=> 2, 'end_time'=>1))}">销账</a>
+	            </li>
+	        </ul>
+	    </if>
+    	<a href="javascript:history.back()">
+        	<li class="item item-noline">
+            	<button class="btn btn-block btn-green">返回</button>
+        	</li>
+   		</a>
     </if>
 </if>
-    <a href="javascript:history.back()">
-        <li class="item item-noline">
-            <button class="btn btn-block btn-green">返回</button>
-        </li>
-    </a>
-	</ul>
-
+</ul>
 </div>
 </div>
 </body>

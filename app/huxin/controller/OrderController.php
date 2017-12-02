@@ -272,7 +272,7 @@ class OrderController extends CheckController
                     'start_time'=> $data['start_time'],
                     'end_time'  => $data['end_time'],
                     'rate'      => $data['rate'],
-                    'status'    => 0,
+                    'status'    => 5,
                     'create_time'=> $this->request->time(),
                     'orderid'   =>  $this->request->time(),
                 );
@@ -378,23 +378,24 @@ class OrderController extends CheckController
         //借款状态，还差几天到还款时间$t
         $nowTime = date("Y-m-d");
         $t = strtotime("$end") - strtotime("$nowTime");
-        //判断如果还款时间小于当当时间，则改变状态为逾期
-//         if($t < 0){
-//              //添加消息1126
-//                 $infos = array(
-//                     'uid'       => session('userid'),
-//                     'fid'       => $order['fid'],
-//                     'content'   => '逾期通知',
-//                     'type'      => 7,
-//                     'create_time'=> $this->request->time(),
-//                     'orderid'   => $order['orderid'],
-//                 );
-//                 Db::name('hx_infos')->insert($infos);
-//                 //添加消息结束
-//             Db::name('hx_order')->where(array('id'=>$id))->update(['status' => 4]);
-//         }
-        //
+            // 判断如果还款时间小于当当时间，则改变状态为逾期
+            if($t < 0){
+                 //添加消息1126
+                    $infos = array(
+                        'uid'       => session('userid'),
+                        'fid'       => $order['fid'],
+                        'content'   => '逾期通知',
+                        'type'      => 7,
+                        'create_time'=> $this->request->time(),
+                        'orderid'   => $order['orderid'],
+                    );
+                    Db::name('hx_infos')->insert($infos);
+                    //添加消息结束
+                Db::name('hx_order')->where(array('id'=>$id))->update(['status' => 4]);
+            } 
         $friend = Db::name('hx_user')->where(array('id'=>$order['fid']))->find();
+        $off = Db::name('hx_off')->where(['oid' => $id])->order('id desc')->find();
+        $this->assign('off',$off);
         $sid = session('userid');
         $this->assign('t',$t/86400);
         $this->assign('rate',$rate);
@@ -405,7 +406,7 @@ class OrderController extends CheckController
         //消息方个人信息
         $this->assign('friend',$friend);
         //当前账号人
-        $this->assign('sid',$sid); 
+        $this->assign('sid',$sid);
         return $this->fetch();
     }
 
@@ -418,6 +419,44 @@ class OrderController extends CheckController
     public function shk()
     {
         return $this->fetch();
+    }
+    
+/**
+     * 展期至
+     * weilang
+     * 20171202
+     */
+    public function doff(){
+        $off = $this->request->param(); 
+        $order = Db::name('hx_order')->where(['id'=>$off['id']])->find();
+        if($off['status'] == 1){ 
+            Db::name('hx_off')->where(['oid'=>$off['id'], 'create_time'=>$off['create_time']])->update(['status' => 1]);
+            $infos = array(
+                'uid'       => session('userid'),
+                'fid'       => $order['uid'],
+                'content'   => '展期同意通知',
+                'type'      => 8,
+                'create_time'=> $this->request->time(),
+                'orderid'   => $order['orderid'],
+            );
+            Db::name('hx_infos')->insert($infos);
+            $end_time = date('Y-m-d',(int)$off['zq_time']);
+            Db::name('hx_order')->where(['id'=>$off['id']])->update(['end_time' => $off['zq_time']]);
+        }
+        $this->success("操作成功！",url('order/jtxxing'));
+        if($off['status'] == 2){
+            Db::name('hx_off')->where(['oid'=>$off['id'], 'create_time'=>$off['create_time']])->update(['status' => 2]);
+            $infos = array(
+                'uid'       => session('userid'),
+                'fid'       => $order['uid'],
+                'content'   => '展期拒绝通知',
+                'type'      => 9,
+                'create_time'=> $this->request->time(),
+                'orderid'   => $order['orderid'],
+            );
+            Db::name('hx_infos')->insert($infos);
+        } 
+        $this->success("操作成功！",url('order/jtxxing'));
     }
 
 
@@ -454,7 +493,7 @@ class OrderController extends CheckController
         $status = $this->request->param('status');
         //查询fid==id
         $map = array();
-        $map['status'] =  array(['=',0],['=',1],'or');
+        $map['status'] =  array(['=',0],['=',1],['=',2],'or');
         $data1 = Db::name('hx_order')->where($map)->order('id desc')->select(); 
         $data2 = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
         $arrName = array();
@@ -484,20 +523,17 @@ class OrderController extends CheckController
         $id = $this->request->param("id");
         $userid = session('userid');
         //分别查询相互发生的交易
-        $data1 = Db::name('hx_order')->where(['uid'=>$id])->where(['fid'=>$userid])->order('id desc')->select();
-        $data2 = Db::name('hx_order')->where(['uid'=>$userid])->where(['fid'=>$id])->order('id desc')->select();
+        $data = Db::name('hx_order')->where(['uid'=>$userid, 'fid'=>$id])->whereOr(['uid'=>$id, 'fid'=>$userid])->order('id desc')->select();
         $arrName = array();
-        //将user表的nema值插入数组 
-        foreach ($data1 as $key => $value) {
-            $name = Db::name('hx_user')->where(['id' => $value['fid']])->find();
-            $value['name'] = $name['name'];
+        foreach ($data as $key => $value) {
+            $name1 = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['uname'] = $name1['name'];
+            $name2 = Db::name('hx_user')->where(['id' => $value['fid']])->find();
+            $value['fname'] = $name2['name'];
+
             $arrName[] = $value;
         }
-        foreach ($data2 as $key => $value) {
-            $name = Db::name('hx_user')->where(['id' => $value['uid']])->find();
-            $value['name'] = $name['name'];
-            $arrName[] = $value;
-        }
+
         $this->assign('data',$arrName);
         return $this->fetch();
     }
@@ -577,7 +613,7 @@ class OrderController extends CheckController
             if($data['password'] == $dpw['deal_password']){
                 //同意
                 if($data['status'] == 1){
-                 //添加消息1126
+                    //添加消息1126
                     $infos = array(
                         'uid'       => session('userid'),
                         'fid'       => $fid['fid'],
@@ -590,11 +626,11 @@ class OrderController extends CheckController
                     //添加消息结束
                 }
                 //销账
-                if($data['status'] == 3){
-                //添加消息1126
+                if($data['status'] == 2){
+                    //添加消息1202
                     $infos = array(
                         'uid'       => session('userid'),
-                        'fid'       => $fid['fid'],
+                        'fid'       => $fid['uid'],
                         'content'   => '销账',
                         'type'      => 5,
                         'create_time'=> $this->request->time(),
@@ -602,6 +638,15 @@ class OrderController extends CheckController
                     );
                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
+                    //销账信息
+                    $off = array(
+                        'oid'       => $data['id'],
+                        'type'      => 1,
+                        'zq_time'   => '销账',
+                        'status'    => 0,
+                        'create_time'=> $this->request->time(),
+                    );
+                    Db::name('hx_off')->insert($off);
                 }
                 Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => $data['status']]);
                 $this->success('操作成功！',url('order/jtxx'));
@@ -614,6 +659,66 @@ class OrderController extends CheckController
 
 
     /**
+     * 销账
+     * weilang
+     * 20171202
+     */
+    public function agreexz(){
+        $info = $this->request->param();
+        $this->assign('info',$info);
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            $fid = Db::name('hx_order')->where(['id' => $data['id']])->find();
+            $dpw = Db::name('hx_user')->where(array('id' => session('userid')))->field('deal_password')->find();
+            if($data['password'] == $dpw['deal_password']){
+                //
+                if($data['status'] == 1){
+                    //添加消息1202
+                    $infos = array(
+                        'uid'       => session('userid'),
+                        'fid'       => $fid['fid'],
+                        'content'   => '同意销账',
+                        'type'      => 9,
+                        'create_time'=> $this->request->time(),
+                        'orderid'   => $fid['orderid'],
+                    );
+                    Db::name('hx_infos')->insert($infos);
+                    //添加消息结束
+                    Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => 3]);
+                }
+                //销账
+                if($data['status'] == 2){
+                    //添加消息1202
+                    $infos = array(
+                        'uid'       => session('userid'),
+                        'fid'       => $fid['fid'],
+                        'content'   => '拒绝销账',
+                        'type'      => 10,
+                        'create_time'=> $this->request->time(),
+                        'orderid'   => $fid['orderid'],
+                    );
+                    Db::name('hx_infos')->insert($infos);
+                    //添加消息结束
+                }
+                 //销账信息
+                    $off = array(
+                        'oid'       => $data['id'],
+                        'type'      => 2,
+                        'zq_time'   => '销账',
+                        'status'    => 0,
+                        'create_time'=> $this->request->time(),
+                    );
+                    Db::name('hx_off')->insert($off);
+//                 Db::name('hx_order')->where(array('id'=>$data['id']))->update(['status' => $data['status']]);
+                $this->success('操作成功！',url('order/jtxx'));
+            }else{
+                $this->error('密码错误，请重新输入！');
+            }
+        }
+        return $this->fetch();
+    }
+
+    /**
      * 展期
      * weilang
      * 20171124
@@ -624,16 +729,17 @@ class OrderController extends CheckController
         if($this->request->isPost()){
             $endt = $this->request->param();
             if($endt){
+                $this->success('请输入交易密码！', url('order/dpassword', ['end_time' => $endt['end_time'], 'id' => $fid['id'], 'status' => 2]));
                 //添加消息1126
-                    $infos = array(
-                        'uid'       => session('userid'),
-                        'fid'       => $fid['fid'],
-                        'content'   => '展期通知',
-                        'type'      => 6,
-                        'create_time'=> $this->request->time(),
-                        'orderid'   => $fid['orderid'],
-                    );
-                    Db::name('hx_infos')->insert($infos);
+//                     $infos = array(
+//                         'uid'       => session('userid'),
+//                         'fid'       => $fid['uid'],
+//                         'content'   => '展期通知',
+//                         'type'      => 6,
+//                         'create_time'=> $this->request->time(),
+//                         'orderid'   => $fid['orderid'],
+//                     );
+//                     Db::name('hx_infos')->insert($infos);
                     //添加消息结束
                 // $this->success('请输入交易密码！', url('order/dpassword',['id' => $info['id']]));
                 Db::name('hx_order')->where(['id' => $endt['id']])->update(['end_time' => $endt['end_time']]);
