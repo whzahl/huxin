@@ -82,7 +82,8 @@
 	    <if condition="$ing eq ''">
 	        <span class="field-label">当前无借款</span>
 	    <else />
-	        <span class="field-label"><a href="{:url('order/ordering',array('id'=> $data.id))}">{$ing}</a></span>
+            <span class="field-label"><a href="{:url('order/jtxxing',array('status'=> 1))}">{$ing}</a></span>
+	        <!-- <span class="field-label"><a href="{:url('order/ordering',array('id'=> $data.id))}">{$ing}</a></span> -->
 	    </if>  
 	<span class="icon icon-right-nav"></span></a></li>
     <li class="item item-linked" style="border-bottom:.6rem solid #f0f0f0;"><a href="#">

@@ -473,8 +473,10 @@ class OrderController extends CheckController
         $arrName = array();
         //将user表的nema值插入数组
         foreach ($data as $key => $value) {
-            $name = Db::name('hx_user')->where(['id' => $value['fid']])->find();
-            $value['name'] = $name['name'];
+            $name1 = Db::name('hx_user')->where(['id' => $value['fid']])->find();
+            $value['fname'] = $name1['name'];
+            $name2 = Db::name('hx_user')->where(['id' => $value['uid']])->find();
+            $value['uname'] = $name2['name'];
             $arrName[] = $value;
         }
 

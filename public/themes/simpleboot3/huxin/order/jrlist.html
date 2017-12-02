@@ -45,7 +45,7 @@
                     <td>{$vo.start_time}</th>
                     <td>{$vo.end_time}</th>
                     <td>
-                        <a href="{:url('huxin/order/jr',array('id'=> $vo.id))}">
+                        <a href="{:url('huxin/order/xz',array('id'=> $vo.id))}">
                             <if condition="$vo.status eq 0"><p style="color: #F39C12">未同意</p></if>
                             <if condition="$vo.status eq 1"><p style="color: #3498DB">已同意</p></if>
                             <if condition="$vo.status eq 2"><p style="color: #95a5a6">还款中</p></if>
