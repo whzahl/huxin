@@ -209,6 +209,7 @@ class UserController extends CheckController
                 }elseif(empty($data['idcard'])){
                     $this->error('请输入身份证号码！');
                 }else{
+                    die;
                     $this->redirect('user/idcard',['card'=>$data['idcard'], 'name'=>$data['name']]);
                 }
             }
