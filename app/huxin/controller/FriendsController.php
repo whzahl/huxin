@@ -272,7 +272,10 @@ class FriendsController extends CheckController
         $me = Db::name('hx_user')->where(array('id' => $userid))->find();
         $uname = $me['name'];
         $t = date("Y-m-d");
-        $agree = Db::name('hx_friends')->where(array('fid' =>  $userid, 'uid' => $id))->update(['status' => 1, 'create_time' => $t]);
+            $map['fid'] = $userid;
+            $map['uid'] = $id;
+            $map['status'] = array('neq',0);
+            $agree = Db::name('hx_friends')->where($map)->update(['status' => 1, 'create_time' => $t]);
         if($agree){
             $user = [
                 'uid' =>  $userid,

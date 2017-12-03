@@ -18,6 +18,7 @@ class CheckController extends HomeBaseController
 	public function __construct(){
         parent::__construct();
 
+    	// $id = session('userid');
     	$id = session('userid');
     	
     	if(!isset($id)){

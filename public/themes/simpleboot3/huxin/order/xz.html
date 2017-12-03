@@ -128,7 +128,8 @@
         <if condition="$order.status eq 3"><p style="color: green">已还款</p></if>
 	    <if condition="$order.status eq 4"><p style="color: #d62c1a">已逾期</p></if>
         <if condition="$order.status eq 5"><p style="color: #95a5a6">待确认</p></if>
-        <if condition="$order.status eq 1 && $order.status eq 2">还有{$t}天还款</if>
+        <if condition="$order.status eq 2">还有{$t}天还款</if>
+        <if condition="$order.status eq 1">还有{$t}天还款</if>
     </h3>
     &nbsp;
 	</div>

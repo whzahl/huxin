@@ -111,10 +111,12 @@
 </div>
     <div class="recoverself">
    <div class="search_box">
+            <form action="/huxin/order/jt" method="post">
             <span class="search_input">
-            <input class="hilight1" id="" name="keywords" value="" placeholder="搜索联系人" type="text">
+            <input class="hilight1" id="search_input" name="keyword" value="{:input('request.keyword')}" placeholder="搜索联系人" type="text">
             </span>
             <input value="" class="icon_search" type="submit">
+            </form>
         </div>
     </div>
     <div class="list-container">

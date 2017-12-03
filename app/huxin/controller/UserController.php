@@ -264,7 +264,8 @@ class UserController extends CheckController
             $auname = urldecode($name);
             return $this->redirect('user/checkidcard', ['resp'=>$resp['code'], 'idcard'=>$card, 'name'=>$auname, 'address'=>$data['address'], 'sex'=>$data['sex']]);
         }else{
-            return false;
+            $this->error('认证失败,请输入正确的身份证号码！');
+            // return false;
         }
     }
   

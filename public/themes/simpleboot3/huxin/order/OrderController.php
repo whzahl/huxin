@@ -229,7 +229,7 @@ class OrderController extends CheckController
             $keyword = $request['keyword'];
             $keywordComplex['fname']    = ['like', "%$keyword%"];
         }
-        
+
         $arrData = Db::name('hx_friends')->where(array('uid' => $id, 'status' => 1))->where($keywordComplex)->select();
         $friends = array();
         foreach ($arrData as $key => $value) {
