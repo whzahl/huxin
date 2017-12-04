@@ -56,6 +56,16 @@ class UserController extends CheckController
         return $this->fetch();
     }
 
+    /**
+     * 验证密码格式
+     *规则：以字母开头，长度在6~18之间，只能包含字符、数字和下划线
+     */
+    public function checkPassword($str){
+        $pattern = '/^[a-zA-Z]\w{5,17}$/';
+        //					在原有基础上添加一些常见符号
+//                    var pattern = /^[a-zA-Z][\w(^%&',.;=?$\x22)]{5,17}$/;
+        return preg_match($pattern,$str)?true:false;
+    }
 
     //修改登录密码
     public function editPw(){
@@ -69,6 +79,9 @@ class UserController extends CheckController
             if($data['passwordOld'] == $arr['password']){
                 $pw1 = $data['passwordNew1'];
                 $pw2 = $data['passwordNew2'];
+                if(!$this->checkPassword($data['passwordNew1'])){
+                    $this->error("密码格式错误");
+                }
                 if($pw1 == $pw2){
                     $res = array(
                         'password'  => $pw2,
@@ -94,25 +107,30 @@ class UserController extends CheckController
         $id = session('userid');
         if($this->request->isPost()){
             $data = $this->request->param();
+            $str = strlen($data['passwordNew1']);
             if(empty($data['passwordNew2'])){
                 $this->error("请输入新密码！");
             }
             $arr = Db::name('hx_user')->where(array('id' => $id))->field('deal_password')->find();
             if($data['passwordOld'] == $arr['deal_password']){
-                $pw1 = $data['passwordNew1'];
-                $pw2 = $data['passwordNew2'];
-                if($pw1 == $pw2){
-                    $res = array(
-                        'deal_password'  => $pw2,
-                    );
-                    if (Db::name('hx_user')->where(['id' => $id])->update($res) !== false) {
-                        $this->success("修改成功！", url('user/grzx'));
-                    } else {
-                        $this->error("修改失败！");
-                    }
+                if($str != 6){
+                    $this->error("请输入6位数交易密码");
                 }else{
-                    $this->error("两次密码输入不一致，请重新输入！");
-                }                
+                    $pw1 = $data['passwordNew1'];
+                    $pw2 = $data['passwordNew2'];
+                    if($pw1 == $pw2){
+                        $res = array(
+                            'deal_password'  => $pw2,
+                        );
+                        if (Db::name('hx_user')->where(['id' => $id])->update($res) !== false) {
+                            $this->success("修改成功！", url('user/grzx'));
+                        } else {
+                            $this->error("修改失败！");
+                        }
+                    }else{
+                        $this->error("两次密码输入不一致，请重新输入！");
+                    }
+                }
             }else{
                $this->error("旧密码输入错误！");
             }
@@ -374,8 +392,14 @@ class UserController extends CheckController
         $id = session('userid');
         if($this->request->isPost()){
             $data = $this->request->param();
+            $str1 = strlen($data['passwordNew1']);
+            $str2 = strlen($data['passwordNew2']);
             if(empty($data)){
                 $this->error('交易密码为空，请输入后提交！');
+            }elseif($str1 != 6){
+                $this->error('交易密码长度为6位数');
+            }elseif($str2 != 6){
+                $this->error('交易密码长度为6位数');
             }elseif($data['passwordNew1'] != $data['passwordNew2']){
                 $this->error('两次密码不一致！');
             }else{

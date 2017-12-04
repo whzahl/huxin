@@ -68,7 +68,10 @@ class LoginController extends HomeBaseController
 
                 if(empty($data['passwordt'])){
                     $this->error("请输入密码！");
-                }elseif($data['password'] != $data['passwordt']){
+                }elseif (!$this->checkPassword($data['passwordt'])){
+                        $this->error("密码格式错误");
+                }
+                elseif($data['password'] != $data['passwordt']){
                     $this->error("密码不一致！");
                 }else{
                     $cmsCode =  Db::name('hx_code')->where(array('phone' => $data['phone']))->field('code')->find();
@@ -96,10 +99,50 @@ class LoginController extends HomeBaseController
         return $this->fetch();
     }
 
-
+    /**
+     * 验证密码格式
+     *规则：以字母开头，长度在6~18之间，只能包含字符、数字和下划线
+    */
+    public function checkPassword($str){
+        $pattern = '/^[a-zA-Z]\w{5,17}$/';
+        //					在原有基础上添加一些常见符号
+//                    var pattern = /^[a-zA-Z][\w(^%&',.;=?$\x22)]{5,17}$/;
+        return preg_match($pattern,$str)?true:false;
+    }
 
     public function editPassword(){
-
+        if($this->request->isPost()){
+            $data = $this->request->param();
+            if(empty($data['phone'])){
+                $this->error('手机号为空'); 
+            }else{
+                $phone = Db::name('hx_user')->where(['phone' => $data['phone']])->find();
+                // dump($phone);die;
+                if(!isset($phone['phone'])){
+                    $this->error('改手机号未注册，点击进行注册', url('login/register'));
+                }else{
+                    $code = Db::name('hx_code')->where(['phone' => $phone['phone']])->field('code')->find();
+                    if($code['code'] == $data['cmsCode']){
+                        $pw1 = $data['passwordNew1'];
+                        $pw2 = $data['passwordNew2'];
+                        $str = strlen($pw1);
+                        if(empty($pw1)){
+                            $this->error('请输入新密码');
+                        }elseif($str < 6){
+                            $this->error('新密码至少6位数');
+                        }elseif($pw1 != $pw2){
+                            $this->error('两次密码不一致');
+                        }else{
+                            $arr = array(
+                                'password' => $pw2,
+                            );
+                            Db::name('hx_user')->where(['phone' => $data['phone']])->update($arr);
+                            $this->success('修改密码成功', url('login/login'));
+                        }
+                    }
+                }
+            }
+        }
         return $this->fetch();
     }
 

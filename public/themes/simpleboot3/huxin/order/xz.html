@@ -214,7 +214,7 @@
             </a>
         </if>
     <else />
-		<if condition="$order.status neq 3 && $order.status neq 0">
+		<if condition="$order.status neq 3 && $order.status neq 0 && $order.status neq 5">
 	        <ul>
 	            <li class="item item-noline">
 	                <a class="btn btn-block btn-green" href="{:url('order/dpassword',array('id'=>$order.id, 'status'=> 2, 'end_time'=>1))}">销账</a>

@@ -189,7 +189,9 @@ class FriendsController extends CheckController
             for ($x = 0; $x < $count; $x++) {
                 $myfriend[] = $mid[$x];
             }
+            $fstatus =  Db::name('hx_friends')->where(['uid'=>$id, 'fid'=>$friends['id']])->find();
             //print_r($myfriend);die;
+            $this->assign('fstatus', $fstatus);
             if (in_array($friendid, $myfriend)) {
                 $this->assign('data', $friends);
             }

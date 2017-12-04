@@ -115,10 +115,10 @@ class OrderController extends CheckController
             $this->error('还未设置交易密码，请设置交易密码并注意保密！', url('user/audeal_password'));
         }
         if(empty($frienddata['idcard'])){
-            $this->error('该好友还未实名认证，认证后方可进行操作！');
+            $this->error('该好友还未实名认证');
         }
         if(empty($frienddata['deal_password'])){
-            $this->error('该好友还未设置交易密码，设置后后方可进行操作！');
+            $this->error('该好友还未设置交易密码');
         }
         $this->success('success');
        
@@ -264,6 +264,8 @@ class OrderController extends CheckController
         $totle4 = Db::name('hx_order')->where(['fid' => $fid])->where(['status'=>4])->sum('price');
         $totle = 200000 - ($totle1 + $totle2 +$totle3 + $totle4);
         $this->assign('totle',$totle);
+        $fname = Db::name('hx_user')->where(['id' => $fid])->find();
+        $this->assign('fname',$fname);
         if(empty($userdata['idcard'])){
             $this->error('还未实名认证，请实名认证！', url('user/auidcard'));
         }
@@ -296,8 +298,14 @@ class OrderController extends CheckController
                 if(empty($data['rate'])){
                     $this->error('请输入年利率');
                 }
+                if($data['rate'] >= 24){
+                    $this->error('年利率为1-24%');
+                }
+                if($data['rate'] <= 1){
+                    $this->error('年利率为1-24%');
+                }
                 if(intval($data['price']) > $totle){
-                    $this->error('限制借款金额不能超过可借额度');
+                    $this->error('限制借款金额不能超过可借款额度');
                 }
                 $result = Db::name('hx_order')->insert($res);
                 if(!empty($result)){
@@ -503,7 +511,7 @@ class OrderController extends CheckController
         $status = $this->request->param('status');
         //查询fid==id
         $map = array();
-        $map['status'] =  array(['=',0],['=',1],['=',2],'or');
+        $map['status'] =  array(['=',0],['=',1],['=',2],['=',5],'or');
         $data1 = Db::name('hx_order')->where($map)->order('id desc')->select(); 
         $data2 = Db::name('hx_order')->whereOr(['fid'=>$id])->whereOr(['uid'=>$id])->order('id desc')->select();
         $arrName = array();

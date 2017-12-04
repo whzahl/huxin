@@ -62,10 +62,8 @@ class NewsController extends HomeBaseController
     }
 
 
-    public function newslist()
-    {   
-    	header("Content-Type: text/html; charset=utf-8");
-    	$data = Db::name('hx_news')->select();
+    public function newslist(){   
+    	$data = Db::name('hx_news')->order('id desc')->select();
     	$this->assign('data',$data);
     	return $this->fetch();
     }
@@ -75,7 +73,7 @@ class NewsController extends HomeBaseController
      public function type1()
     {   
         header("Content-Type: text/html; charset=utf-8");
-        $data=Db::name('hx_news')->where(array('type'=>0))->select();
+        $data=Db::name('hx_news')->where(array('type'=>0))->order('id desc')->select();
         $this->assign('data',$data);
         return $this->fetch();
     }
@@ -85,7 +83,7 @@ class NewsController extends HomeBaseController
      public function type2()
     {   
         header("Content-Type: text/html; charset=utf-8");
-        $data=Db::name('hx_news')->where(array('type'=>1))->select();
+        $data=Db::name('hx_news')->where(array('type'=>1))->order('id desc')->select();
         $this->assign('data',$data);
         return $this->fetch();
     }
@@ -95,7 +93,7 @@ class NewsController extends HomeBaseController
      public function type3()
     {   
         header("Content-Type: text/html; charset=utf-8");
-        $data=Db::name('hx_news')->where(array('type'=>2))->select();
+        $data=Db::name('hx_news')->where(array('type'=>2))->order('id desc')->select();
         $this->assign('data',$data);
         return $this->fetch();
     }

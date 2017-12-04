@@ -18,8 +18,13 @@
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
     <include file="huxin@commonSrc"/>
+    <style type="text/css">
+        #contentimg img{
+            border: none;
+            width: 90% !important;
+        }
+    </style>
 </head>
-
 <body>
 <header class="header">
 <div>
@@ -31,7 +36,7 @@
 <div class="wrap-page">
     <div class="wrap-page wrap-page-noheaderfooter">
         <div class="wrap-page-flex">
-            <div class="wrap-page-single" style="padding:30px;">
+            <div id="contentimg" class="wrap-page-single" style="width: 80%; padding:30px;">
                 <h2 style="font-weight:bold; font-size:16px;">标题：{$data.main_title}</h2>
                 <p style="color:#999;">{$data.create_time|date = ("Y-m-d H:i:s"),###} 
                     <a href="index.html">互信网</a>
