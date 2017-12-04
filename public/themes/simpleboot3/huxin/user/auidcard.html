@@ -18,26 +18,42 @@
 	<script src="__TMPL__/huxin/static/scripts/jquery.min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
-	<include file="huxin@commonSrc"/>
+	<link rel="stylesheet" href="__TMPL__/huxin/static/common/sweetalert.css">
+	<script src="__TMPL__/huxin/static/js/sweetalert.min.js"></script>
+	<!--<include file="huxin@commonSrc"/>-->
 	<script type="text/javascript">
 	$(function(){
 		$(":submit").click(function () {
-			var card = $("#idcard").val();
-			if (!isCardNo(card)){
-                swal({
-                    title: "身份证格式错误",
-                    text:"请重新输入!",
-                    type:"error"
-                });
-                return false;
-			}
+//			var card = $("#idcard").val();
+//			if (!isCardNo(card)){
+//                swal({
+//                    title: "身份证格式错误",
+//                    type:"error"
+//                });
+//                return false;
+//			}
 			$.ajax({
 				type:"POST",
 				url:$("form").attr("action"),
 				data:decodeURIComponent($("form").serialize()),
 				dataType:"json",
 				success:function (data,textStatus) {
-                    swal(data.msg);
+				    if (data.msg === "success"){
+				        window.location = data.url;
+					}
+                    if(data.code === 1){
+                        swal({
+                            title:data.msg,
+                            type:"success"
+                        });
+                    }
+                    if(data.code === 0)
+                    {
+                        swal({
+                            title:data.msg,
+                            type:"error"
+                        });
+                    }
                     //额外绑定一个事件，当确定执行之后返回成功的页面的确定按钮，点击之后刷新当前页面或者跳转其他页面
 					if (data.url !== ""){
                         $('.confirm').click(function () {
@@ -52,11 +68,11 @@
 			});
 			return false;
         });
-		function isCardNo(card) {
-			var pattern = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/;
-			return pattern.test(card);
-		}
-	}
+//		function isCardNo(card) {
+//			var pattern = /( ^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
+//			return pattern.test(card);
+//		}
+	})
 	</script>
 </head>
 
@@ -64,7 +80,7 @@
 <header class="header">
 	<div>
 		<div class="top-container" style="background:#116fec; color:#FFF;">
-			<span class="left""><a href="javascript:history.back()">&nbsp;</a></span>身份证实名认证<span class="right"></span>
+			<span class="left"><a href="javascript:history.back()">&nbsp;</a></span>身份证实名认证<span class="right"></span>
 		</div>
 	</div>
 </header>
