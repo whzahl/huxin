@@ -65,6 +65,8 @@
 			    		<if condition="$vo.type eq 7"><span>尊敬的客户，您有新的<b>逾期通知</b></span></if>
 			    		<if condition="$vo.type eq 8"><span>尊敬的客户，您有新的<b>展期同意通知</b></span></if>
 			    		<if condition="$vo.type eq 9"><span>尊敬的客户，您有新的<b>展期拒绝通知</b></span></if>
+			    		<if condition="$vo.type eq 10"><span>尊敬的客户，您有新的<b>销账同意通知</b></span></if>
+			    		<if condition="$vo.type eq 11"><span>尊敬的客户，您有新的<b>销账拒绝通知</b></span></if>
 					</p>
 			    	<p><if condition="$vo.type eq 3">出借人：<else />借款人：</if><span>{$vo.name}</span></p>
 			    	<p>借款金额：<span>{$vo.price}元</span></p>

@@ -64,6 +64,11 @@ class NewsController extends HomeBaseController
 
     public function newslist(){   
     	$data = Db::name('hx_news')->order('id desc')->select();
+        // if(!isset($data['picture'])){
+        //     $data['picture'] = '';
+        // }
+        // $image = explode(';', rtrim($data['picture'],';'));
+        // $this->assign('image',$image);
     	$this->assign('data',$data);
     	return $this->fetch();
     }

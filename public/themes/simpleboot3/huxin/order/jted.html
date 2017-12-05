@@ -19,6 +19,7 @@
     <script type="text/javascript" src="__TMPL__/huxin/static/js/jquery.flexslider-min.js"></script>
 	<script type="text/javascript" src="__TMPL__/huxin/static/js/complex.js"></script>
 	<include file="huxin@commonSrc"/>
+
 	<script>
 		$(document).ready(function () {
 //            阅读并同意现相关协议才给确定按钮生效
@@ -64,7 +65,7 @@
         * 计算还款金额
         */
         function calculate(borrowMoney, days, rate) {
-			return ((borrowMoney*(Math.pow(rate/100+1,days/365)))).toFixed(2);
+			return ((borrowMoney*(rate/100*days/365+1))).toFixed(2);
         }
         /*
         * 改变dom节点的文字
@@ -125,9 +126,17 @@
 <div class="wrap-page wrap-page-noheader bg-white">
 <div class="list-container">
 <form method="post" action="{:url('order/jted')}">
-	<p>&nbsp;出借人：<span id="limit">{$fname.name}</span> | &nbsp;当前可借款额度 <span id="limit">{$totle}</span> 元</p>
+	<p>&nbsp;&nbsp;当前可借款额度 <span id="limit">{$totle}</span> 元</p>
 	<!-- <input type="hidden" name="fid" value="4"> -->
 	<ul class="list">
+        <li class="item item-input">
+            <div class="item-main">
+                <label class="field-container"><span class="field-label">出借人</span>
+                    <input type="text"  readonly="readonly" name="" value="{$fname.name}" label="contact" icon="info" placeholder="10的整数倍" class="field" style="text-align:right;">
+                    <!-- {$fname.name} -->
+                </label>
+            </div>
+        </li>
 		<li class="item item-input">
 			<div class="item-main">
 				<label class="field-container"><span class="field-label">借款金额</span>
@@ -166,10 +175,11 @@
     	<li class="item item-noline" id="money" style=" text-align:right; display:block;">到期本息合计约为0.00元</li>
     	<li class="item item-noline">
     		<input class="magic-checkbox" type="checkbox" name="layout" id="c4">
-    		<label for="c4" style="color:#ccc">已阅读并同意<a href="#" class="link-green2">相关协议</a></label>
+    		<label for="c4" style="color:#ccc">已阅读并同意<a href="{:url('agreement/xgxy', ['fid'=>$fid])}" class="link-green2">相关协议</a></label>
    		</li>
     	<input type="hidden" name="fid" value="{$fid}">
     	<li class="item item-noline"><button type="submit" class="btn btn-block btn-green">确定</button></li>
+
 	</ul>
 </form>
 </div>
